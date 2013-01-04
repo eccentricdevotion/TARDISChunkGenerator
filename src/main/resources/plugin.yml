@@ -1,0 +1,8 @@
+author: eccentric_nz
+description: Chunk generator for the TARDIS plugin
+main: me.eccentric_nz.tardischunkgenerator.TARDISWorld
+name: TARDISChunkGenerator
+startup: startup
+url: http://dev.bukkit.org/server-mods/tardis/
+dev-url: http://dev.bukkit.org/server-mods/tardis/
+version: '1.0'
