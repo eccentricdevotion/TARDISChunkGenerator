@@ -4,4 +4,4 @@ main: me.eccentric_nz.tardischunkgenerator.TARDISWorld
 name: TARDISChunkGenerator
 load: startup
 url: http://dev.bukkit.org/server-mods/tardis/
-version: '1.0'
+version: '1.0c'
