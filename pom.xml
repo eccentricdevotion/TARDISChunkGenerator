@@ -7,12 +7,8 @@
     <url>http://dev.bukkit.org/server-mods/tardis/</url>
     <repositories>
         <repository>
-            <id>macgeek</id>
-            <url>http://tardisjenkins.duckdns.org:8888</url>
-        </repository>
-        <repository>
-            <id>Bromley Massive</id>
-            <url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
+            <id>Spigot</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
     </repositories>
     <build>
@@ -33,7 +29,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
+            <version>1.8.3-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
