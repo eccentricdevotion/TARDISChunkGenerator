@@ -86,6 +86,22 @@ public interface TARDISHelperAPI {
      * Set a Villager's willingness to breed/trade.
      *
      * @param v the Villager
+     * @param l the career level to set
+     */
+    public void setVillagerCareerLevel(Villager v, int l);
+
+    /**
+     * Gets a Villager's willingness to breed/trade.
+     *
+     * @param v the Villager
+     * @return whether the villager is willing
+     */
+    public int getVillagerCareerLevel(Villager v);
+
+    /**
+     * Set a Villager's willingness to breed/trade.
+     *
+     * @param v the Villager
      * @param w whether the villager is willing
      */
     public void setVillagerWilling(Villager v, boolean w);

@@ -220,6 +220,46 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public int getVillagerCareerLevel(Villager v) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            Field careerLevelField = EntityVillager.class.getDeclaredField("by");
+            careerLevelField.setAccessible(true);
+            return careerLevelField.getInt(villager);
+        } catch (IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
+        } catch (IllegalAccessException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
+        } catch (NoSuchFieldException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
+        } catch (SecurityException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    public void setVillagerCareerLevel(Villager v, int l) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            Field careerField = EntityVillager.class.getDeclaredField("by");
+            careerField.setAccessible(true);
+            careerField.set(villager, l);
+        } catch (NoSuchFieldException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+        } catch (SecurityException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+        } catch (IllegalAccessException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+        }
+    }
+
+    @Override
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
