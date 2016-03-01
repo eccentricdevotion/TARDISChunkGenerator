@@ -1,10 +1,8 @@
 package me.eccentric_nz.tardischunkgenerator;
 
-import java.util.ArrayList;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
 public interface TARDISHelperAPI {
@@ -24,23 +22,6 @@ public interface TARDISHelperAPI {
      * @param speed the speed to apply
      */
     public void setHorseSpeed(Horse h, double speed);
-
-    /**
-     * Gets a villager's trades.
-     *
-     * @param v the villager
-     * @param p the player who is farming this villager
-     * @return a list of trades
-     */
-    public ArrayList getTrades(Villager v, Player p);
-
-    /**
-     * Sets a villager's trades.
-     *
-     * @param v the villager
-     * @param list the list of trades
-     */
-    public void setTrades(Villager v, ArrayList list);
 
     /**
      * Sets the invulnerable NBTTag of an item to true. This make the item

@@ -3,29 +3,23 @@ package me.eccentric_nz.tardischunkgenerator;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_8_R3.AttributeInstance;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.EntityVillager;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
-import net.minecraft.server.v1_8_R3.MerchantRecipeList;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.TileEntity;
-import net.minecraft.server.v1_8_R3.TileEntityFurnace;
-import net.minecraft.server.v1_8_R3.WorldServer;
+import net.minecraft.server.v1_9_R1.AttributeInstance;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.EntityInsentient;
+import net.minecraft.server.v1_9_R1.EntityVillager;
+import net.minecraft.server.v1_9_R1.GenericAttributes;
+import net.minecraft.server.v1_9_R1.TileEntity;
+import net.minecraft.server.v1_9_R1.TileEntityFurnace;
+import net.minecraft.server.v1_9_R1.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftVillager;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -110,28 +104,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public ArrayList getTrades(Villager v, Player p) {
-        EntityVillager villager = ((CraftVillager) v).getHandle();
-        NBTTagCompound t = new NBTTagCompound();
-        villager.b(t);
-        EntityHuman merchant = ((CraftPlayer) p).getHandle();
-        MerchantRecipeList l = villager.getOffers(merchant);
-        return l;
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public void setTrades(Villager v, ArrayList list) {
-        MerchantRecipeList l = (MerchantRecipeList) list;
-        NBTTagCompound t = new NBTTagCompound();
-        EntityVillager villager = ((CraftVillager) v).getHandle();
-        villager.b(t);
-        t.set("Offers", l.a());
-        villager.a(t);
-    }
-
-    @Override
     public void nameFurnaceGUI(Block block, String name) {
         WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
@@ -147,7 +119,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public int getVillagerCareer(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bx");
+            Field careerField = EntityVillager.class.getDeclaredField("bC");
             careerField.setAccessible(true);
 //            String career = "";
 //            switch (villager.getProfession()) {
