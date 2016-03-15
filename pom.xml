@@ -10,7 +10,6 @@
             <id>Spigot</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
-        <!--
         <repository>
             <id>macgeek</id>
             <url>http://tardisjenkins.duckdns.org:8888</url>
@@ -19,7 +18,6 @@
             <id>Bromley Massive</id>
             <url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
         </repository>
-        -->
     </repositories>
     <!-- Profiles are used to detect whether this is a local or Jenkins build
     and adjust the build number accordingly -->
