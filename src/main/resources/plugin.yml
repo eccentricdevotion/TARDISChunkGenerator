@@ -4,4 +4,4 @@ main: me.eccentric_nz.tardischunkgenerator.TARDISHelper
 name: TARDISChunkGenerator
 load: STARTUP
 url: http://dev.bukkit.org/bukkit-plugins/tardis/
-version: '2.1'
+version: '2.2'
