@@ -119,7 +119,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public int getVillagerCareer(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bC");
+            Field careerField = EntityVillager.class.getDeclaredField("bH");
             careerField.setAccessible(true);
 //            String career = "";
 //            switch (villager.getProfession()) {
@@ -177,7 +177,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerCareer(Villager v, int c) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bx");
+            Field careerField = EntityVillager.class.getDeclaredField("bH");
             careerField.setAccessible(true);
             careerField.set(villager, c);
         } catch (NoSuchFieldException ex) {
@@ -195,7 +195,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public int getVillagerCareerLevel(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerLevelField = EntityVillager.class.getDeclaredField("by");
+            Field careerLevelField = EntityVillager.class.getDeclaredField("bI");
             careerLevelField.setAccessible(true);
             return careerLevelField.getInt(villager);
         } catch (IllegalArgumentException ex) {
@@ -217,7 +217,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerCareerLevel(Villager v, int l) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("by");
+            Field careerField = EntityVillager.class.getDeclaredField("bI");
             careerField.setAccessible(true);
             careerField.set(villager, l);
         } catch (NoSuchFieldException ex) {
@@ -235,7 +235,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
+            Field willingField = EntityVillager.class.getDeclaredField("bE");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (IllegalArgumentException ex) {
@@ -257,7 +257,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerWilling(Villager v, boolean w) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
+            Field willingField = EntityVillager.class.getDeclaredField("bE");
             willingField.setAccessible(true);
             willingField.set(villager, w);
         } catch (NoSuchFieldException ex) {
