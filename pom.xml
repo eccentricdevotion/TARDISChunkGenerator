@@ -2,15 +2,36 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.tardischunkgenerator</groupId>
     <artifactId>TARDISChunkGenerator</artifactId>
-    <version>1.0g</version>
+    <version>2.2</version>
     <name>TARDISChunkGenerator</name>
     <url>http://dev.bukkit.org/server-mods/tardis/</url>
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
+            <id>Spigot</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>macgeek</id>
+            <url>http://tardisjenkins.duckdns.org:8888</url>
+        </repository>
+        <repository>
+            <id>Bromley Massive</id>
+            <url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
         </repository>
     </repositories>
+    <!-- Profiles are used to detect whether this is a local or Jenkins build
+    and adjust the build number accordingly -->
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <repositories>
+                <repository>
+                    <id>macgeek</id>
+                    <url>http://localhost:8888</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
     <build>
         <finalName>TARDISChunkGenerator</finalName>
         <plugins>
@@ -19,8 +40,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -28,8 +49,8 @@
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>LATEST</version>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.9.2-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
