@@ -31,6 +31,10 @@ public class TARDISChunkGenerator extends ChunkGenerator {
      * Generates an empty world!
      *
      * @param world the world to generate chunks in
+     * @param random
+     * @param cx
+     * @param cz
+     * @return
      */
     @Override
     public byte[] generate(World world, Random random, int cx, int cz) {
