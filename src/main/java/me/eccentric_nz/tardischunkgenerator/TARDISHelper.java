@@ -14,6 +14,7 @@ import net.minecraft.server.v1_9_R2.TileEntity;
 import net.minecraft.server.v1_9_R2.TileEntityFurnace;
 import net.minecraft.server.v1_9_R2.WorldServer;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
@@ -287,5 +288,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         } catch (IllegalAccessException ex) {
             Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void refreshChunk(Chunk c) {
+        TARDISPacketMapChunk.refreshChunk(c);
     }
 }

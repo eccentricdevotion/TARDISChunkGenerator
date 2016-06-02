@@ -1,5 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator;
 
+import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Item;
@@ -94,4 +95,11 @@ public interface TARDISHelperAPI {
      * @param c the total cook time to set
      */
     public void setCookTimeTotal(Block b, int c);
+
+    /**
+     * Refresh a chunk.
+     *
+     * @param c the chunk to refresh
+     */
+    public void refreshChunk(Chunk c);
 }
