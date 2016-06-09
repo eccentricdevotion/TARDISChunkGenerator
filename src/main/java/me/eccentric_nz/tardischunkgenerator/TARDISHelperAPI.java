@@ -2,6 +2,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Item;
@@ -113,4 +114,11 @@ public interface TARDISHelperAPI {
      * @return the modified ItemStack
      */
     public ItemStack setSpawnEggType(ItemStack is, EntityType et);
+
+    /**
+     * Set the FallFlying NBT tag on an entity.
+     *
+     * @param e the entity to set the NBT tag for
+     */
+    public void setFallFlyingTag(Entity e);
 }

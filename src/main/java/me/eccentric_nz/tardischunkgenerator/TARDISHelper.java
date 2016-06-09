@@ -7,7 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_10_R1.AttributeInstance;
 import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_10_R1.Entity;
 import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.EntityLiving;
 import net.minecraft.server.v1_10_R1.EntityVillager;
 import net.minecraft.server.v1_10_R1.GenericAttributes;
 import net.minecraft.server.v1_10_R1.NBTBase;
@@ -15,10 +17,10 @@ import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.TileEntity;
 import net.minecraft.server.v1_10_R1.TileEntityFurnace;
 import net.minecraft.server.v1_10_R1.WorldServer;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
@@ -33,30 +35,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     public String pluginName;
-    private static String versionPrefix = null;
-    private transient Method getEntityHandle;
-    private transient Field isInvulnerable;
+
     private TARDISHelper tardisHelper;
 
     @Override
     public void onEnable() {
-        // nms reflection stuff for flagging invulnerable drops
-        try {
-            // get the field for flagging an entity invulnerable in the NMS class, and set it to accessible for later
-            isInvulnerable = getVersionedClass("net.minecraft.server.Entity").getDeclaredField("invulnerable");
-            isInvulnerable.setAccessible(true);
-            // get the method for getting underlying NMS entity object handle from a craftbukkit entity object
-            getEntityHandle = getVersionedClass("org.bukkit.craftbukkit.entity.CraftEntity").getMethod("getHandle");
-
-        } catch (ClassNotFoundException ex) {
-            System.err.println("[TARDISHelper] Failed to access invulnerability methods: " + ex.getMessage());
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to access invulnerability methods: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to access invulnerability methods: " + ex.getMessage());
-        } catch (NoSuchMethodException ex) {
-            System.err.println("[TARDISHelper] Failed to access invulnerability methods: " + ex.getMessage());
-        }
         tardisHelper = this;
     }
 
@@ -82,29 +65,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         attributes.setValue(speed);
     }
 
-    // finds the version specific NMS class to match the general name
-    public static Class<?> getVersionedClass(String className) throws ClassNotFoundException {
-        if (versionPrefix == null) {
-            String serverClassName = Bukkit.getServer().getClass().getName();
-            String[] packages = serverClassName.split("\\.");
-            if (packages.length == 5) {
-                versionPrefix = packages[3] + ".";
-            }
-        }
-        className = className.replace("org.bukkit.craftbukkit.", "org.bukkit.craftbukkit." + versionPrefix);
-        className = className.replace("net.minecraft.server.", "net.minecraft.server." + versionPrefix);
-        return TARDISHelper.class.getClassLoader().loadClass(className);
-    }
-
     @Override
     public void protect(Item item) {
         try {
+            Method getEntityHandle = CraftEntity.class.getMethod("getHandle");
+            Field isInvulnerable = Entity.class.getDeclaredField("invulnerable");
+            isInvulnerable.setAccessible(true);
             isInvulnerable.set(getEntityHandle.invoke(item), true);
         } catch (IllegalAccessException ex) {
             System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
             System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
         } catch (InvocationTargetException ex) {
+            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
+        } catch (NoSuchFieldException ex) {
+            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
+        } catch (SecurityException ex) {
+            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
+        } catch (NoSuchMethodException ex) {
             System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
         }
     }
@@ -127,42 +105,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             EntityVillager villager = ((CraftVillager) v).getHandle();
             Field careerField = EntityVillager.class.getDeclaredField("bJ");
             careerField.setAccessible(true);
-//            String career = "";
-//            switch (villager.getProfession()) {
-//                case 0:
-//                    if (careerField.getInt(villager) == 1) {
-//                        career = "farmer";
-//                    } else if (careerField.getInt(villager) == 2) {
-//                        career = "fisherman";
-//                    } else if (careerField.getInt(villager) == 3) {
-//                        career = "shepherd";
-//                    } else if (careerField.getInt(villager) == 4) {
-//                        career = "fletcher";
-//                    }
-//                    break;
-//                case 1:
-//                    career = "librarian";
-//                    break;
-//                case 2:
-//                    career = "cleric";
-//                    break;
-//                case 3:
-//                    if (careerField.getInt(villager) == 1) {
-//                        career = "armor";
-//                    } else if (careerField.getInt(villager) == 2) {
-//                        career = "weapon";
-//                    } else if (careerField.getInt(villager) == 3) {
-//                        career = "tool";
-//                    }
-//                    break;
-//                case 4:
-//                    if (careerField.getInt(villager) == 1) {
-//                        career = "butcher";
-//                    } else if (careerField.getInt(villager) == 2) {
-//                        career = "leather";
-//                    }
-//            }
-//            System.out.println("[TARDISHelper] Villager career: " + career);
             return careerField.getInt(villager);
         } catch (IllegalArgumentException ex) {
             System.err.println("[TARDISHelper] Failed to get villager career: " + ex.getMessage());
@@ -326,5 +268,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         } catch (InstantiationException exception) {
         }
         return result;
+    }
+
+    @Override
+    public void setFallFlyingTag(org.bukkit.entity.Entity e) {
+        Entity nmsEntity = ((CraftEntity) e).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+        // writes the entity's NBT data to the `tag` object
+        nmsEntity.c(tag);
+        tag.setBoolean("FallFlying", true);
+        // sets the entity's tag to the altered `tag`
+        ((EntityLiving) nmsEntity).a(tag);
     }
 }
