@@ -2,7 +2,6 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_10_R1.AttributeInstance;
@@ -26,7 +25,6 @@ import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -63,28 +61,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         // use about  2.25 for normalish speed
         AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
         attributes.setValue(speed);
-    }
-
-    @Override
-    public void protect(Item item) {
-        try {
-            Method getEntityHandle = CraftEntity.class.getMethod("getHandle");
-            Field isInvulnerable = Entity.class.getDeclaredField("invulnerable");
-            isInvulnerable.setAccessible(true);
-            isInvulnerable.set(getEntityHandle.invoke(item), true);
-        } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        } catch (InvocationTargetException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        } catch (NoSuchMethodException ex) {
-            System.err.println("[TARDISHelper] Failed to protect TARDIS Siege Cube: " + ex.getMessage());
-        }
     }
 
     @Override

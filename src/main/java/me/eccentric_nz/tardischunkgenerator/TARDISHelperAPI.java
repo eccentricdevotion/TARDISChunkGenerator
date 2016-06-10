@@ -5,7 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,14 +25,6 @@ public interface TARDISHelperAPI {
      * @param speed the speed to apply
      */
     public void setHorseSpeed(Horse h, double speed);
-
-    /**
-     * Sets the invulnerable NBTTag of an item to true. This make the item
-     * indestructible.
-     *
-     * @param item the item to protect
-     */
-    public void protect(Item item);
 
     /**
      * Names a furnace GUI
