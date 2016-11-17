@@ -2,9 +2,9 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,7 +16,7 @@ public interface TARDISHelperAPI {
      * @param h the horse
      * @return the horse's speed
      */
-    public Double getHorseSpeed(Horse h);
+    public Double getHorseSpeed(AbstractHorse h);
 
     /**
      * Sets the horse's speed.
@@ -24,7 +24,7 @@ public interface TARDISHelperAPI {
      * @param h the horse
      * @param speed the speed to apply
      */
-    public void setHorseSpeed(Horse h, double speed);
+    public void setHorseSpeed(AbstractHorse h, double speed);
 
     /**
      * Names a furnace GUI

@@ -4,27 +4,27 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_10_R1.AttributeInstance;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.Entity;
-import net.minecraft.server.v1_10_R1.EntityInsentient;
-import net.minecraft.server.v1_10_R1.EntityLiving;
-import net.minecraft.server.v1_10_R1.EntityVillager;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.NBTBase;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.TileEntity;
-import net.minecraft.server.v1_10_R1.TileEntityFurnace;
-import net.minecraft.server.v1_10_R1.WorldServer;
+import net.minecraft.server.v1_11_R1.AttributeInstance;
+import net.minecraft.server.v1_11_R1.BlockPosition;
+import net.minecraft.server.v1_11_R1.Entity;
+import net.minecraft.server.v1_11_R1.EntityInsentient;
+import net.minecraft.server.v1_11_R1.EntityLiving;
+import net.minecraft.server.v1_11_R1.EntityVillager;
+import net.minecraft.server.v1_11_R1.GenericAttributes;
+import net.minecraft.server.v1_11_R1.NBTBase;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.TileEntity;
+import net.minecraft.server.v1_11_R1.TileEntityFurnace;
+import net.minecraft.server.v1_11_R1.WorldServer;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -51,13 +51,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public Double getHorseSpeed(Horse h) {
+    public Double getHorseSpeed(AbstractHorse h) {
         AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
         return attributes.getValue();
     }
 
     @Override
-    public void setHorseSpeed(Horse h, double speed) {
+    public void setHorseSpeed(AbstractHorse h, double speed) {
         // use about  2.25 for normalish speed
         AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
         attributes.setValue(speed);
@@ -224,17 +224,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         try {
             Object nmsStack = CraftItemStack.class.getMethod("asNMSCopy", ItemStack.class).invoke(null, is);
             Object nmsCompound = nmsStack.getClass().getMethod("getTag").invoke(nmsStack);
-
             if (nmsCompound == null) {
                 nmsCompound = NBTTagCompound.class.getConstructor().newInstance();
             }
-
             Object nmsTag = nmsCompound.getClass().getConstructor().newInstance();
-
             nmsTag.getClass().getMethod("setString", String.class, String.class).invoke(nmsTag, "id", et.getName());
             nmsCompound.getClass().getMethod("set", String.class, NBTBase.class).invoke(nmsCompound, "EntityTag", nmsTag);
             nmsStack.getClass().getMethod("setTag", nmsCompound.getClass()).invoke(nmsStack, nmsCompound);
-
             result = ((ItemStack) CraftItemStack.class.getMethod("asBukkitCopy", nmsStack.getClass()).invoke(null, nmsStack));
         } catch (NoSuchMethodException exception) {
         } catch (SecurityException exception) {
