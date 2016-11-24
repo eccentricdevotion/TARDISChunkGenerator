@@ -1,7 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_11_R1.AttributeInstance;
@@ -11,7 +10,6 @@ import net.minecraft.server.v1_11_R1.EntityInsentient;
 import net.minecraft.server.v1_11_R1.EntityLiving;
 import net.minecraft.server.v1_11_R1.EntityVillager;
 import net.minecraft.server.v1_11_R1.GenericAttributes;
-import net.minecraft.server.v1_11_R1.NBTBase;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import net.minecraft.server.v1_11_R1.TileEntity;
 import net.minecraft.server.v1_11_R1.TileEntityFurnace;
@@ -220,26 +218,36 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public ItemStack setSpawnEggType(ItemStack is, EntityType et) {
-        ItemStack result = null;
-        try {
-            Object nmsStack = CraftItemStack.class.getMethod("asNMSCopy", ItemStack.class).invoke(null, is);
-            Object nmsCompound = nmsStack.getClass().getMethod("getTag").invoke(nmsStack);
-            if (nmsCompound == null) {
-                nmsCompound = NBTTagCompound.class.getConstructor().newInstance();
-            }
-            Object nmsTag = nmsCompound.getClass().getConstructor().newInstance();
-            nmsTag.getClass().getMethod("setString", String.class, String.class).invoke(nmsTag, "id", et.getName());
-            nmsCompound.getClass().getMethod("set", String.class, NBTBase.class).invoke(nmsCompound, "EntityTag", nmsTag);
-            nmsStack.getClass().getMethod("setTag", nmsCompound.getClass()).invoke(nmsStack, nmsCompound);
-            result = ((ItemStack) CraftItemStack.class.getMethod("asBukkitCopy", nmsStack.getClass()).invoke(null, nmsStack));
-        } catch (NoSuchMethodException exception) {
-        } catch (SecurityException exception) {
-        } catch (IllegalAccessException exception) {
-        } catch (IllegalArgumentException exception) {
-        } catch (InvocationTargetException exception) {
-        } catch (InstantiationException exception) {
+        net.minecraft.server.v1_11_R1.ItemStack stack = CraftItemStack.asNMSCopy(is);
+        NBTTagCompound tagCompound = stack.getTag();
+        if (tagCompound == null) {
+            tagCompound = new NBTTagCompound();
         }
-        return result;
+        NBTTagCompound id = new NBTTagCompound();
+        String name;
+        switch (et) {
+            case EVOKER:
+                name = "minecraft:evocation_illager";
+                break;
+            case IRON_GOLEM:
+                name = "minecraft:villager_golem";
+                break;
+            case MUSHROOM_COW:
+                name = "minecraft:mooshroom";
+                break;
+            case PIG_ZOMBIE:
+                name = "minecraft:zombie_pigman";
+                break;
+            case VINDICATOR:
+                name = "minecraft:vindication_illager";
+                break;
+            default:
+                name = "minecraft:" + et.toString().toLowerCase();
+        }
+        id.setString("id", name);
+        tagCompound.set("EntityTag", id);
+        stack.setTag(tagCompound);
+        return CraftItemStack.asBukkitCopy(stack);
     }
 
     @Override
