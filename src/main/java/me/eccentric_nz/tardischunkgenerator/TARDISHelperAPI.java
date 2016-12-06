@@ -4,9 +4,7 @@ import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
 
 public interface TARDISHelperAPI {
 
@@ -96,15 +94,6 @@ public interface TARDISHelperAPI {
      * @param c the chunk to refresh
      */
     public void refreshChunk(Chunk c);
-
-    /**
-     * Set a Spawn Egg type.
-     *
-     * @param is a Bukkit MONSTER_EGG ItemStack
-     * @param et the EntityType to set the spawn egg to
-     * @return the modified ItemStack
-     */
-    public ItemStack setSpawnEggType(ItemStack is, EntityType et);
 
     /**
      * Set the FallFlying NBT tag on an entity.

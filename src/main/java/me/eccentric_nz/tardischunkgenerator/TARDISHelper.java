@@ -20,12 +20,9 @@ import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftVillager;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
@@ -214,40 +211,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void refreshChunk(Chunk c) {
         TARDISPacketMapChunk.refreshChunk(c);
-    }
-
-    @Override
-    public ItemStack setSpawnEggType(ItemStack is, EntityType et) {
-        net.minecraft.server.v1_11_R1.ItemStack stack = CraftItemStack.asNMSCopy(is);
-        NBTTagCompound tagCompound = stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new NBTTagCompound();
-        }
-        NBTTagCompound id = new NBTTagCompound();
-        String name;
-        switch (et) {
-            case EVOKER:
-                name = "minecraft:evocation_illager";
-                break;
-            case IRON_GOLEM:
-                name = "minecraft:villager_golem";
-                break;
-            case MUSHROOM_COW:
-                name = "minecraft:mooshroom";
-                break;
-            case PIG_ZOMBIE:
-                name = "minecraft:zombie_pigman";
-                break;
-            case VINDICATOR:
-                name = "minecraft:vindication_illager";
-                break;
-            default:
-                name = "minecraft:" + et.toString().toLowerCase();
-        }
-        id.setString("id", name);
-        tagCompound.set("EntityTag", id);
-        stack.setTag(tagCompound);
-        return CraftItemStack.asBukkitCopy(stack);
     }
 
     @Override
