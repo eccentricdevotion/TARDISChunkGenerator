@@ -4,6 +4,7 @@ import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
 public interface TARDISHelperAPI {
@@ -101,4 +102,9 @@ public interface TARDISHelperAPI {
      * @param e the entity to set the NBT tag for
      */
     public void setFallFlyingTag(Entity e);
+
+    /**
+     *
+     */
+    public void sendJson(Player player, String json);
 }
