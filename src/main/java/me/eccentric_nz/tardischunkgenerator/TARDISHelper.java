@@ -75,46 +75,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public int getVillagerCareer(Villager v) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bK");
-            careerField.setAccessible(true);
-            return careerField.getInt(villager);
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career: " + ex.getMessage());
-            return 0;
-        } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career: " + ex.getMessage());
-            return 0;
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career: " + ex.getMessage());
-            return 0;
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career: " + ex.getMessage());
-            return 0;
-        }
-    }
-
-    @Override
-    public void setVillagerCareer(Villager v, int c) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bK");
-            careerField.setAccessible(true);
-            careerField.set(villager, c);
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career: " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career: " + ex.getMessage());
-        } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career: " + ex.getMessage());
-        }
-    }
-
-    @Override
     public int getVillagerCareerLevel(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();

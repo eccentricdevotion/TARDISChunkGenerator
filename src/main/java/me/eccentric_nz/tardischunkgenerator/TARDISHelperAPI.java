@@ -34,22 +34,6 @@ public interface TARDISHelperAPI {
     public void nameFurnaceGUI(Block block, String name);
 
     /**
-     * Gets a Villager's career.
-     *
-     * @param v the Villager
-     * @return the career number or null
-     */
-    public int getVillagerCareer(Villager v);
-
-    /**
-     * Set a Villager's career.
-     *
-     * @param v the Villager
-     * @param c the career to set
-     */
-    public void setVillagerCareer(Villager v, int c);
-
-    /**
      * Gets a Villager's willingness to breed/trade.
      *
      * @param v the Villager
