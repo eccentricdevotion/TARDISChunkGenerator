@@ -1,28 +1,44 @@
+/*
+ * Copyright (C) 2018 eccentric_nz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.eccentric_nz.tardischunkgenerator;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_12_R1.AttributeInstance;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntityInsentient;
-import net.minecraft.server.v1_12_R1.EntityLiving;
-import net.minecraft.server.v1_12_R1.EntityVillager;
-import net.minecraft.server.v1_12_R1.GenericAttributes;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_12_R1.TileEntity;
-import net.minecraft.server.v1_12_R1.TileEntityFurnace;
-import net.minecraft.server.v1_12_R1.WorldServer;
+import net.minecraft.server.v1_13_R1.AttributeInstance;
+import net.minecraft.server.v1_13_R1.BlockPosition;
+import net.minecraft.server.v1_13_R1.Entity;
+import net.minecraft.server.v1_13_R1.EntityInsentient;
+import net.minecraft.server.v1_13_R1.EntityLiving;
+import net.minecraft.server.v1_13_R1.EntityVillager;
+import net.minecraft.server.v1_13_R1.GenericAttributes;
+import net.minecraft.server.v1_13_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_13_R1.NBTTagCompound;
+import net.minecraft.server.v1_13_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_13_R1.TileEntity;
+import net.minecraft.server.v1_13_R1.TileEntityFurnace;
+import net.minecraft.server.v1_13_R1.WorldServer;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftVillager;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;

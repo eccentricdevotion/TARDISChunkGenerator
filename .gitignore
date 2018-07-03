@@ -22,6 +22,8 @@ CVS
 /psd/
 /nbproject/
 /bin/
+/.idea/
 
 # other stuff
 .classpath
+*.iml

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.tardischunkgenerator</groupId>
     <artifactId>TARDISChunkGenerator</artifactId>
-    <version>2.5.5</version>
+    <version>4.0</version>
     <name>TARDISChunkGenerator</name>
     <url>http://dev.bukkit.org/server-mods/tardis/</url>
     <repositories>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.13-pre2-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
