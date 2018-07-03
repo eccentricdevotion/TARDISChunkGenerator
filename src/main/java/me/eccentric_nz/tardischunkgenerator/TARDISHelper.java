@@ -3,20 +3,11 @@ package me.eccentric_nz.tardischunkgenerator;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_12_R1.AttributeInstance;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntityInsentient;
-import net.minecraft.server.v1_12_R1.EntityLiving;
-import net.minecraft.server.v1_12_R1.EntityVillager;
-import net.minecraft.server.v1_12_R1.GenericAttributes;
+
+import net.minecraft.server.v1_12_R1.*;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_12_R1.TileEntity;
-import net.minecraft.server.v1_12_R1.TileEntityFurnace;
-import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
@@ -191,5 +182,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void sendJson(Player player, String json) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json)));
+    }
+
+    @Override
+    public void openSignGUI(Player player, Block sign) {
+        Location l = sign.getLocation();
+        TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getTileEntityAt(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        t.a(((CraftPlayer) player).getHandle());
+        t.isEditable = true;
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(BlockPosition.PooledBlockPosition.d(l.getX(),l.getY(),l.getZ()));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 }

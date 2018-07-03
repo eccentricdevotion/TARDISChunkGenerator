@@ -25,3 +25,5 @@ CVS
 
 # other stuff
 .classpath
+*.xml
+*.iml

@@ -88,7 +88,18 @@ public interface TARDISHelperAPI {
     public void setFallFlyingTag(Entity e);
 
     /**
+     * Send JSON chat to a player.
      *
+     * @param player the player to send the chat to
+     * @param json the JSON text to send
      */
     public void sendJson(Player player, String json);
+
+    /**
+     * Open a sign editing GUI.
+     *
+     * @param player the player to open the GUI for
+     * @param sign the sign block that is being edited
+     */
+    public void openSignGUI(Player player, Block sign);
 }
