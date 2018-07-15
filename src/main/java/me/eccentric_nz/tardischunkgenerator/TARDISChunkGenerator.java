@@ -17,8 +17,13 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import java.util.Random;
+
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.material.MaterialData;
 
 /**
  *
@@ -36,13 +41,13 @@ public class TARDISChunkGenerator extends ChunkGenerator {
      * @return
      */
     @Override
-    @SuppressWarnings("deprecation")
-    public byte[] generate(World world, Random random, int cx, int cz) {
-        byte[] result = new byte[32768];
-        for (int i = 0; i < result.length; i++) {
-            //result[i] = ((byte) Material.AIR.getId());
-            result[i] = ((byte) 0);
+    public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                    biome.setBiome(x, z, Biome.THE_VOID);
+            }
         }
-        return result;
+        return createChunkData(world);
     }
 }

@@ -16,23 +16,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import net.minecraft.server.v1_13_R1.AttributeInstance;
-import net.minecraft.server.v1_13_R1.BlockPosition;
-import net.minecraft.server.v1_13_R1.Entity;
-import net.minecraft.server.v1_13_R1.EntityInsentient;
-import net.minecraft.server.v1_13_R1.EntityLiving;
-import net.minecraft.server.v1_13_R1.EntityVillager;
-import net.minecraft.server.v1_13_R1.GenericAttributes;
+import net.minecraft.server.v1_13_R1.*;
 import net.minecraft.server.v1_13_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_13_R1.NBTTagCompound;
-import net.minecraft.server.v1_13_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_13_R1.TileEntity;
-import net.minecraft.server.v1_13_R1.TileEntityFurnace;
-import net.minecraft.server.v1_13_R1.WorldServer;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftEntity;
@@ -45,9 +32,11 @@ import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    public String pluginName;
+public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     private TARDISHelper tardisHelper;
 
@@ -67,14 +56,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public Double getHorseSpeed(AbstractHorse h) {
-        AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+        AttributeInstance attributes = (((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
         return attributes.getValue();
     }
 
     @Override
     public void setHorseSpeed(AbstractHorse h, double speed) {
         // use about  2.25 for normalish speed
-        AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+        AttributeInstance attributes = (((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
         attributes.setValue(speed);
     }
 
@@ -87,7 +76,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             return;
         }
         TileEntityFurnace furnace = (TileEntityFurnace) tile;
-        furnace.setCustomName(name);
+        furnace.setCustomName(new ChatMessage(name));
     }
 
     @Override
@@ -207,5 +196,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void sendJson(Player player, String json) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json)));
+    }
+
+    @Override
+    public void openSignGUI(Player player, Block sign) {
+        Location l = sign.getLocation();
+        TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getTileEntityAt(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        t.a(((CraftPlayer) player).getHandle());
+        t.isEditable = true;
+        BlockPosition.MutableBlockPosition mbp = new BlockPosition.MutableBlockPosition();
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(),l.getY(),l.getZ()));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 }
