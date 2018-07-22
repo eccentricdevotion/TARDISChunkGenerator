@@ -22,6 +22,7 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 
 public interface TARDISHelperAPI {
 
@@ -118,4 +119,9 @@ public interface TARDISHelperAPI {
      * @param sign the sign block that is being edited
      */
     void openSignGUI(Player player, Block sign);
+
+    /**
+     * Set the NBT tag:map:int entry on a Filled Map ItemStack.
+     */
+    ItemStack setMapNBT(ItemStack itemStack, int map);
 }

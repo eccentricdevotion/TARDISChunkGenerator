@@ -26,6 +26,7 @@ import org.bukkit.craftbukkit.v1_13_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -45,13 +46,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         tardisHelper = this;
     }
 
-    public TARDISHelper getTardisHelper() {
-        return tardisHelper;
-    }
-
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new TARDISChunkGenerator();
+    }
+
+    public TARDISHelper getTardisHelper() {
+        return tardisHelper;
     }
 
     @Override
@@ -80,24 +81,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public int getVillagerCareerLevel(Villager v) {
+    public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerLevelField = EntityVillager.class.getDeclaredField("bL");
-            careerLevelField.setAccessible(true);
-            return careerLevelField.getInt(villager);
+            Field willingField = EntityVillager.class.getDeclaredField("bH");
+            willingField.setAccessible(true);
+            return willingField.getBoolean(villager);
         } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
+            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
+            return false;
         } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
+            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
+            return false;
         } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
+            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
+            return false;
         } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
+            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
+            return false;
         }
     }
 
@@ -120,24 +121,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public boolean getVillagerWilling(Villager v) {
+    public int getVillagerCareerLevel(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bH");
-            willingField.setAccessible(true);
-            return willingField.getBoolean(villager);
+            Field careerLevelField = EntityVillager.class.getDeclaredField("bL");
+            careerLevelField.setAccessible(true);
+            return careerLevelField.getInt(villager);
         } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
         } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
         } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
         } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
+            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+            return 0;
         }
     }
 
@@ -205,7 +206,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         t.a(((CraftPlayer) player).getHandle());
         t.isEditable = true;
         BlockPosition.MutableBlockPosition mbp = new BlockPosition.MutableBlockPosition();
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(),l.getY(),l.getZ()));
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(), l.getY(), l.getZ()));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    @Override
+    public org.bukkit.inventory.ItemStack setMapNBT(org.bukkit.inventory.ItemStack itemStack, int map) {
+        net.minecraft.server.v1_13_R1.ItemStack nmsMap = CraftItemStack.asNMSCopy(itemStack);
+        NBTTagCompound mapCompound = (nmsMap.hasTag()) ? nmsMap.getTag() : new NBTTagCompound();
+        mapCompound.setInt("map", map);
+        nmsMap.setTag(mapCompound);
+        return CraftItemStack.asBukkitCopy(nmsMap);
     }
 }
