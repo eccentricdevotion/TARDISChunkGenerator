@@ -218,4 +218,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         nmsMap.setTag(mapCompound);
         return CraftItemStack.asBukkitCopy(nmsMap);
     }
+
+    @Override
+    public int getMapNumber(org.bukkit.inventory.ItemStack itemStack) {
+        net.minecraft.server.v1_13_R1.ItemStack nmsMap = CraftItemStack.asNMSCopy(itemStack);
+        NBTTagCompound mapCompound = (nmsMap.hasTag()) ? nmsMap.getTag() : new NBTTagCompound();
+        return mapCompound.getInt("map");
+    }
 }
