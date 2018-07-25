@@ -119,14 +119,4 @@ public interface TARDISHelperAPI {
      * @param sign the sign block that is being edited
      */
     void openSignGUI(Player player, Block sign);
-
-    /**
-     * Set the NBT tag:map:int entry on a Filled Map ItemStack.
-     */
-    ItemStack setMapNBT(ItemStack itemStack, int map);
-
-    /**
-     * Get the NBT tag:map:int value from a Filled Map ItemStack.
-     */
-    int getMapNumber(ItemStack itemStack);
 }

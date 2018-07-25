@@ -209,20 +209,4 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(), l.getY(), l.getZ()));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
-
-    @Override
-    public org.bukkit.inventory.ItemStack setMapNBT(org.bukkit.inventory.ItemStack itemStack, int map) {
-        net.minecraft.server.v1_13_R1.ItemStack nmsMap = CraftItemStack.asNMSCopy(itemStack);
-        NBTTagCompound mapCompound = (nmsMap.hasTag()) ? nmsMap.getTag() : new NBTTagCompound();
-        mapCompound.setInt("map", map);
-        nmsMap.setTag(mapCompound);
-        return CraftItemStack.asBukkitCopy(nmsMap);
-    }
-
-    @Override
-    public int getMapNumber(org.bukkit.inventory.ItemStack itemStack) {
-        net.minecraft.server.v1_13_R1.ItemStack nmsMap = CraftItemStack.asNMSCopy(itemStack);
-        NBTTagCompound mapCompound = (nmsMap.hasTag()) ? nmsMap.getTag() : new NBTTagCompound();
-        return mapCompound.getInt("map");
-    }
 }
