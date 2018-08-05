@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 
 /**
- *
  * @author eccentric_nz
  */
 public class TARDISPacketMapChunk {
@@ -37,10 +36,10 @@ public class TARDISPacketMapChunk {
      * Creates a TARDISPacketMapChunk.
      *
      * @param world The chunk's world.
-     * @param x The chunk's X.
-     * @param z The chunk's Z.
+     * @param x     The chunk's X.
+     * @param z     The chunk's Z.
      */
-    public TARDISPacketMapChunk(final World world, final int x, final int z) {
+    public TARDISPacketMapChunk(World world, int x, int z) {
         this(world.getChunkAt(x, z));
     }
 
@@ -49,7 +48,7 @@ public class TARDISPacketMapChunk {
      *
      * @param chunk The chunk.
      */
-    public TARDISPacketMapChunk(final org.bukkit.Chunk chunk) {
+    public TARDISPacketMapChunk(org.bukkit.Chunk chunk) {
         this.chunk = ((CraftChunk) chunk).getHandle();
     }
 
@@ -60,7 +59,7 @@ public class TARDISPacketMapChunk {
      *
      * @param player The player.
      */
-    public final void send(final Player player) {
+    public final void send(Player player) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
     }
 
@@ -69,7 +68,7 @@ public class TARDISPacketMapChunk {
      *
      * @param chunk The chunk.
      */
-    public static final void refreshChunk(final org.bukkit.Chunk chunk) {
+    public static final void refreshChunk(org.bukkit.Chunk chunk) {
         refreshChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
     }
 
@@ -77,26 +76,25 @@ public class TARDISPacketMapChunk {
      * Wrapper for <code>world.refreshChunk(...)</code>
      *
      * @param world The world.
-     * @param x The chunk's X.
-     * @param z The chunk's Z.
+     * @param x     The chunk's X.
+     * @param z     The chunk's Z.
      */
-    public static final void refreshChunk(final World world, final int x, final int z) {
-        final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+    public static final void refreshChunk(World world, int x, int z) {
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         refreshChunk(world, x, z, players.toArray(new Player[players.size()]));
     }
 
     /**
      * Refresh a chunk for the selected players.
      *
-     * @param world The chunk's world.
-     * @param x The chunk's X.
-     * @param z The chunk's Z.
+     * @param world   The chunk's world.
+     * @param x       The chunk's X.
+     * @param z       The chunk's Z.
      * @param players The players.
      */
-    @SuppressWarnings("deprecation")
-    public static final void refreshChunk(final World world, final int x, final int z, final Player... players) {
-        final TARDISPacketMapChunk packet = new TARDISPacketMapChunk(world.getChunkAt(x, z));
-        for (final Player player : players) {
+    public static final void refreshChunk(World world, int x, int z, Player... players) {
+        TARDISPacketMapChunk packet = new TARDISPacketMapChunk(world.getChunkAt(x, z));
+        for (Player player : players) {
             packet.send(player);
         }
         world.refreshChunk(x, z);

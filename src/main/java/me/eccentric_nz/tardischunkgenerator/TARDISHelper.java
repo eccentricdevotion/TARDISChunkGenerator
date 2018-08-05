@@ -23,11 +23,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftVillager;
-import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
@@ -56,19 +53,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public Double getHorseSpeed(AbstractHorse h) {
-        AttributeInstance attributes = (((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
-        return attributes.getValue();
-    }
-
-    @Override
-    public void setHorseSpeed(AbstractHorse h, double speed) {
-        // use about  2.25 for normalish speed
-        AttributeInstance attributes = (((CraftLivingEntity) h).getHandle()).getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
-        attributes.setValue(speed);
-    }
-
-    @Override
     public void nameFurnaceGUI(Block block, String name) {
         WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
@@ -84,7 +68,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bH");
+            Field willingField = EntityVillager.class.getDeclaredField("bM");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (IllegalArgumentException ex) {
@@ -103,20 +87,20 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void setVillagerCareerLevel(Villager v, int l) {
+    public void setVillagerWilling(Villager v, boolean w) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("bL");
-            careerField.setAccessible(true);
-            careerField.set(villager, l);
+            Field willingField = EntityVillager.class.getDeclaredField("bM");
+            willingField.setAccessible(true);
+            willingField.set(villager, w);
         } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
         } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
         } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
         }
     }
 
@@ -124,7 +108,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public int getVillagerCareerLevel(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerLevelField = EntityVillager.class.getDeclaredField("bL");
+            Field careerLevelField = EntityVillager.class.getDeclaredField("bQ");
             careerLevelField.setAccessible(true);
             return careerLevelField.getInt(villager);
         } catch (IllegalArgumentException ex) {
@@ -143,20 +127,20 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void setVillagerWilling(Villager v, boolean w) {
+    public void setVillagerCareerLevel(Villager v, int l) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bH");
-            willingField.setAccessible(true);
-            willingField.set(villager, w);
+            Field careerField = EntityVillager.class.getDeclaredField("bQ");
+            careerField.setAccessible(true);
+            careerField.set(villager, l);
         } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
         } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
         } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
+            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
         }
     }
 

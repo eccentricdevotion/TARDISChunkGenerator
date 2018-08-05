@@ -18,35 +18,17 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
 
 public interface TARDISHelperAPI {
-
-    /**
-     * Gets the horse's speed.
-     *
-     * @param h the horse
-     * @return the horse's speed
-     */
-    Double getHorseSpeed(AbstractHorse h);
-
-    /**
-     * Sets the horse's speed.
-     *
-     * @param h the horse
-     * @param speed the speed to apply
-     */
-    void setHorseSpeed(AbstractHorse h, double speed);
 
     /**
      * Names a furnace GUI
      *
      * @param block the furnace block
-     * @param name the name to give the furnace GUI
+     * @param name  the name to give the furnace GUI
      */
     void nameFurnaceGUI(Block block, String name);
 
@@ -108,7 +90,7 @@ public interface TARDISHelperAPI {
      * Send JSON chat to a player.
      *
      * @param player the player to send the chat to
-     * @param json the JSON text to send
+     * @param json   the JSON text to send
      */
     void sendJson(Player player, String json);
 
@@ -116,7 +98,7 @@ public interface TARDISHelperAPI {
      * Open a sign editing GUI.
      *
      * @param player the player to open the GUI for
-     * @param sign the sign block that is being edited
+     * @param sign   the sign block that is being edited
      */
     void openSignGUI(Player player, Block sign);
 }
