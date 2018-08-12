@@ -193,4 +193,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(), l.getY(), l.getZ()));
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
+
+    @Override
+    public Location getRandomVillage(org.bukkit.World world) {
+        TARDISVillageFinder finder = new TARDISVillageFinder();
+        finder.find(world);
+        return finder.getRandomVillage();
+    }
 }

@@ -17,6 +17,8 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -101,4 +103,11 @@ public interface TARDISHelperAPI {
      * @param sign   the sign block that is being edited
      */
     void openSignGUI(Player player, Block sign);
+
+    /**
+     * Get a random village location in a world.
+     *
+     * @param world the world to search for villages
+     */
+    Location getRandomVillage(World world);
 }
