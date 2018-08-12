@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.tardischunkgenerator</groupId>
     <artifactId>TARDISChunkGenerator</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2</version>
     <name>TARDISChunkGenerator</name>
     <url>http://dev.bukkit.org/server-mods/tardis/</url>
     <repositories>
@@ -41,8 +41,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
