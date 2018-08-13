@@ -31,6 +31,9 @@ public class TARDISVillageFinder {
     }
 
     public Location getRandomVillage() {
-        return villages.get(random.nextInt(villages.size()));
+        if (villages.size() > 0) {
+            return villages.get(random.nextInt(villages.size()));
+        }
+        return null;
     }
 }
