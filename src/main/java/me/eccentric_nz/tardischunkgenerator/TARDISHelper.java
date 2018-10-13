@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import net.minecraft.server.v1_13_R2.*;
 import net.minecraft.server.v1_13_R2.IChatBaseComponent.ChatSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -30,7 +31,12 @@ import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,16 +77,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Field willingField = EntityVillager.class.getDeclaredField("bM");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
-        } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
-            return false;
-        } catch (SecurityException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
             return false;
         }
@@ -93,13 +90,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Field willingField = EntityVillager.class.getDeclaredField("bM");
             willingField.setAccessible(true);
             willingField.set(villager, w);
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
-        } catch (IllegalAccessException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
         }
     }
@@ -111,16 +102,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Field careerLevelField = EntityVillager.class.getDeclaredField("bQ");
             careerLevelField.setAccessible(true);
             return careerLevelField.getInt(villager);
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
-        } catch (IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
-        } catch (SecurityException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
             return 0;
         }
@@ -133,13 +115,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Field careerField = EntityVillager.class.getDeclaredField("bQ");
             careerField.setAccessible(true);
             careerField.set(villager, l);
-        } catch (NoSuchFieldException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
-        } catch (SecurityException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
-        } catch (IllegalAccessException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
         }
     }
@@ -151,13 +127,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Field cttField = TileEntityFurnace.class.getDeclaredField("cookTimeTotal");
             cttField.setAccessible(true);
             cttField.set(furnace, c);
-        } catch (NoSuchFieldException ex) {
-            Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -199,5 +169,25 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         TARDISVillageFinder finder = new TARDISVillageFinder();
         finder.find(world);
         return finder.getRandomVillage();
+    }
+
+    @Override
+    public void setRandomSeed(String world) {
+        File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+        if (file.exists()) {
+            try {
+                FileInputStream fileinputstream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                fileinputstream.close();
+                long random = new Random().nextLong();
+                // set RandomSeed tag
+                tagCompound.setLong("RandomSeed", random);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                fileoutputstream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

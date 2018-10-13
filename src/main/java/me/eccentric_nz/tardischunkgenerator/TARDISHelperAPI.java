@@ -110,4 +110,11 @@ public interface TARDISHelperAPI {
      * @param world the world to search for villages
      */
     Location getRandomVillage(World world);
+
+    /**
+     * Sets a random seed value for a world.
+     *
+     * @param world the world to set the seed for
+     */
+    void setRandomSeed(String world);
 }
