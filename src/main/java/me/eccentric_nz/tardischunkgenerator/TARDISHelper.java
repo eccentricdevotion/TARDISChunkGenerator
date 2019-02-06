@@ -122,18 +122,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void setCookTimeTotal(Block f, int c) {
-        try {
-            TileEntityFurnace furnace = (TileEntityFurnace) ((CraftWorld) f.getWorld()).getTileEntityAt(f.getX(), f.getY(), f.getZ());
-            Field cttField = TileEntityFurnace.class.getDeclaredField("cookTimeTotal");
-            cttField.setAccessible(true);
-            cttField.set(furnace, c);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
     public void refreshChunk(Chunk c) {
         TARDISPacketMapChunk.refreshChunk(c);
     }

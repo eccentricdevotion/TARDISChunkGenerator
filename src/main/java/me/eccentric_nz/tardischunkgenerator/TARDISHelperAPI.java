@@ -68,14 +68,6 @@ public interface TARDISHelperAPI {
     void setVillagerWilling(Villager v, boolean w);
 
     /**
-     * Set a furnace's total cook time.
-     *
-     * @param b the furnace block
-     * @param c the total cook time to set
-     */
-    void setCookTimeTotal(Block b, int c);
-
-    /**
      * Refresh a chunk.
      *
      * @param c the chunk to refresh
