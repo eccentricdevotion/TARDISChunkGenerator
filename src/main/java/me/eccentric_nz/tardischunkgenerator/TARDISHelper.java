@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
@@ -154,14 +155,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void openSignGUI(Player player, Block sign) {
-        Location l = sign.getLocation();
-        TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getTileEntityAt(l.getBlockX(), l.getBlockY(), l.getBlockZ());
-        t.a(((CraftPlayer) player).getHandle());
-        t.isEditable = true;
-        BlockPosition.MutableBlockPosition mbp = new BlockPosition.MutableBlockPosition();
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(mbp.c(l.getX(), l.getY(), l.getZ()));
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    public void openSignGUI(Player player, Sign sign) {
+        TARDISSignEditor tse = new TARDISSignEditor(new TARDISReflector());
+        tse.commit(player, sign);
     }
 
     @Override

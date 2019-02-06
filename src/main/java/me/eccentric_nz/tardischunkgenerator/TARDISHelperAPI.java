@@ -20,6 +20,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -102,7 +103,7 @@ public interface TARDISHelperAPI {
      * @param player the player to open the GUI for
      * @param sign   the sign block that is being edited
      */
-    void openSignGUI(Player player, Block sign);
+    void openSignGUI(Player player, Sign sign);
 
     /**
      * Get a random village location in a world.
