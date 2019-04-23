@@ -17,8 +17,6 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -34,6 +32,14 @@ public interface TARDISHelperAPI {
      * @param name  the name to give the furnace GUI
      */
     void nameFurnaceGUI(Block block, String name);
+
+    /**
+     * Gets the name from a furnace GUI
+     *
+     * @param block the furnace block
+     * @return true if the block is a furnace named 'TARDIS Artron Furnace'
+     */
+    boolean isArtronFurnace(Block block);
 
     /**
      * Gets a Villager's willingness to breed/trade.
@@ -96,13 +102,6 @@ public interface TARDISHelperAPI {
      * @param sign   the sign block that is being edited
      */
     void openSignGUI(Player player, Sign sign);
-
-    /**
-     * Get a random village location in a world.
-     *
-     * @param world the world to search for villages
-     */
-    Location getRandomVillage(World world);
 
     /**
      * Sets a random seed value for a world.

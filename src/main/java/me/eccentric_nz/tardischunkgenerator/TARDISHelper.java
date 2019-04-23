@@ -16,17 +16,16 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import net.minecraft.server.v1_13_R2.*;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftVillager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
@@ -69,6 +68,18 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         }
         TileEntityFurnace furnace = (TileEntityFurnace) tile;
         furnace.setCustomName(new ChatMessage(name));
+    }
+
+    @Override
+    public boolean isArtronFurnace(Block block) {
+        WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        TileEntity tile = ws.getTileEntity(bp);
+        if (tile == null || !(tile instanceof TileEntityFurnace)) {
+            return false;
+        }
+        TileEntityFurnace furnace = (TileEntityFurnace) tile;
+        return furnace.getCustomName().getText().equals("TARDIS Artron Furnace");
     }
 
     @Override
@@ -146,13 +157,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void openSignGUI(Player player, Sign sign) {
         TARDISSignEditor tse = new TARDISSignEditor(new TARDISReflector());
         tse.commit(player, sign);
-    }
-
-    @Override
-    public Location getRandomVillage(org.bukkit.World world) {
-        TARDISVillageFinder finder = new TARDISVillageFinder();
-        finder.find(world);
-        return finder.getRandomVillage();
     }
 
     @Override
