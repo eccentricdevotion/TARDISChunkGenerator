@@ -86,7 +86,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bM");
+            Field willingField = EntityVillager.class.getDeclaredField("bF");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
@@ -99,7 +99,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerWilling(Villager v, boolean w) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bM");
+            Field willingField = EntityVillager.class.getDeclaredField("bF");
             willingField.setAccessible(true);
             willingField.set(villager, w);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
@@ -107,30 +107,30 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         }
     }
 
-    @Override
-    public int getVillagerCareerLevel(Villager v) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerLevelField = EntityVillager.class.getDeclaredField("careerLevel");
-            careerLevelField.setAccessible(true);
-            return careerLevelField.getInt(villager);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-            return 0;
-        }
-    }
-
-    @Override
-    public void setVillagerCareerLevel(Villager v, int l) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field careerField = EntityVillager.class.getDeclaredField("careerLevel");
-            careerField.setAccessible(true);
-            careerField.set(villager, l);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
-        }
-    }
+//    @Override
+//    public int getVillagerCareerLevel(Villager v) {
+//        try {
+//            EntityVillager villager = ((CraftVillager) v).getHandle();
+//            Field careerLevelField = EntityVillager.class.getDeclaredField("careerLevel");
+//            careerLevelField.setAccessible(true);
+//            return careerLevelField.getInt(villager);
+//        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+//            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
+//            return 0;
+//        }
+//    }
+//
+//    @Override
+//    public void setVillagerCareerLevel(Villager v, int l) {
+//        try {
+//            EntityVillager villager = ((CraftVillager) v).getHandle();
+//            Field careerField = EntityVillager.class.getDeclaredField("careerLevel");
+//            careerField.setAccessible(true);
+//            careerField.set(villager, l);
+//        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+//            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
+//        }
+//    }
 
     @Override
     public void refreshChunk(Chunk c) {
