@@ -17,6 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -109,4 +110,20 @@ public interface TARDISHelperAPI {
      * @param world the world to set the seed for
      */
     void setRandomSeed(String world);
+
+    /**
+     * Sets the GameType value for a world.
+     *
+     * @param world the world to set the GameMode for
+     * @param gm    the GameMode to set the world to
+     */
+    public void setWorldGameMode(String world, GameMode gm);
+
+    /**
+     * Gets some data of a world by reading its level.dat file.
+     *
+     * @param world the world to get the data for
+     * @return the GameMode, Environment and WorldType of a world
+     */
+    public TARDISPlanetData getLevelData(String world);
 }

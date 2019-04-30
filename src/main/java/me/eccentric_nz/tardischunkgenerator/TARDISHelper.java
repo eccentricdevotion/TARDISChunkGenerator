@@ -18,8 +18,10 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
@@ -36,9 +38,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Locale;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
@@ -166,16 +167,123 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             try {
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                NBTTagCompound data = tagCompound.getCompound("Data");
                 fileinputstream.close();
                 long random = new Random().nextLong();
                 // set RandomSeed tag
-                tagCompound.setLong("RandomSeed", random);
+                data.setLong("RandomSeed", random);
+                tagCompound.set("Data", data);
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
                 NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
                 fileoutputstream.close();
             } catch (IOException ex) {
-                Logger.getLogger(TARDISHelper.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println(ex.getMessage());
             }
         }
+    }
+
+    @Override
+    public void setWorldGameMode(String world, GameMode gm) {
+        File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+        if (file.exists()) {
+            try {
+                FileInputStream fileinputstream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                NBTTagCompound data = tagCompound.getCompound("Data");
+                fileinputstream.close();
+                int mode;
+                switch (gm) {
+                    case CREATIVE:
+                        mode = 1;
+                        break;
+                    case ADVENTURE:
+                        mode = 2;
+                        break;
+                    case SPECTATOR:
+                        mode = 3;
+                        break;
+                    default: // SURVIVAL
+                        mode = 0;
+                        break;
+                }
+                // set GameType tag
+                data.setInt("GameType", mode);
+                tagCompound.set("Data", data);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                fileoutputstream.close();
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public TARDISPlanetData getLevelData(String world) {
+        File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+        if (file.exists()) {
+            try {
+                FileInputStream fileinputstream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                fileinputstream.close();
+                NBTTagCompound data = tagCompound.getCompound("Data");
+                // get GameType tag
+                GameMode gameMode;
+                int gm = data.getInt("GameType");
+                switch (gm) {
+                    case 1:
+                        gameMode = GameMode.CREATIVE;
+                        break;
+                    case 2:
+                        gameMode = GameMode.ADVENTURE;
+                        break;
+                    case 3:
+                        gameMode = GameMode.SPECTATOR;
+                        break;
+                    default:
+                        gameMode = GameMode.SURVIVAL;
+                        break;
+                }
+                // get generatorName tag
+                WorldType worldType;
+                String wt = data.getString("generatorName");
+                switch (wt.toLowerCase(Locale.ENGLISH)) {
+                    case "flat":
+                        worldType = WorldType.FLAT;
+                        break;
+                    case "largeBiomes":
+                        worldType = WorldType.LARGE_BIOMES;
+                        break;
+                    case "amplified":
+                        worldType = WorldType.AMPLIFIED;
+                        break;
+                    case "buffet":
+                        worldType = WorldType.BUFFET;
+                        break;
+                    case "customized":
+                        worldType = WorldType.CUSTOMIZED;
+                        break;
+                    case "verion_1_1":
+                        worldType = WorldType.VERSION_1_1;
+                        break;
+                    default: // default or unknown
+                        worldType = WorldType.NORMAL;
+                        break;
+                }
+                World.Environment environment = World.Environment.NORMAL;
+                if ((new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1")).exists()) {
+                    environment = World.Environment.NETHER;
+                }
+                if ((new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1")).exists()) {
+                    environment = World.Environment.THE_END;
+                }
+                return new TARDISPlanetData(gameMode, environment, worldType);
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+                return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
+            }
+        }
+        System.out.println("Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
+        return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
     }
 }
