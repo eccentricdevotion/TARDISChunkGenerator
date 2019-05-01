@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -108,30 +109,48 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         }
     }
 
-//    @Override
-//    public int getVillagerCareerLevel(Villager v) {
-//        try {
-//            EntityVillager villager = ((CraftVillager) v).getHandle();
-//            Field careerLevelField = EntityVillager.class.getDeclaredField("careerLevel");
-//            careerLevelField.setAccessible(true);
-//            return careerLevelField.getInt(villager);
-//        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-//            System.err.println("[TARDISHelper] Failed to get villager career level: " + ex.getMessage());
-//            return 0;
-//        }
-//    }
-//
-//    @Override
-//    public void setVillagerCareerLevel(Villager v, int l) {
-//        try {
-//            EntityVillager villager = ((CraftVillager) v).getHandle();
-//            Field careerField = EntityVillager.class.getDeclaredField("careerLevel");
-//            careerField.setAccessible(true);
-//            careerField.set(villager, l);
-//        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-//            System.err.println("[TARDISHelper] Failed to set villager career level: " + ex.getMessage());
-//        }
-//    }
+    @Override
+    public int getVillagerLevel(Villager v) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            return villager.getVillagerData().getLevel();
+        } catch (SecurityException | IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager level: " + ex.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    public void setVillagerLevel(Villager v, int l) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            villager.setVillagerData(villager.getVillagerData().withLevel(l));
+        } catch (SecurityException | IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager level: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public Outfit getVillagerOutfit(Villager v) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            return Outfit.valueOf(IRegistry.VILLAGER_TYPE.getKey(villager.getVillagerData().getType()).getKey().toUpperCase(Locale.ENGLISH));
+        } catch (SecurityException | IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to get villager outfit: " + ex.getMessage());
+            return Outfit.PLAINS;
+        }
+    }
+
+    @Override
+    public void setVillagerOutfit(Villager v, Outfit o) {
+        try {
+            EntityVillager villager = ((CraftVillager) v).getHandle();
+            Validate.notNull(o);
+            villager.setVillagerData(villager.getVillagerData().withType(IRegistry.VILLAGER_TYPE.get(new MinecraftKey(o.name().toLowerCase(Locale.ENGLISH)))));
+        } catch (SecurityException | IllegalArgumentException ex) {
+            System.err.println("[TARDISHelper] Failed to set villager outfit: " + ex.getMessage());
+        }
+    }
 
     @Override
     public void refreshChunk(Chunk c) {

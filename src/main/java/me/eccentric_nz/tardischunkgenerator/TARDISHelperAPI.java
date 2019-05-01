@@ -50,22 +50,6 @@ public interface TARDISHelperAPI {
      */
     boolean getVillagerWilling(Villager v);
 
-//    /**
-//     * Set a Villager's willingness to breed/trade.
-//     *
-//     * @param v the Villager
-//     * @param l the career level to set
-//     */
-//    void setVillagerCareerLevel(Villager v, int l);
-//
-//    /**
-//     * Gets a Villager's willingness to breed/trade.
-//     *
-//     * @param v the Villager
-//     * @return whether the villager is willing
-//     */
-//    int getVillagerCareerLevel(Villager v);
-
     /**
      * Set a Villager's willingness to breed/trade.
      *
@@ -73,6 +57,38 @@ public interface TARDISHelperAPI {
      * @param w whether the villager is willing
      */
     void setVillagerWilling(Villager v, boolean w);
+
+    /**
+     * Set a Villager's level.
+     *
+     * @param v the Villager
+     * @param l the career level to set
+     */
+    void setVillagerLevel(Villager v, int l);
+
+    /**
+     * Gets a Villager's level.
+     *
+     * @param v the Villager
+     * @return the villager's outfit
+     */
+    Outfit getVillagerOutfit(Villager v);
+
+    /**
+     * Set a Villager's outfit.
+     *
+     * @param v the Villager
+     * @param o the Outfit to set
+     */
+    void setVillagerOutfit(Villager v, Outfit o);
+
+    /**
+     * Gets a Villager's level.
+     *
+     * @param v the Villager
+     * @return whether the villager is willing
+     */
+    int getVillagerLevel(Villager v);
 
     /**
      * Refresh a chunk.
