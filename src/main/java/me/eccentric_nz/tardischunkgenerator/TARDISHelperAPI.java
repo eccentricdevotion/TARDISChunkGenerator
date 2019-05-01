@@ -70,22 +70,6 @@ public interface TARDISHelperAPI {
      * Gets a Villager's level.
      *
      * @param v the Villager
-     * @return the villager's outfit
-     */
-    Outfit getVillagerOutfit(Villager v);
-
-    /**
-     * Set a Villager's outfit.
-     *
-     * @param v the Villager
-     * @param o the Outfit to set
-     */
-    void setVillagerOutfit(Villager v, Outfit o);
-
-    /**
-     * Gets a Villager's level.
-     *
-     * @param v the Villager
      * @return whether the villager is willing
      */
     int getVillagerLevel(Villager v);

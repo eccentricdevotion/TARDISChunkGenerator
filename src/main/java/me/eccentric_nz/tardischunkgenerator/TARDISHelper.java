@@ -18,7 +18,6 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -127,28 +126,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             villager.setVillagerData(villager.getVillagerData().withLevel(l));
         } catch (SecurityException | IllegalArgumentException ex) {
             System.err.println("[TARDISHelper] Failed to set villager level: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public Outfit getVillagerOutfit(Villager v) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            return Outfit.valueOf(IRegistry.VILLAGER_TYPE.getKey(villager.getVillagerData().getType()).getKey().toUpperCase(Locale.ENGLISH));
-        } catch (SecurityException | IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager outfit: " + ex.getMessage());
-            return Outfit.PLAINS;
-        }
-    }
-
-    @Override
-    public void setVillagerOutfit(Villager v, Outfit o) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Validate.notNull(o);
-            villager.setVillagerData(villager.getVillagerData().withType(IRegistry.VILLAGER_TYPE.get(new MinecraftKey(o.name().toLowerCase(Locale.ENGLISH)))));
-        } catch (SecurityException | IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager outfit: " + ex.getMessage());
         }
     }
 
