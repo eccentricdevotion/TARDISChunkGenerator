@@ -109,27 +109,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public int getVillagerLevel(Villager v) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            return villager.getVillagerData().getLevel();
-        } catch (SecurityException | IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager level: " + ex.getMessage());
-            return 0;
-        }
-    }
-
-    @Override
-    public void setVillagerLevel(Villager v, int l) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            villager.setVillagerData(villager.getVillagerData().withLevel(l));
-        } catch (SecurityException | IllegalArgumentException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager level: " + ex.getMessage());
-        }
-    }
-
-    @Override
     public void refreshChunk(Chunk c) {
         TARDISPacketMapChunk.refreshChunk(c);
     }

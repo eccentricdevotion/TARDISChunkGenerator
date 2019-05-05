@@ -59,22 +59,6 @@ public interface TARDISHelperAPI {
     void setVillagerWilling(Villager v, boolean w);
 
     /**
-     * Set a Villager's level.
-     *
-     * @param v the Villager
-     * @param l the career level to set
-     */
-    void setVillagerLevel(Villager v, int l);
-
-    /**
-     * Gets a Villager's level.
-     *
-     * @param v the Villager
-     * @return whether the villager is willing
-     */
-    int getVillagerLevel(Villager v);
-
-    /**
      * Refresh a chunk.
      *
      * @param c the chunk to refresh
