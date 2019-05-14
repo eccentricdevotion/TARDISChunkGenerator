@@ -162,6 +162,33 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void setLevelName(String oldName, String newName) {
+        File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName + File.separator + "level.dat");
+        if (file.exists()) {
+            try {
+                FileInputStream fileinputstream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                NBTTagCompound data = tagCompound.getCompound("Data");
+                fileinputstream.close();
+                // set LevelName tag
+                data.setString("LevelName", newName);
+                tagCompound.set("Data", data);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                fileoutputstream.close();
+                System.out.println("[TCG] Renamed level to " + newName);
+                // rename the directory
+                File directory = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName);
+                File folder = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + newName);
+                directory.renameTo(folder);
+                System.out.println("[TCG] Renamed directory to " + newName);
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
+    }
+
+    @Override
     public void setWorldGameMode(String world, GameMode gm) {
         File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
         if (file.exists()) {

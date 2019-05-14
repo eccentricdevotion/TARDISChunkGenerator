@@ -96,6 +96,14 @@ public interface TARDISHelperAPI {
     void setRandomSeed(String world);
 
     /**
+     * Sets LevelName value for a world.
+     *
+     * @param oldName the current name of the level
+     * @param newName the new level name to change to
+     */
+    void setLevelName(String oldName, String newName);
+
+    /**
      * Sets the GameType value for a world.
      *
      * @param world the world to set the GameMode for
