@@ -21,6 +21,7 @@ import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
@@ -118,4 +119,19 @@ public interface TARDISHelperAPI {
      * @return the GameMode, Environment and WorldType of a world
      */
     public TARDISPlanetData getLevelData(String world);
+
+    /**
+     * Disguises a player as another entity.
+     *
+     * @param entityType the entity type to disguise as
+     * @param player     the player to disguise
+     */
+    public void disguise(EntityType entityType, Player player);
+
+    /**
+     * Undisguises a player.
+     *
+     * @param player the player to undisguise
+     */
+    public void undisguise(Player player);
 }

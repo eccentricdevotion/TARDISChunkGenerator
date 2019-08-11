@@ -28,6 +28,7 @@ import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftVillager;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
@@ -291,5 +292,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         }
         System.out.println("Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
         return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
+    }
+
+    @Override
+    public void disguise(EntityType entityType, Player player) {
+        new TARDISDisguise(entityType, player).disguiseToAll();
+    }
+
+    @Override
+    public void undisguise(Player player) {
+        new TARDISDisguise(player).removeDisguise();
     }
 }
