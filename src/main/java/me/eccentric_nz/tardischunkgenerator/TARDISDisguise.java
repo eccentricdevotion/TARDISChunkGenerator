@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 public class TARDISDisguise {
 
     private final Player player;
+    private Object[] options;
     private EntityType entityType;
     private Class<?> entityClass;
     private Entity entity;
@@ -26,18 +27,30 @@ public class TARDISDisguise {
         this.player = player;
     }
 
+    public TARDISDisguise(EntityType entityType, Player player) {
+        this.entityType = entityType;
+        this.player = player;
+        options = null;
+        createDisguise();
+    }
+
     public TARDISDisguise(EntityType entityType, Player player, Object[] options) {
         this.entityType = entityType;
         this.player = player;
+        this.options = options;
+        createDisguise();
+    }
+
+    private void createDisguise() {
         if (entityType != null) {
             Location location = player.getLocation();
             String str;
-            switch (this.entityType) {
+            switch (entityType) {
                 case ZOMBIE_HORSE:
                 case SKELETON_HORSE:
                 case ELDER_GUARDIAN:
                 case WITHER_SKELETON:
-                    str = switchAndCapitalise(this.entityType.toString());
+                    str = switchAndCapitalise(entityType.toString());
                     break;
                 case HUSK:
                     str = "ZombieHusk";
@@ -56,13 +69,13 @@ public class TARDISDisguise {
                     break;
                 case DONKEY:
                 case MULE:
-                    str = "Horse" + WordUtils.capitalize(this.entityType.toString());
+                    str = "Horse" + WordUtils.capitalize(entityType.toString());
                     break;
                 case PLAYER:
                     str = "Human";
                     break;
                 default:
-                    str = capitalise(this.entityType.toString());
+                    str = capitalise(entityType.toString());
                     break;
             }
             try {
@@ -80,9 +93,11 @@ public class TARDISDisguise {
                 entity.locZ = location.getZ();
                 entity.yaw = location.getYaw();
                 entity.pitch = location.getPitch();
-                for (Object o : options) {
-                    if (o instanceof DyeColor) {
-
+                if (options != null) {
+                    for (Object o : options) {
+                        if (o instanceof DyeColor) {
+                            // colour a sheep / wolf collar / cat collar / tropical fish?
+                        }
                     }
                 }
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
