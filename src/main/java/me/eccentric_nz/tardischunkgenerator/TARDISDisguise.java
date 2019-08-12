@@ -201,6 +201,10 @@ public class TARDISDisguise {
                                     EntityBat bat = (EntityBat) entity;
                                     bat.setAsleep((Boolean) o);
                                     break;
+                                case SNOWMAN:
+                                    EntitySnowman snowman = (EntitySnowman) entity;
+                                    snowman.setHasPumpkin(!(Boolean) o);
+                                    break;
                                 default:
                             }
                         }
