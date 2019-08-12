@@ -300,6 +300,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void disguise(EntityType entityType, Player player, Object[] options) {
+        new TARDISDisguise(entityType, player, options).disguiseToAll();
+    }
+
+    @Override
     public void undisguise(Player player) {
         new TARDISDisguise(player).removeDisguise();
     }

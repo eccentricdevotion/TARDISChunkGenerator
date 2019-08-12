@@ -1,23 +1,24 @@
 package me.eccentric_nz.tardischunkgenerator;
 
+import net.minecraft.server.v1_14_R1.Entity;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftNamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 public class TARDISDisguise {
 
     private final Player player;
+    private final boolean nameVisible = false;
     private Object[] options;
     private EntityType entityType;
     private Class<?> entityClass;
@@ -69,7 +70,7 @@ public class TARDISDisguise {
                     break;
                 case DONKEY:
                 case MULE:
-                    str = "Horse" + WordUtils.capitalize(entityType.toString());
+                    str = "Horse" + capitalise(entityType.toString());
                     break;
                 case PLAYER:
                     str = "Human";
@@ -86,17 +87,154 @@ public class TARDISDisguise {
                 entity = (Entity) constructor.newInstance(type, world);
                 entity.setPosition(location.getX(), location.getY(), location.getZ());
                 entity.e(player.getEntityId());
-                entity.setCustomName(new ChatMessage(ChatColor.YELLOW + player.getName()));
-                entity.setCustomNameVisible(true);
-                entity.locX = location.getX();
-                entity.locY = location.getY();
-                entity.locZ = location.getZ();
+                if (nameVisible) {
+                    entity.setCustomName(new ChatMessage(player.getName()));
+                    entity.setCustomNameVisible(true);
+                }
                 entity.yaw = location.getYaw();
                 entity.pitch = location.getPitch();
+                EntityInsentient insentient = (EntityInsentient) entity;
+                insentient.setNoAI(true);
                 if (options != null) {
                     for (Object o : options) {
                         if (o instanceof DyeColor) {
-                            // colour a sheep / wolf collar / cat collar / tropical fish?
+                            // colour a sheep / wolf collar
+                            switch (entityType) {
+                                case SHEEP:
+                                    EntitySheep sheep = (EntitySheep) entity;
+                                    sheep.setColor(EnumColor.valueOf(o.toString()));
+                                    break;
+                                case WOLF:
+                                    EntityWolf wolf = (EntityWolf) entity;
+                                    wolf.setTamed(true);
+                                    wolf.setCollarColor(EnumColor.valueOf(o.toString()));
+                                    break;
+                                default:
+                            }
+                        }
+                        if (o instanceof Rabbit.Type && entityType.equals(EntityType.RABBIT)) {
+                            EntityRabbit rabbit = (EntityRabbit) entity;
+                            rabbit.setRabbitType(((Rabbit.Type) o).ordinal());
+                        }
+                        if (o instanceof GENE && entityType.equals(EntityType.PANDA)) {
+                            EntityPanda panda = (EntityPanda) entity;
+                            EntityPanda.Gene gene = ((GENE) o).getNmsGene();
+                            panda.setMainGene(gene);
+                            panda.setHiddenGene(gene);
+                        }
+                        if (o instanceof PROFESSION) {
+                            if (entityType.equals(EntityType.VILLAGER)) {
+                                EntityVillager villager = (EntityVillager) entity;
+                                villager.setVillagerData(villager.getVillagerData().withProfession(((PROFESSION) o).getNmsProfession()));
+                            } else if (entityType.equals(EntityType.ZOMBIE_VILLAGER)) {
+                                EntityZombieVillager zombie = (EntityZombieVillager) entity;
+                                zombie.setVillagerData(zombie.getVillagerData().withProfession(((PROFESSION) o).getNmsProfession()));
+                            }
+                        }
+                        if (o instanceof Parrot.Variant && entityType.equals(EntityType.PARROT)) {
+                            EntityParrot parrot = (EntityParrot) entity;
+                            parrot.setVariant(((Parrot.Variant) o).ordinal());
+                        }
+                        if (o instanceof MUSHROOM_COW && entityType.equals(EntityType.MUSHROOM_COW)) {
+                            EntityMushroomCow cow = (EntityMushroomCow) entity;
+                            cow.setVariant(((MUSHROOM_COW) o).getNmsType());
+                        }
+                        if (o instanceof Cat.Type && entityType.equals(EntityType.CAT)) {
+                            EntityCat cat = (EntityCat) entity;
+                            cat.setCatType(((Cat.Type) o).ordinal());
+                        }
+                        if (o instanceof FOX && entityType.equals(EntityType.FOX)) {
+                            EntityFox fox = (EntityFox) entity;
+                            fox.setFoxType(((FOX) o).getNmsType());
+                        }
+                        if (o instanceof Horse.Color && entityType.equals(EntityType.HORSE)) {
+                            EntityHorse horse = (EntityHorse) entity;
+                            horse.setVariant(((Horse.Color) o).ordinal());
+                        }
+                        if (o instanceof Llama.Color && entityType.equals(EntityType.LLAMA)) {
+                            EntityLlama llama = (EntityLlama) entity;
+                            llama.setVariant(((Llama.Color) o).ordinal());
+                        }
+                        if (o instanceof CARPET && entityType.equals(EntityType.LLAMA)) {
+                            EntityLlama llama = (EntityLlama) entity;
+                            org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(((CARPET) o).getCarpet());
+                            ItemStack nmsitemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
+                            llama.inventoryChest.setItem(1, nmsitemStack);
+                        }
+                        if (o instanceof Boolean) {
+                            // tamed fox, wolf, cat / decorated llama, chest carrying mule or donkey / trusting ocelot
+                            // rainbow sheep / saddled pig / block carrying enderman / powered creeper / hanging bat / blazing blaze
+                            switch (entityType) {
+                                case FOX:
+                                case WOLF:
+                                case CAT:
+                                    EntityTameableAnimal tameable = (EntityTameableAnimal) entity;
+                                    tameable.setTamed((Boolean) o);
+                                    break;
+                                case DONKEY:
+                                case MULE:
+                                    EntityHorseChestedAbstract chesty = (EntityHorseChestedAbstract) entity;
+                                    chesty.setCarryingChest((Boolean) o);
+                                    break;
+                                case SHEEP:
+                                    if ((Boolean) o) {
+                                        entity.setCustomName(new ChatMessage("jeb_"));
+                                        entity.setCustomNameVisible(true);
+                                    }
+                                    break;
+                                case PIG:
+                                    EntityPig pig = (EntityPig) entity;
+                                    pig.setSaddle((Boolean) o);
+                                    break;
+                                case ENDERMAN:
+                                    if ((Boolean) o) {
+                                        EntityEnderman enderman = (EntityEnderman) entity;
+                                        IBlockData block = Blocks.PURPUR_BLOCK.getBlockData();
+                                        enderman.setCarried(block);
+                                    }
+                                    break;
+                                case CREEPER:
+                                    EntityCreeper creeper = (EntityCreeper) entity;
+                                    creeper.setPowered((Boolean) o);
+                                    break;
+                                case BAT:
+                                    EntityBat bat = (EntityBat) entity;
+                                    bat.setAsleep((Boolean) o);
+                                    break;
+                                default:
+                            }
+                        }
+                        if (o instanceof Integer) {
+                            // magma cube and slime size / pufferfish state
+                            switch (entityType) {
+                                case MAGMA_CUBE:
+                                    EntityMagmaCube magma = (EntityMagmaCube) entity;
+                                    magma.setSize((Integer) o, false);
+                                    break;
+                                case SLIME:
+                                    EntitySlime slime = (EntitySlime) entity;
+                                    slime.setSize((Integer) o, false);
+                                    break;
+                                case PUFFERFISH:
+                                    EntityPufferFish puffer = (EntityPufferFish) entity;
+                                    puffer.setPuffState((Integer) o);
+                                    break;
+                                default:
+                            }
+                        }
+                        if (o instanceof TropicalFish.Pattern && entityType.equals(EntityType.TROPICAL_FISH)) {
+                            EntityTropicalFish fish = (EntityTropicalFish) entity;
+                            Random random = new Random();
+                            int var5 = random.nextInt(2); // shape
+                            int var6 = ((TropicalFish.Pattern) o).ordinal(); // pattern
+                            int var7 = random.nextInt(15); // base colour
+                            int var8 = random.nextInt(15); // pattern colour
+                            fish.setVariant(var5 | var6 << 8 | var7 << 16 | var8 << 24);
+                        }
+                        if (o instanceof AGE && EntityAgeable.class.isAssignableFrom(entityClass)) {
+                            // adult or baby
+                            EntityAgeable ageable = (EntityAgeable) entity;
+                            ageable.setAgeRaw(((AGE) o).getAge());
                         }
                     }
                 }

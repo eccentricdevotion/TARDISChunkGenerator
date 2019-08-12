@@ -129,6 +129,15 @@ public interface TARDISHelperAPI {
     public void disguise(EntityType entityType, Player player);
 
     /**
+     * Disguises a player as another entity.
+     *
+     * @param entityType the entity type to disguise as
+     * @param player     the player to disguise
+     * @param options    an array of options
+     */
+    public void disguise(EntityType entityType, Player player, Object[] options);
+
+    /**
      * Undisguises a player.
      *
      * @param player the player to undisguise
