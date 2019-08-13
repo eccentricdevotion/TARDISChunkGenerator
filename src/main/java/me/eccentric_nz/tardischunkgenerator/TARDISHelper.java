@@ -16,6 +16,8 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguise;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguise;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
@@ -41,9 +43,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Random;
+import java.util.UUID;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
+    private static final String messagePrefix = ChatColor.BLUE + "[Disguise] " + ChatColor.RESET;
     private TARDISHelper tardisHelper;
 
     @Override
@@ -302,6 +306,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void disguise(EntityType entityType, Player player, Object[] options) {
         new TARDISDisguise(entityType, player, options).disguiseToAll();
+    }
+
+    @Override
+    public void disguise(Player player, UUID uuid) {
+        new TARDISPlayerDisguise(player, uuid).disguiseToAll();
     }
 
     @Override

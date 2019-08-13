@@ -25,6 +25,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
+import java.util.UUID;
+
 public interface TARDISHelperAPI {
 
     /**
@@ -136,6 +138,14 @@ public interface TARDISHelperAPI {
      * @param options    an array of options
      */
     public void disguise(EntityType entityType, Player player, Object[] options);
+
+    /**
+     * Disguises a player as another player.
+     *
+     * @param player the player to disguise
+     * @param uuid   the UUID of the player to disguise as
+     */
+    public void disguise(Player player, UUID uuid);
 
     /**
      * Undisguises a player.
