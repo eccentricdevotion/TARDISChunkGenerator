@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import net.minecraft.server.v1_14_R1.VillagerProfession;
 

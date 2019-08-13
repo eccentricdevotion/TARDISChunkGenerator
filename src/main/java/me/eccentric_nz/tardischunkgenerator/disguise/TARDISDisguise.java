@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import net.minecraft.server.v1_14_R1.Entity;
 import net.minecraft.server.v1_14_R1.*;
@@ -71,9 +71,6 @@ public class TARDISDisguise {
                 case DONKEY:
                 case MULE:
                     str = "Horse" + capitalise(entityType.toString());
-                    break;
-                case PLAYER:
-                    str = "Human";
                     break;
                 default:
                     str = capitalise(entityType.toString());
@@ -264,13 +261,17 @@ public class TARDISDisguise {
     }
 
     public void removeDisguise() {
-        entityType = null;
-        PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(player.getEntityId());
-        PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) player).getHandle());
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p != player) {
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutNamedEntitySpawn);
+        if (TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
+            new TARDISPlayerDisguise(player, player.getUniqueId()).disguiseToAll();
+            TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(player.getUniqueId());
+        } else {
+            PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(player.getEntityId());
+            PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) player).getHandle());
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p != player) {
+                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
+                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutNamedEntitySpawn);
+                }
             }
         }
     }
