@@ -11,6 +11,10 @@ public enum AGE {
         this.age = age;
     }
 
+    public static AGE getFromBoolean(boolean b) {
+        return (b) ? BABY : ADULT;
+    }
+
     public int getAge() {
         return age;
     }
