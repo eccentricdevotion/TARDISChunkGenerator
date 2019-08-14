@@ -16,7 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguise;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguise;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
@@ -300,12 +300,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void disguise(EntityType entityType, Player player) {
-        new TARDISDisguise(entityType, player).disguiseToAll();
+        new TARDISDisguiser(entityType, player).disguiseToAll();
     }
 
     @Override
     public void disguise(EntityType entityType, Player player, Object[] options) {
-        new TARDISDisguise(entityType, player, options).disguiseToAll();
+        new TARDISDisguiser(entityType, player, options).disguiseToAll();
     }
 
     @Override
@@ -315,6 +315,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void undisguise(Player player) {
-        new TARDISDisguise(player).removeDisguise();
+        new TARDISDisguiser(player).removeDisguise();
     }
 }
