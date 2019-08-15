@@ -15,15 +15,20 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.UUID;
 
-public class TARDISPlayerDisguise {
+public class TARDISPlayerDisguiser {
 
     private final Player player;
     private final UUID uuid;
 
-    public TARDISPlayerDisguise(Player player, UUID uuid) {
+    public TARDISPlayerDisguiser(Player player, UUID uuid) {
         this.player = player;
         this.uuid = uuid;
         disguisePlayer();
+    }
+
+    public static void disguiseToPlayer(Player disguised, Player to) {
+        to.hidePlayer(disguised);
+        to.showPlayer(disguised);
     }
 
     public void disguisePlayer() {
@@ -54,8 +59,9 @@ public class TARDISPlayerDisguise {
     }
 
     public void disguiseToAll() {
+        TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p != player) {
+            if (p != player && player.getWorld() == p.getWorld()) {
                 p.hidePlayer(player);
                 p.showPlayer(player);
             }

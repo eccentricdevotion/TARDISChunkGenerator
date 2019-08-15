@@ -16,8 +16,9 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguise;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
@@ -47,12 +48,14 @@ import java.util.UUID;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
-    private static final String messagePrefix = ChatColor.BLUE + "[Disguise] " + ChatColor.RESET;
+    public static final String messagePrefix = ChatColor.BLUE + "[Disguise] " + ChatColor.RESET;
     private TARDISHelper tardisHelper;
 
     @Override
     public void onEnable() {
         tardisHelper = this;
+        // register disguise listener
+        getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
     }
 
     @Override
@@ -310,7 +313,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void disguise(Player player, UUID uuid) {
-        new TARDISPlayerDisguise(player, uuid).disguiseToAll();
+        new TARDISPlayerDisguiser(player, uuid).disguiseToAll();
     }
 
     @Override
