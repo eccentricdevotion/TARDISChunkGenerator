@@ -15,12 +15,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TARDISDisguise {
 
-    private final World world;
     private final EntityType entityType;
     private final Object[] options;
 
-    public TARDISDisguise(World world, EntityType entityType, Object[] options) {
-        this.world = world;
+    public TARDISDisguise(EntityType entityType, Object[] options) {
         this.entityType = entityType;
         this.options = options;
     }
@@ -240,10 +238,6 @@ public class TARDISDisguise {
 
     private static String uppercaseFirst(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public EntityType getEntityType() {

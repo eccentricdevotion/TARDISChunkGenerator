@@ -44,7 +44,7 @@ public class TARDISDisguiser {
                     Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
                     if (mob != null) {
                         // set location
-                        setEntityLocationAndName(mob, p.getLocation(), p, nameVisible);
+                        setEntityLocationIdAndName(mob, p.getLocation(), p, nameVisible);
                         PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(p.getEntityId());
                         PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
                         ((CraftPlayer) to).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
@@ -60,8 +60,8 @@ public class TARDISDisguiser {
         Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
         if (mob != null) {
             // set location
-            setEntityLocationAndName(mob, player.getLocation(), player, nameVisible);
-            TARDISDisguiseTracker.DISGUISED_AS_MOB.put(player.getUniqueId(), new TARDISDisguise(player.getWorld(), disguise.getEntityType(), disguise.getOptions()));
+            setEntityLocationIdAndName(mob, player.getLocation(), player, nameVisible);
+            TARDISDisguiseTracker.DISGUISED_AS_MOB.put(player.getUniqueId(), new TARDISDisguise(disguise.getEntityType(), disguise.getOptions()));
             PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(player.getEntityId());
             PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -73,26 +73,30 @@ public class TARDISDisguiser {
         }
     }
 
-    private static void setEntityLocationAndName(Entity entity, Location location, Player player, boolean nameVisible) {
+    private static void setEntityLocationIdAndName(Entity entity, Location location, Player player, boolean nameVisible) {
         entity.setPosition(location.getX(), location.getY(), location.getZ());
         entity.e(player.getEntityId());
         if (nameVisible) {
             entity.setCustomName(new ChatMessage(player.getDisplayName()));
             entity.setCustomNameVisible(true);
         }
-        entity.yaw = location.getYaw();
+        entity.yaw = fixYaw(location.getYaw());
         entity.pitch = location.getPitch();
         EntityInsentient insentient = (EntityInsentient) entity;
         insentient.setNoAI(true);
     }
 
+    private static float fixYaw(float yaw) {
+        return yaw * 256.0F / 360.0F;
+    }
+
     private void createDisguise() {
         if (entityType != null) {
             Location location = player.getLocation();
-            TARDISDisguise disguise = new TARDISDisguise(location.getWorld(), entityType, options);
+            TARDISDisguise disguise = new TARDISDisguise(entityType, options);
             entity = TARDISDisguise.createMobDisguise(disguise, location.getWorld());
             if (entity != null) {
-                setEntityLocationAndName(entity, location, player, nameVisible);
+                setEntityLocationIdAndName(entity, location, player, nameVisible);
             }
         }
     }
@@ -115,7 +119,7 @@ public class TARDISDisguiser {
     }
 
     public void disguiseToAll() {
-        TARDISDisguiseTracker.DISGUISED_AS_MOB.put(player.getUniqueId(), new TARDISDisguise(player.getWorld(), entityType, options));
+        TARDISDisguiseTracker.DISGUISED_AS_MOB.put(player.getUniqueId(), new TARDISDisguise(entityType, options));
         PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(player.getEntityId());
         PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) entity);
         for (Player p : Bukkit.getOnlinePlayers()) {
