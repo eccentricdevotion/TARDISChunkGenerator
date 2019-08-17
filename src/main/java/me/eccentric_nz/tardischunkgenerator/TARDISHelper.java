@@ -16,9 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
+import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
@@ -49,7 +47,11 @@ import java.util.UUID;
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     public static final String messagePrefix = ChatColor.BLUE + "[Disguise] " + ChatColor.RESET;
-    private TARDISHelper tardisHelper;
+    public static TARDISHelper tardisHelper;
+
+    public static TARDISHelper getTardisHelper() {
+        return tardisHelper;
+    }
 
     @Override
     public void onEnable() {
@@ -61,10 +63,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new TARDISChunkGenerator();
-    }
-
-    public TARDISHelper getTardisHelper() {
-        return tardisHelper;
     }
 
     @Override
@@ -317,7 +315,22 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void disguiseDalek(org.bukkit.entity.Entity entity) {
+        new TARDISDalekDisguiser(entity).disguiseToAll();
+    }
+
+    @Override
+    public void redisguiseDalek(org.bukkit.entity.Entity entity, World world) {
+        TARDISDalekDisguiser.redisguise(entity, world);
+    }
+
+    @Override
     public void undisguise(Player player) {
         new TARDISDisguiser(player).removeDisguise();
+    }
+
+    @Override
+    public boolean isDisguised(org.bukkit.entity.Entity entity) {
+        return TARDISDisguiseTracker.DALEKS.contains(entity.getUniqueId());
     }
 }

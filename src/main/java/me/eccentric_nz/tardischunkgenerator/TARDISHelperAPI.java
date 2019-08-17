@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -148,9 +149,29 @@ public interface TARDISHelperAPI {
     public void disguise(Player player, UUID uuid);
 
     /**
+     * Disguises a skeleton as a (Dalek) snowman.
+     *
+     * @param entity the entity to disguise
+     */
+    public void disguiseDalek(Entity entity);
+
+    /**
+     * Redisguises a skeleton as a (Dalek) snowman.
+     *
+     * @param entity the entity to disguise
+     */
+    public void redisguiseDalek(Entity entity, World world);
+
+    /**
      * Undisguises a player.
      *
      * @param player the player to undisguise
      */
     public void undisguise(Player player);
+
+    /**
+     * @param entity the entity to check
+     * @return true if the entity is disguised
+     */
+    public boolean isDisguised(Entity entity);
 }
