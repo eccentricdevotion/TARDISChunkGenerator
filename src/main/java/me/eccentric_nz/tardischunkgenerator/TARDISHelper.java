@@ -141,8 +141,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void openSignGUI(Player player, Sign sign) {
-        TARDISSignEditor tse = new TARDISSignEditor(new TARDISReflector());
-        tse.commit(player, sign);
+        Location l = sign.getLocation();
+        TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
+        t.a(((CraftPlayer) player.getPlayer()).getHandle());
+        System.out.println(messagePrefix + "sign editable = " + t.d());
+        t.isEditable = true; // doesn't work in 1.14.x!
+        t.update();
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(BlockPosition.PooledBlockPosition.d(l.getX(), l.getY(), l.getZ()));
+        ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override
