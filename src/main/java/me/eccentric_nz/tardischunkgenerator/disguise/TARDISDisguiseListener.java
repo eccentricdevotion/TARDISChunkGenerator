@@ -2,17 +2,15 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.UUID;
 
@@ -35,7 +33,9 @@ public class TARDISDisguiseListener implements Listener {
             } else {
                 // show other disguises to player
                 TARDISDisguiser.disguiseToPlayer(player, world);
-                TARDISDalekDisguiser.disguiseToPlayer(player, world);
+                if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
+                    TARDISDalekDisguiser.disguiseToPlayer(player, world);
+                }
             }
         }, 5L);
     }
@@ -56,7 +56,9 @@ public class TARDISDisguiseListener implements Listener {
     private void disguiseToPlayer(Player player, World world) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             TARDISDisguiser.disguiseToPlayer(player, world);
-            TARDISDalekDisguiser.disguiseToPlayer(player, world);
+            if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
+                TARDISDalekDisguiser.disguiseToPlayer(player, world);
+            }
         }, 5L);
     }
 
@@ -73,18 +75,21 @@ public class TARDISDisguiseListener implements Listener {
         TARDISPacketListener.removePlayer(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onDalekClick(PlayerInteractEntityEvent event) {
-        Entity entity = event.getRightClicked();
-        if (entity != null && entity.getType().equals(EntityType.SKELETON)) {
-            PersistentDataContainer dataContainer = entity.getPersistentDataContainer();
-            NamespacedKey DALEK = new NamespacedKey(plugin.getServer().getPluginManager().getPlugin("TARDISWeepingAngels"), "dalek");
-            if (dataContainer.has(DALEK, PersistentDataType.INTEGER)) {
-                // is it disguised?
-                if (TARDISDisguiseTracker.DALEKS.contains(entity.getUniqueId())) {
-                    TARDISDalekDisguiser.redisguise(entity, entity.getWorld());
-                }
-            }
-        }
-    }
+//    @EventHandler(priority = EventPriority.MONITOR)
+//    public void onDalekClick(PlayerInteractEntityEvent event) {
+//        Plugin twa = Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels");
+//        if (twa != null) {
+//            Entity entity = event.getRightClicked();
+//            if (entity != null && entity.getType().equals(EntityType.SKELETON)) {
+//                PersistentDataContainer dataContainer = entity.getPersistentDataContainer();
+//                NamespacedKey DALEK = new NamespacedKey(twa, "dalek");
+//                if (dataContainer.has(DALEK, PersistentDataType.INTEGER)) {
+//                    // is it disguised?
+//                    if (TARDISDisguiseTracker.DALEKS.contains(entity.getUniqueId())) {
+//                        TARDISDalekDisguiser.redisguise(entity, entity.getWorld());
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

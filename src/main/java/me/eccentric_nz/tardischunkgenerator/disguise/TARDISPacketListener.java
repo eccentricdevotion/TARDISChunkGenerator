@@ -54,7 +54,7 @@ public class TARDISPacketListener {
                         Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelper.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
                     }
                 }
-                if (packet instanceof PacketPlayOutSpawnEntityLiving) {
+                if (packet instanceof PacketPlayOutSpawnEntityLiving && Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
                     PacketPlayOutSpawnEntityLiving spawnEntityLiving = (PacketPlayOutSpawnEntityLiving) packet;
                     try {
                         Field f = spawnEntityLiving.getClass().getDeclaredField("b"); //NoSuchFieldException
