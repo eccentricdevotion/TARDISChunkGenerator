@@ -24,59 +24,70 @@ public class TARDISDisguiseListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerWorldChange(PlayerChangedWorldEvent event) {
-        Player player = event.getPlayer();
-        World world = player.getWorld();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            // redisguise disguised players
-            if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(player.getUniqueId())) {
-                TARDISDisguiser.redisguise(player, world);
-            } else {
-                // show other disguises to player
-                TARDISDisguiser.disguiseToPlayer(player, world);
-                if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
-                    TARDISDalekDisguiser.disguiseToPlayer(player, world);
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            Player player = event.getPlayer();
+            World world = player.getWorld();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                // redisguise disguised players
+                if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(player.getUniqueId())) {
+                    TARDISDisguiser.redisguise(player, world);
+                } else {
+                    // show other disguises to player
+                    TARDISDisguiser.disguiseToPlayer(player, world);
+                    if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
+                        TARDISDalekDisguiser.disguiseToPlayer(player, world);
+                    }
                 }
-            }
-        }, 5L);
+            }, 5L);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // show disguise to newly joined players
-        disguiseToPlayer(event.getPlayer(), event.getPlayer().getWorld());
-        TARDISPacketListener.injectPlayer(event.getPlayer());
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            // show disguise to newly joined players
+            disguiseToPlayer(event.getPlayer(), event.getPlayer().getWorld());
+            TARDISPacketListener.injectPlayer(event.getPlayer());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        // show disguise to newly joined players
-        disguiseToPlayer(event.getPlayer(), event.getPlayer().getWorld());
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            // show disguise to newly joined players
+            disguiseToPlayer(event.getPlayer(), event.getPlayer().getWorld());
+        }
     }
 
     private void disguiseToPlayer(Player player, World world) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            TARDISDisguiser.disguiseToPlayer(player, world);
-            if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
-                TARDISDalekDisguiser.disguiseToPlayer(player, world);
-            }
-        }, 5L);
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                TARDISDisguiser.disguiseToPlayer(player, world);
+                if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
+                    TARDISDalekDisguiser.disguiseToPlayer(player, world);
+                }
+            }, 5L);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        // stop tracking the disguise
-        if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
-            TARDISDisguiseTracker.DISGUISED_AS_MOB.remove(uuid);
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            UUID uuid = event.getPlayer().getUniqueId();
+            // stop tracking the disguise
+            if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
+                TARDISDisguiseTracker.DISGUISED_AS_MOB.remove(uuid);
+            }
+            if (TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(uuid)) {
+                TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(uuid);
+            }
+            TARDISPacketListener.removePlayer(event.getPlayer());
         }
-        if (TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(uuid)) {
-            TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(uuid);
-        }
-        TARDISPacketListener.removePlayer(event.getPlayer());
     }
 
 //    @EventHandler(priority = EventPriority.MONITOR)
 //    public void onDalekClick(PlayerInteractEntityEvent event) {
+//        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
 //        Plugin twa = Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels");
 //        if (twa != null) {
 //            Entity entity = event.getRightClicked();
@@ -91,5 +102,6 @@ public class TARDISDisguiseListener implements Listener {
 //                }
 //            }
 //        }
+//    }
 //    }
 }
