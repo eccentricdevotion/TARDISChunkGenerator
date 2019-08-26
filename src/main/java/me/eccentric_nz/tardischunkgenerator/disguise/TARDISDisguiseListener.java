@@ -81,6 +81,9 @@ public class TARDISDisguiseListener implements Listener {
             if (TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(uuid)) {
                 TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(uuid);
             }
+            if (TARDISDisguiseTracker.ARCHED.containsKey(uuid)) {
+                TARDISDisguiseTracker.ARCHED.remove(uuid);
+            }
             TARDISPacketListener.removePlayer(event.getPlayer());
         }
     }

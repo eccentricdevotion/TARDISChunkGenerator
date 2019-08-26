@@ -316,6 +316,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void disguise(Player player, String name) {
+        new TARDISChameleonArchDisguiser(player).changeSkin(name);
+    }
+
+    @Override
     public void disguise(Player player, UUID uuid) {
         new TARDISPlayerDisguiser(player, uuid).disguiseToAll();
     }
@@ -333,6 +338,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void undisguise(Player player) {
         new TARDISDisguiser(player).removeDisguise();
+    }
+
+    @Override
+    public void reset(Player player) {
+        new TARDISChameleonArchDisguiser(player).resetSkin();
     }
 
     @Override

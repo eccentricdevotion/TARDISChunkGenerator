@@ -141,6 +141,14 @@ public interface TARDISHelperAPI {
     public void disguise(EntityType entityType, Player player, Object[] options);
 
     /**
+     * Disguises a player as a randomly named Chameleon Arch player.
+     *
+     * @param player the player to disguise
+     * @param name   the random name for the disguise
+     */
+    public void disguise(Player player, String name);
+
+    /**
      * Disguises a player as another player.
      *
      * @param player the player to disguise
@@ -168,6 +176,13 @@ public interface TARDISHelperAPI {
      * @param player the player to undisguise
      */
     public void undisguise(Player player);
+
+    /**
+     * Undisguises a Chameleon arched player.
+     *
+     * @param player the player to undisguise
+     */
+    public void reset(Player player);
 
     /**
      * @param entity the entity to check
