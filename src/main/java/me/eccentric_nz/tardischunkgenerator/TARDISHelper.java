@@ -16,7 +16,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.*;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISChameleonArchDisguiser;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
@@ -326,16 +329,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void disguiseDalek(org.bukkit.entity.Entity entity) {
-        new TARDISDalekDisguiser(entity).disguiseToAll();
-    }
-
-    @Override
-    public void redisguiseDalek(org.bukkit.entity.Entity entity, World world) {
-        TARDISDalekDisguiser.redisguise(entity, world);
-    }
-
-    @Override
     public void undisguise(Player player) {
         new TARDISDisguiser(player).removeDisguise();
     }
@@ -343,10 +336,5 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void reset(Player player) {
         new TARDISChameleonArchDisguiser(player).resetSkin();
-    }
-
-    @Override
-    public boolean isDisguised(org.bukkit.entity.Entity entity) {
-        return TARDISDisguiseTracker.DALEKS.contains(entity.getUniqueId());
     }
 }

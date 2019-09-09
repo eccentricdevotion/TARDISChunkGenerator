@@ -34,9 +34,6 @@ public class TARDISDisguiseListener implements Listener {
                 } else {
                     // show other disguises to player
                     TARDISDisguiser.disguiseToPlayer(player, world);
-                    if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
-                        TARDISDalekDisguiser.disguiseToPlayer(player, world);
-                    }
                 }
             }, 5L);
         }
@@ -63,9 +60,6 @@ public class TARDISDisguiseListener implements Listener {
         if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 TARDISDisguiser.disguiseToPlayer(player, world);
-                if (Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
-                    TARDISDalekDisguiser.disguiseToPlayer(player, world);
-                }
             }, 5L);
         }
     }
@@ -87,24 +81,4 @@ public class TARDISDisguiseListener implements Listener {
             TARDISPacketListener.removePlayer(event.getPlayer());
         }
     }
-
-//    @EventHandler(priority = EventPriority.MONITOR)
-//    public void onDalekClick(PlayerInteractEntityEvent event) {
-//        if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
-//        Plugin twa = Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels");
-//        if (twa != null) {
-//            Entity entity = event.getRightClicked();
-//            if (entity != null && entity.getType().equals(EntityType.SKELETON)) {
-//                PersistentDataContainer dataContainer = entity.getPersistentDataContainer();
-//                NamespacedKey DALEK = new NamespacedKey(twa, "dalek");
-//                if (dataContainer.has(DALEK, PersistentDataType.INTEGER)) {
-//                    // is it disguised?
-//                    if (TARDISDisguiseTracker.DALEKS.contains(entity.getUniqueId())) {
-//                        TARDISDalekDisguiser.redisguise(entity, entity.getWorld());
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    }
 }

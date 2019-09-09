@@ -3,7 +3,6 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 import io.netty.channel.*;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.server.v1_14_R1.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -52,23 +51,6 @@ public class TARDISPacketListener {
                         }
                     } catch (NoSuchFieldException | IllegalAccessException e) {
                         Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelper.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
-                    }
-                }
-                if (packet instanceof PacketPlayOutSpawnEntityLiving && Bukkit.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null) {
-                    PacketPlayOutSpawnEntityLiving spawnEntityLiving = (PacketPlayOutSpawnEntityLiving) packet;
-                    try {
-                        Field f = spawnEntityLiving.getClass().getDeclaredField("b"); //NoSuchFieldException
-                        f.setAccessible(true);
-                        UUID uuid = (UUID) f.get(spawnEntityLiving);
-                        if (TARDISDisguiseTracker.DALEKS.contains(uuid)) {
-                            Entity entity = Bukkit.getEntity(uuid);
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(TARDISHelper.getTardisHelper(), () -> {
-                                TARDISDalekDisguiser.redisguise(entity, entity.getWorld());
-                            }, 5L);
-                        }
-                        f.setAccessible(false);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelper.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutSpawnEntityLiving " + ChatColor.RESET + e.getMessage());
                     }
                 }
                 super.write(channelHandlerContext, packet, channelPromise);
