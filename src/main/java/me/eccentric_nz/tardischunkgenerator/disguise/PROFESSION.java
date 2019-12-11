@@ -1,6 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_14_R1.VillagerProfession;
+import net.minecraft.server.v1_15_R1.VillagerProfession;
 
 public enum PROFESSION {
 

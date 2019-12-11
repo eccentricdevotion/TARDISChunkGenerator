@@ -20,18 +20,18 @@ import me.eccentric_nz.tardischunkgenerator.disguise.TARDISChameleonArchDisguise
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
-import net.minecraft.server.v1_14_R1.*;
-import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftVillager;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -100,7 +100,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bF");
+            Field willingField = EntityVillager.class.getDeclaredField("bC");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
@@ -113,7 +113,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerWilling(Villager v, boolean w) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bF");
+            Field willingField = EntityVillager.class.getDeclaredField("bC");
             willingField.setAccessible(true);
             willingField.set(villager, w);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {

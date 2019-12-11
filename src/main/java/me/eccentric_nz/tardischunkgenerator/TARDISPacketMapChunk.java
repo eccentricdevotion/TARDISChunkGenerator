@@ -16,11 +16,11 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import net.minecraft.server.v1_14_R1.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_15_R1.PacketPlayOutMapChunk;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Collection;
  */
 public class TARDISPacketMapChunk {
 
-    private final net.minecraft.server.v1_14_R1.Chunk chunk;
+    private final net.minecraft.server.v1_15_R1.Chunk chunk;
 
     /**
      * Creates a TARDISPacketMapChunk.
@@ -50,17 +50,6 @@ public class TARDISPacketMapChunk {
      */
     public TARDISPacketMapChunk(org.bukkit.Chunk chunk) {
         this.chunk = ((CraftChunk) chunk).getHandle();
-    }
-
-    /**
-     * Sends this packet to a player.
-     * <br>You still need to refresh it manually with
-     * <code>world.refreshChunk(...)</code>.
-     *
-     * @param player The player.
-     */
-    public final void send(Player player) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
     }
 
     /**
@@ -98,5 +87,16 @@ public class TARDISPacketMapChunk {
             packet.send(player);
         }
         world.refreshChunk(x, z);
+    }
+
+    /**
+     * Sends this packet to a player.
+     * <br>You still need to refresh it manually with
+     * <code>world.refreshChunk(...)</code>.
+     *
+     * @param player The player.
+     */
+    public final void send(Player player) {
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
     }
 }

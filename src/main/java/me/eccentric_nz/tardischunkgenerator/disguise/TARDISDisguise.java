@@ -1,12 +1,12 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_14_R1.Entity;
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_15_R1.Entity;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.DyeColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_14_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.Constructor;
@@ -60,10 +60,10 @@ public class TARDISDisguise {
                 break;
         }
         try {
-            Class entityClass = Class.forName("net.minecraft.server.v1_14_R1.Entity" + str);
-            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_14_R1.World.class);
+            Class entityClass = Class.forName("net.minecraft.server.v1_15_R1.Entity" + str);
+            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_15_R1.World.class);
             EntityTypes type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
-            net.minecraft.server.v1_14_R1.World world = ((CraftWorld) w).getHandle();
+            net.minecraft.server.v1_15_R1.World world = ((CraftWorld) w).getHandle();
             Entity entity = (Entity) constructor.newInstance(type, world);
             if (disguise.getOptions() != null) {
                 for (Object o : disguise.getOptions()) {

@@ -1,6 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_14_R1.EntityPanda;
+import net.minecraft.server.v1_15_R1.EntityPanda;
 
 public enum GENE {
 
