@@ -1,6 +1,7 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import net.minecraft.server.v1_15_R1.VillagerProfession;
+import org.bukkit.entity.Villager;
 
 public enum PROFESSION {
 
@@ -24,6 +25,10 @@ public enum PROFESSION {
 
     PROFESSION(VillagerProfession nmsProfession) {
         nms = nmsProfession;
+    }
+
+    public static PROFESSION getFromVillagerProfression(Villager.Profession profession) {
+        return PROFESSION.valueOf(profession.toString());
     }
 
     public VillagerProfession getNmsProfession() {

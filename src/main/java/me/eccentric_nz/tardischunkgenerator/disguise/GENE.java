@@ -1,6 +1,7 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import net.minecraft.server.v1_15_R1.EntityPanda;
+import org.bukkit.entity.Panda;
 
 public enum GENE {
 
@@ -16,6 +17,10 @@ public enum GENE {
 
     GENE(EntityPanda.Gene nmsGene) {
         this.nmsGene = nmsGene;
+    }
+
+    public static GENE getFromPandaGene(Panda.Gene gene) {
+        return GENE.valueOf(gene.toString());
     }
 
     public EntityPanda.Gene getNmsGene() {
