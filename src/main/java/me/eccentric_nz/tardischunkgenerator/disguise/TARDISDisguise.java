@@ -80,6 +80,7 @@ public class TARDISDisguise {
                                 wolf.setCollarColor(EnumColor.valueOf(o.toString()));
                                 break;
                             default:
+                                break;
                         }
                     }
                     if (o instanceof Rabbit.Type && disguise.getEntityType().equals(EntityType.RABBIT)) {
@@ -183,6 +184,7 @@ public class TARDISDisguise {
                                 ItemStack nmsItemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
                                 llama.inventoryChest.setItem(1, nmsItemStack);
                             default:
+                                break;
                         }
                     }
                     if (o instanceof Integer) {
@@ -201,6 +203,7 @@ public class TARDISDisguise {
                                 puffer.setPuffState((Integer) o);
                                 break;
                             default:
+                                break;
                         }
                     }
                     if (o instanceof TropicalFish.Pattern && disguise.getEntityType().equals(EntityType.TROPICAL_FISH)) {
