@@ -21,17 +21,21 @@ import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
 import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_15_R1.SoundCategory;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftBee;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftVillager;
+import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -49,7 +53,7 @@ import java.util.UUID;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
-    public static final String messagePrefix = ChatColor.BLUE + "[Disguise] " + ChatColor.RESET;
+    public static final String messagePrefix = ChatColor.BLUE + "[TCG] " + ChatColor.RESET;
     public static TARDISHelper tardisHelper;
 
     public static TARDISHelper getTardisHelper() {
@@ -131,7 +135,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         Entity nmsEntity = ((CraftEntity) e).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
         // writes the entity's NBT data to the `tag` object
-        nmsEntity.c(tag);
+        nmsEntity.save(tag);
         tag.setBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
         ((EntityLiving) nmsEntity).a(tag);
@@ -146,11 +150,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void openSignGUI(Player player, Sign sign) {
         Location l = sign.getLocation();
         TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
-        t.a(((CraftPlayer) player.getPlayer()).getHandle());
-        System.out.println(messagePrefix + "sign editable = " + t.d());
+        ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(t.getUpdatePacket());
+//        System.out.println(messagePrefix + "sign editable = " + t.d());
         t.isEditable = true; // doesn't work in 1.14.x!
+        t.a(((CraftPlayer) player.getPlayer()).getHandle());
         t.update();
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(BlockPosition.PooledBlockPosition.d(l.getX(), l.getY(), l.getZ()));
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(t.getPosition());
         ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(packet);
     }
 
@@ -336,5 +341,61 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void reset(Player player) {
         new TARDISChameleonArchDisguiser(player).resetSkin();
+    }
+
+    @Override
+    public void setBeeTicks(Bee b) {
+        EntityBee bee = ((CraftBee) b).getHandle();
+        bee.setCannotEnterHiveTicks(bee.getWorld().random.nextInt(1200) + 2400);
+    }
+
+    @Override
+    public void releaseBees(Block block) {
+        if (block.getType().equals(Material.BEEHIVE) || block.getType().equals(Material.BEE_NEST)) {
+            CraftWorld craftWorld = (CraftWorld) block.getWorld();
+            TileEntityBeehive beehive = (TileEntityBeehive) craftWorld.getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+            IBlockData blockData = beehive.getBlock();
+            EnumDirection direction = blockData.get(BlockBeehive.b);
+            BlockPosition blockPosition = beehive.getPosition();
+            NBTTagCompound tileNBT = new NBTTagCompound();
+            beehive.save(tileNBT);
+            NBTTagList bees = tileNBT.getList("Bees", 10); // Gets the bees
+            for (int i = 0; i < bees.size(); i++) {
+                NBTTagCompound bee = bees.getCompound(i);
+                NBTTagCompound data = (NBTTagCompound) bee.get("EntityData");
+                data.remove("Passengers");
+                data.remove("Leash");
+                data.c("UUID");
+                Entity entity = EntityTypes.a(data, beehive.getWorld(), (var0x) -> var0x);
+                if (entity != null) {
+                    float width = entity.getWidth();
+                    double offset = 0.55D + (double) (width / 2.0F);
+                    double x = (double) blockPosition.getX() + 0.5D + offset * (double) direction.getAdjacentX();
+                    double y = (double) blockPosition.getY() + 0.5D - (double) (entity.getHeight() / 2.0F);
+                    double z = (double) blockPosition.getZ() + 0.5D + offset * (double) direction.getAdjacentZ();
+                    entity.setPositionRotation(x, y, z, entity.yaw, entity.pitch);
+                    if (entity instanceof EntityBee) {
+                        EntityBee entityBee = (EntityBee) entity;
+                        if (!entityBee.hasFlowerPos() && beehive.getWorld().random.nextFloat() < 0.9F) {
+                            entityBee.setFlowerPos(beehive.flowerPos);
+                        }
+                        entityBee.eG();
+                        if (blockData.getBlock().a(TagsBlock.BEEHIVES)) {
+                            int var18 = beehive.a(blockData);
+                            if (var18 < 5) {
+                                int var19 = beehive.getWorld().random.nextInt(100) == 0 ? 2 : 1;
+                                if (var18 + var19 > 5) {
+                                    --var19;
+                                }
+                                beehive.getWorld().setTypeUpdate(blockPosition, blockData.set(BlockBeehive.c, var18 + var19));
+                            }
+                        }
+                        entityBee.eu();
+                    }
+                    beehive.getWorld().playSound(null, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ(), SoundEffects.BLOCK_BEEHIVE_EXIT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    beehive.getWorld().addEntity(entity);
+                }
+            }
+        }
     }
 }
