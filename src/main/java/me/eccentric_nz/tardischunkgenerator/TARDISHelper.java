@@ -380,22 +380,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                             entityBee.setFlowerPos(beehive.flowerPos);
                         }
                         entityBee.eG();
-                        if (blockData.getBlock().a(TagsBlock.BEEHIVES)) {
-                            int var18 = beehive.a(blockData);
-                            if (var18 < 5) {
-                                int var19 = beehive.getWorld().random.nextInt(100) == 0 ? 2 : 1;
-                                if (var18 + var19 > 5) {
-                                    --var19;
-                                }
-                                beehive.getWorld().setTypeUpdate(blockPosition, blockData.set(BlockBeehive.c, var18 + var19));
+                        int var18 = beehive.a(blockData);
+                        if (var18 < 5) {
+                            int var19 = beehive.getWorld().random.nextInt(100) == 0 ? 2 : 1;
+                            if (var18 + var19 > 5) {
+                                --var19;
                             }
+                            beehive.getWorld().setTypeUpdate(blockPosition, blockData.set(BlockBeehive.c, var18 + var19));
                         }
                         entityBee.eu();
                     }
                     beehive.getWorld().playSound(null, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ(), SoundEffects.BLOCK_BEEHIVE_EXIT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     beehive.getWorld().addEntity(entity);
+                    bees.remove(bee);
                 }
             }
+            tileNBT.set("Bees", bees);
+            beehive.load(tileNBT);
+            beehive.update();
         }
     }
 }
