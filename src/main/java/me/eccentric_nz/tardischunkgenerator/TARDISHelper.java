@@ -347,8 +347,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void setBeeTicks(Bee b) {
+        int random = new Random().nextInt(1200);
+        setBeeTicks(b, random + 1200);
+    }
+
+    @Override
+    public void setBeeTicks(Bee b, int ticks) {
         EntityBee bee = ((CraftBee) b).getHandle();
-        bee.setCannotEnterHiveTicks(bee.getWorld().random.nextInt(1200) + 1200);
+        bee.setCannotEnterHiveTicks(ticks);
     }
 
     @Override

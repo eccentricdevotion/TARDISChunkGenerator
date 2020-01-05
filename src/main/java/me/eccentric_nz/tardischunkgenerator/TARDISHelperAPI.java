@@ -174,6 +174,14 @@ public interface TARDISHelperAPI {
     public void setBeeTicks(Bee bee);
 
     /**
+     * Sets the CannotEnterHiveTicks for a bee.
+     *
+     * @param bee   the bee to set ticks for
+     * @param ticks how long to set the CannotEnterHiveTicks for
+     */
+    public void setBeeTicks(Bee bee, int ticks);
+
+    /**
      * Release bees from a hive.
      */
     public void releaseBees(Block block);
