@@ -297,10 +297,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                         break;
                 }
                 World.Environment environment = World.Environment.NORMAL;
-                if ((new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1")).exists()) {
+                File dimDashOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1");
+                File dimOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1");
+                if (dimDashOne.exists() && !dimOne.exists()) {
                     environment = World.Environment.NETHER;
                 }
-                if ((new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1")).exists()) {
+                if (dimOne.exists() && !dimDashOne.exists()) {
                     environment = World.Environment.THE_END;
                 }
                 return new TARDISPlanetData(gameMode, environment, worldType);
