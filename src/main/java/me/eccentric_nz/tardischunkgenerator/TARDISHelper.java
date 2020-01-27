@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2018 eccentric_nz
+ * Copyright (C) 2020 eccentric_nz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * (location your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,6 +20,10 @@ import me.eccentric_nz.tardischunkgenerator.disguise.TARDISChameleonArchDisguise
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
+import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
+import me.eccentric_nz.tardischunkgenerator.light.Light;
+import me.eccentric_nz.tardischunkgenerator.light.LightType;
+import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import net.minecraft.server.v1_15_R1.*;
 import net.minecraft.server.v1_15_R1.SoundCategory;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
@@ -47,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
@@ -54,6 +59,7 @@ import java.util.UUID;
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     public static final String messagePrefix = ChatColor.BLUE + "[TCG] " + ChatColor.RESET;
+    public static final RequestSteamMachine machine = new RequestSteamMachine();
     public static TARDISHelper tardisHelper;
 
     public static TARDISHelper getTardisHelper() {
@@ -61,10 +67,19 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void onDisable() {
+        if (machine.isStarted()) {
+            machine.shutdown();
+        }
+    }
+
+    @Override
     public void onEnable() {
         tardisHelper = this;
         // register disguise listener
         getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
+        // start RequestStreamMachine
+        machine.start(2, 400);
     }
 
     @Override
@@ -406,6 +421,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             tileNBT.set("Bees", bees);
             beehive.load(tileNBT);
             beehive.update();
+        }
+    }
+
+    @Override
+    public void createLight(Location location) {
+        Light.createLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15, true);
+        Collection<Player> players = location.getWorld().getPlayers();
+        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
+            Light.updateChunk(info, LightType.BLOCK, players);
+        }
+    }
+
+    @Override
+    public void deleteLight(Location location) {
+        Light.deleteLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, true);
+        Collection<Player> players = location.getWorld().getPlayers();
+        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
+            Light.updateChunk(info, LightType.BLOCK, players);
         }
     }
 }

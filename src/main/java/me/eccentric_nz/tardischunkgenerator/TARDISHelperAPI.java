@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 eccentric_nz
+ * Copyright (C) 2020 eccentric_nz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
@@ -185,4 +186,18 @@ public interface TARDISHelperAPI {
      * Release bees from a hive.
      */
     public void releaseBees(Block block);
+
+    /**
+     * Create a light source
+     *
+     * @param location the location where the light will be created
+     */
+    public void createLight(Location location);
+
+    /**
+     * Delete a light source
+     *
+     * @param location the location where the light will be removed
+     */
+    public void deleteLight(Location location);
 }
