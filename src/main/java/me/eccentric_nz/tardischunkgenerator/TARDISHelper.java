@@ -25,21 +25,17 @@ import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import net.minecraft.server.v1_15_R1.*;
-import net.minecraft.server.v1_15_R1.SoundCategory;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftBee;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftVillager;
-import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -358,70 +354,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void reset(Player player) {
         new TARDISChameleonArchDisguiser(player).resetSkin();
-    }
-
-    @Override
-    public void setBeeTicks(Bee b) {
-        int random = new Random().nextInt(1200);
-        setBeeTicks(b, random + 1200);
-    }
-
-    @Override
-    public void setBeeTicks(Bee b, int ticks) {
-        EntityBee bee = ((CraftBee) b).getHandle();
-        bee.setCannotEnterHiveTicks(ticks);
-    }
-
-    @Override
-    public void releaseBees(Block block) {
-        if (block.getType().equals(Material.BEEHIVE) || block.getType().equals(Material.BEE_NEST)) {
-            CraftWorld craftWorld = (CraftWorld) block.getWorld();
-            TileEntityBeehive beehive = (TileEntityBeehive) craftWorld.getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
-            IBlockData blockData = beehive.getBlock();
-            EnumDirection direction = blockData.get(BlockBeehive.b);
-            BlockPosition blockPosition = beehive.getPosition();
-            NBTTagCompound tileNBT = new NBTTagCompound();
-            beehive.save(tileNBT);
-            NBTTagList bees = tileNBT.getList("Bees", 10); // Gets the bees
-            for (int i = 0; i < bees.size(); i++) {
-                NBTTagCompound bee = bees.getCompound(i);
-                NBTTagCompound data = (NBTTagCompound) bee.get("EntityData");
-                data.remove("Passengers");
-                data.remove("Leash");
-                data.c("UUID");
-                Entity entity = EntityTypes.a(data, beehive.getWorld(), (var0x) -> var0x);
-                if (entity != null) {
-                    float width = entity.getWidth();
-                    double offset = 0.55D + (double) (width / 2.0F);
-                    double x = (double) blockPosition.getX() + 0.5D + offset * (double) direction.getAdjacentX();
-                    double y = (double) blockPosition.getY() + 0.5D - (double) (entity.getHeight() / 2.0F);
-                    double z = (double) blockPosition.getZ() + 0.5D + offset * (double) direction.getAdjacentZ();
-                    entity.setPositionRotation(x, y, z, entity.yaw, entity.pitch);
-                    if (entity instanceof EntityBee) {
-                        EntityBee entityBee = (EntityBee) entity;
-                        if (!entityBee.hasFlowerPos() && beehive.getWorld().random.nextFloat() < 0.9F) {
-                            entityBee.setFlowerPos(beehive.flowerPos);
-                        }
-                        entityBee.eG();
-                        int level = beehive.a(blockData);
-                        if (level < 5) {
-                            int amount = beehive.getWorld().random.nextInt(100) == 0 ? 2 : 1;
-                            if (level + amount > 5) {
-                                --amount;
-                            }
-                            beehive.getWorld().setTypeUpdate(blockPosition, blockData.set(BlockBeehive.c, level + amount));
-                        }
-                        entityBee.eu();
-                    }
-                    beehive.getWorld().playSound(null, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ(), SoundEffects.BLOCK_BEEHIVE_EXIT, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    beehive.getWorld().addEntity(entity);
-                    bees.remove(bee);
-                }
-            }
-            tileNBT.set("Bees", bees);
-            beehive.load(tileNBT);
-            beehive.update();
-        }
     }
 
     @Override

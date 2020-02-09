@@ -21,7 +21,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 import java.util.UUID;
 
@@ -166,26 +169,6 @@ public interface TARDISHelperAPI {
      * @param player the player to undisguise
      */
     public void reset(Player player);
-
-    /**
-     * Sets the CannotEnterHiveTicks for a bee.
-     *
-     * @param bee the bee to set ticks for
-     */
-    public void setBeeTicks(Bee bee);
-
-    /**
-     * Sets the CannotEnterHiveTicks for a bee.
-     *
-     * @param bee   the bee to set ticks for
-     * @param ticks how long to set the CannotEnterHiveTicks for
-     */
-    public void setBeeTicks(Bee bee, int ticks);
-
-    /**
-     * Release bees from a hive.
-     */
-    public void releaseBees(Block block);
 
     /**
      * Create a light source
