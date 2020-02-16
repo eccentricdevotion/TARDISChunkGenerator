@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
@@ -39,11 +40,15 @@ public class TARDISChunkGenerator extends ChunkGenerator {
     @Override
     public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
 
+        ChunkData result = createChunkData(world);
+        result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                biome.setBiome(x, z, Biome.THE_VOID);
+                for (int y = 0; y < world.getMaxHeight(); y++) {
+                    biome.setBiome(x, y, z, Biome.THE_VOID);
+                }
             }
         }
-        return createChunkData(world);
+        return result;
     }
 }
