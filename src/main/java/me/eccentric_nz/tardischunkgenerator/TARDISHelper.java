@@ -373,4 +373,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             Light.updateChunk(info, LightType.BLOCK, players);
         }
     }
+
+    @Override
+    public boolean isInFaction(Player player, Location location) {
+        return new TARDISFactions().isInFaction(player, location);
+    }
 }

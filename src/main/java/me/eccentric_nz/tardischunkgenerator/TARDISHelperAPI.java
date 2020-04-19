@@ -183,4 +183,12 @@ public interface TARDISHelperAPI {
      * @param location the location where the light will be removed
      */
     public void deleteLight(Location location);
+
+    /**
+     * Check a Factions location is valid for TARDIS actions
+     *
+     * @param player   the player who is performing the TARDIS action
+     * @param location the location where the light will be removed
+     */
+    public boolean isInFaction(Player player, Location location);
 }
