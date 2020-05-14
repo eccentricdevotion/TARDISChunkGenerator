@@ -26,12 +26,16 @@ import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import net.minecraft.server.v1_15_R1.*;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -51,10 +55,11 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
-    public static final String messagePrefix = ChatColor.BLUE + "[TCG] " + ChatColor.RESET;
+    public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
     public static final RequestSteamMachine machine = new RequestSteamMachine();
     public static TARDISHelper tardisHelper;
 
@@ -76,6 +81,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
         // start RequestStreamMachine
         machine.start(2, 400);
+        // should we filter the log?
+        String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+        // get the TARDIS config
+        FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
+        if (configuration.getBoolean("debug")) {
+            // yes we should!
+            filterLog(basePath + "filtered.log");
+            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Starting filtered logging for TARDIS plugins...");
+            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
+        }
     }
 
     @Override
@@ -377,5 +392,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public boolean isInFaction(Player player, Location location) {
         return new TARDISFactions().isInFaction(player, location);
+    }
+
+    /**
+     * Start filtering logs for TARDIS related information
+     *
+     * @param path the file path for the filtered log file
+     */
+    public void filterLog(String path) {
+        ((Logger) LogManager.getRootLogger()).addFilter(new TARDISLogFilter(path));
     }
 }
