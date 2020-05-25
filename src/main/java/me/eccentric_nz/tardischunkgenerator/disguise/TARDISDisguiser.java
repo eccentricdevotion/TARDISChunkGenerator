@@ -64,9 +64,10 @@ public class TARDISDisguiser {
                         PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(p.getEntityId());
                         PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
                         PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
-                        ((CraftPlayer) to).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-                        ((CraftPlayer) to).getHandle().playerConnection.sendPacket(packetPlayOutSpawnEntityLiving);
-                        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityMetadata);
+                        PlayerConnection connection = ((CraftPlayer) to).getHandle().playerConnection;
+                        connection.sendPacket(packetPlayOutEntityDestroy);
+                        connection.sendPacket(packetPlayOutSpawnEntityLiving);
+                        connection.sendPacket(packetPlayOutEntityMetadata);
                     }
                 }
             }
@@ -85,9 +86,10 @@ public class TARDISDisguiser {
             PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p != player && player.getWorld() == p.getWorld()) {
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutSpawnEntityLiving);
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityMetadata);
+                    PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                    connection.sendPacket(packetPlayOutEntityDestroy);
+                    connection.sendPacket(packetPlayOutSpawnEntityLiving);
+                    connection.sendPacket(packetPlayOutEntityMetadata);
                 }
             }
         }
@@ -131,8 +133,9 @@ public class TARDISDisguiser {
             PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) player).getHandle());
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p != player && player.getWorld() == p.getWorld()) {
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutNamedEntitySpawn);
+                    PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                    connection.sendPacket(packetPlayOutEntityDestroy);
+                    connection.sendPacket(packetPlayOutNamedEntitySpawn);
                 }
             }
         }
@@ -145,9 +148,10 @@ public class TARDISDisguiser {
         PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(entity.getId(), entity.getDataWatcher(), false);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p != player && player.getWorld() == p.getWorld()) {
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutSpawnEntityLiving);
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityMetadata);
+                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                connection.sendPacket(packetPlayOutEntityDestroy);
+                connection.sendPacket(packetPlayOutSpawnEntityLiving);
+                connection.sendPacket(packetPlayOutEntityMetadata);
             }
         }
     }

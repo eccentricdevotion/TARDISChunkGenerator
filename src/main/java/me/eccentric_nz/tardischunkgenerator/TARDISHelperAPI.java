@@ -19,12 +19,10 @@ package me.eccentric_nz.tardischunkgenerator;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 
 import java.util.UUID;
 
@@ -136,7 +134,7 @@ public interface TARDISHelperAPI {
      *
      * @param entityType the entity type to disguise as
      * @param player     the player to disguise
-     * @param options    an array of options
+     * @param options    an array of entity options
      */
     public void disguise(EntityType entityType, Player player, Object[] options);
 
@@ -169,6 +167,37 @@ public interface TARDISHelperAPI {
      * @param player the player to undisguise
      */
     public void reset(Player player);
+
+    /**
+     * Spawns Emergency Programme One.
+     *
+     * @param player   the player to disguise the EP1 NPC as
+     * @param location the location to spawn the NPC disguise
+     */
+    public int spawnEmergencyProgrammeOne(Player player, Location location);
+
+    /**
+     * Removes an NPC.
+     *
+     * @param id the id of the NPC to undisguise
+     */
+    public void removeNPC(int id, World world);
+
+    /**
+     * Disguises an armour stand as another entity.
+     *
+     * @param stand      the armour stand to disguise
+     * @param entityType the entity type to disguise as
+     * @param options    an array of entity options
+     */
+    public void disguiseArmourStand(ArmorStand stand, EntityType entityType, Object[] options);
+
+    /**
+     * Undisguises an armour stand.
+     *
+     * @param stand the armour stand to undisguise
+     */
+    public void undisguiseArmourStand(ArmorStand stand);
 
     /**
      * Create a light source

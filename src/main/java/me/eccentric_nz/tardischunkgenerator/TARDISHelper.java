@@ -16,10 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISChameleonArchDisguiser;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseListener;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
-import me.eccentric_nz.tardischunkgenerator.disguise.TARDISPlayerDisguiser;
+import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
@@ -40,6 +37,7 @@ import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftVillager;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -369,6 +367,26 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void reset(Player player) {
         new TARDISChameleonArchDisguiser(player).resetSkin();
+    }
+
+    @Override
+    public int spawnEmergencyProgrammeOne(Player player, Location location) {
+        return new TARDISEPSDisguiser(player, location).showToAll();
+    }
+
+    @Override
+    public void removeNPC(int id, World world) {
+        TARDISEPSDisguiser.removeNPC(id, world);
+    }
+
+    @Override
+    public void disguiseArmourStand(ArmorStand stand, EntityType entityType, Object[] options) {
+        new TARDISArmourStandDisguiser(stand, entityType, options).disguiseToAll();
+    }
+
+    @Override
+    public void undisguiseArmourStand(ArmorStand stand) {
+        TARDISArmourStandDisguiser.removeDisguise(stand);
     }
 
     @Override
