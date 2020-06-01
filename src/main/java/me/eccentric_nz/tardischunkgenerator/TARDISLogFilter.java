@@ -23,6 +23,7 @@ public class TARDISLogFilter implements Filter {
     public TARDISLogFilter(String path) {
         this.path = path;
         filters.add("TARDIS");
+        filters.add("tardis");
         filters.add("me.eccentric_nz");
         filters.add("Caused by:");
     }
@@ -122,15 +123,12 @@ public class TARDISLogFilter implements Filter {
 
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Object o, Throwable throwable) {
-        if (o instanceof String) {
-            return checkMessage((String) o);
-        }
-        return Result.NEUTRAL;
+        return checkMessage(TextUtils.getStacktrace(throwable, true, "me.eccentric_nz."));
     }
 
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
-        return checkMessage(message.getFormattedMessage());
+        return checkMessage(TextUtils.getStacktrace(throwable, true, "me.eccentric_nz."));
     }
 
     @Override
