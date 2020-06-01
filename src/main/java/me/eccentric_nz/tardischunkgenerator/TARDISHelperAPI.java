@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
+import org.bukkit.map.MapView;
 
 import java.util.UUID;
 
@@ -220,4 +221,12 @@ public interface TARDISHelperAPI {
      * @param location the location where the light will be removed
      */
     public boolean isInFaction(Player player, Location location);
+
+    /**
+     * Update a TARDIS scanner map
+     *
+     * @param world   the world the map is displaying
+     * @param mapView the mapview of the map
+     */
+    public void updateMap(World world, MapView mapView);
 }

@@ -42,6 +42,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -175,7 +176,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         Location l = sign.getLocation();
         TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
         ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(t.getUpdatePacket());
-//        System.out.println(messagePrefix + "sign editable = " + t.d());
         t.isEditable = true; // doesn't work in 1.14.x!
         t.a(((CraftPlayer) player.getPlayer()).getHandle());
         t.update();
@@ -410,6 +410,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public boolean isInFaction(Player player, Location location) {
         return new TARDISFactions().isInFaction(player, location);
+    }
+
+    @Override
+    public void updateMap(World world, MapView mapView) {
+        new TARDISMapUpdater(world).update(mapView);
     }
 
     /**
