@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.tardischunkgenerator</groupId>
     <artifactId>TARDISChunkGenerator</artifactId>
-    <version>4.4.1</version>
+    <version>4.4.2</version>
     <name>TARDISChunkGenerator</name>
     <url>http://dev.bukkit.org/server-mods/tardis/</url>
     <repositories>
