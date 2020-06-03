@@ -32,6 +32,7 @@ public class TARDISLogFilter implements Filter {
         for (String filter : filters) {
             if (message.contains(filter)) {
                 writeToFile(ChatColor.stripColor(message));
+                break;
             }
         }
         return Result.NEUTRAL;
@@ -133,6 +134,9 @@ public class TARDISLogFilter implements Filter {
 
     @Override
     public Result filter(LogEvent logEvent) {
+        if (logEvent.getThrown() != null) {
+            return checkMessage(TextUtils.getStacktrace(logEvent.getThrown(), true, "me.eccentric_nz."));
+        }
         return checkMessage(logEvent.getMessage().getFormattedMessage());
     }
 
