@@ -229,4 +229,12 @@ public interface TARDISHelperAPI {
      * @param mapView the mapview of the map
      */
     public void updateMap(World world, MapView mapView);
+
+    /**
+     * Send an action bar message to a player
+     *
+     * @param player  the player to send the action bar to
+     * @param message the message to send
+     */
+    public void sendActionBarMessage(Player player, String message);
 }

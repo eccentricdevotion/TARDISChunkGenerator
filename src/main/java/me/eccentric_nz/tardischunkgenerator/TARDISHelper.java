@@ -417,6 +417,17 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         new TARDISMapUpdater(world).update(mapView);
     }
 
+    @Override
+    public void sendActionBarMessage(Player player, String message) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        if (connection == null) {
+            return;
+        }
+        IChatBaseComponent component = new ChatComponentText(message);
+        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO);
+        connection.sendPacket(packet);
+    }
+
     /**
      * Start filtering logs for TARDIS related information
      *
