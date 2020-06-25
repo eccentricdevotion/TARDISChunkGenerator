@@ -25,10 +25,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator.light;
 
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -98,7 +98,7 @@ public class NMSHandler extends NmsHandlerBase {
         // 18 bits, with the lowest bit corresponding to chunk section -1 (in the void,
         // y=-16 to y=-1) and the highest bit for chunk section 16 (above the world,
         // y=256 to y=271).
-        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(chunk.getPos(), chunk.e(), sectionsMaskSky, sectionsMaskBlock);
+        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(chunk.getPos(), chunk.e(), sectionsMaskSky, sectionsMaskBlock, true);
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 

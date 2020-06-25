@@ -16,17 +16,18 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_15_R1.Entity;
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_16_R1.Entity;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.DyeColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_15_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TARDISDisguise {
@@ -76,10 +77,10 @@ public class TARDISDisguise {
                 break;
         }
         try {
-            Class entityClass = Class.forName("net.minecraft.server.v1_15_R1.Entity" + str);
-            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_15_R1.World.class);
+            Class entityClass = Class.forName("net.minecraft.server.v1_16_R1.Entity" + str);
+            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_16_R1.World.class);
             EntityTypes type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
-            net.minecraft.server.v1_15_R1.World world = ((CraftWorld) w).getHandle();
+            net.minecraft.server.v1_16_R1.World world = ((CraftWorld) w).getHandle();
             Entity entity = (Entity) constructor.newInstance(type, world);
             if (disguise.getOptions() != null) {
                 for (Object o : disguise.getOptions()) {
@@ -136,7 +137,7 @@ public class TARDISDisguise {
                     }
                     if (o instanceof Horse.Color && disguise.getEntityType().equals(EntityType.HORSE)) {
                         EntityHorse horse = (EntityHorse) entity;
-                        horse.setVariant(((Horse.Color) o).ordinal());
+                        horse.setVariant(((HorseColor) o), HorseStyle.values()[new Random().nextInt(HorseStyle.values().length)]);
                     }
                     if (o instanceof Llama.Color && disguise.getEntityType().equals(EntityType.LLAMA)) {
                         EntityLlama llama = (EntityLlama) entity;
@@ -165,7 +166,7 @@ public class TARDISDisguise {
                                 break;
                             case PIG:
                                 EntityPig pig = (EntityPig) entity;
-                                pig.setSaddle((Boolean) o);
+                                pig.saddle(null);
                                 break;
                             case ENDERMAN:
                                 if ((Boolean) o) {

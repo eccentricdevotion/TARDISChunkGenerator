@@ -21,22 +21,21 @@ import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
-import net.minecraft.server.v1_15_R1.*;
-import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.WorldType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftVillager;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -163,12 +162,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         nmsEntity.save(tag);
         tag.setBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
-        ((EntityLiving) nmsEntity).a(tag);
+        nmsEntity.load(tag);
     }
 
     @Override
     public void sendJson(Player player, String json) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json)));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json), ChatMessageType.CHAT, player.getUniqueId()));
     }
 
     @Override
@@ -307,15 +306,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                     case "amplified":
                         worldType = WorldType.AMPLIFIED;
                         break;
-                    case "buffet":
-                        worldType = WorldType.BUFFET;
-                        break;
-                    case "customized":
-                        worldType = WorldType.CUSTOMIZED;
-                        break;
-                    case "verion_1_1":
-                        worldType = WorldType.VERSION_1_1;
-                        break;
+//                    case "buffet":
+//                        worldType = WorldType.BUFFET;
+//                        break;
+//                    case "customized":
+//                        worldType = WorldType.CUSTOMIZED;
+//                        break;
+//                    case "verion_1_1":
+//                        worldType = WorldType.VERSION_1_1;
+//                        break;
                     default: // default or unknown
                         worldType = WorldType.NORMAL;
                         break;
@@ -414,7 +413,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void updateMap(World world, MapView mapView) {
-        new TARDISMapUpdater(world).update(mapView);
+        new TARDISMapUpdater(world, mapView.getCenterX(), mapView.getCenterZ()).update(mapView);
     }
 
     @Override
@@ -424,7 +423,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             return;
         }
         IChatBaseComponent component = new ChatComponentText(message);
-        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO);
+        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO, player.getUniqueId());
         connection.sendPacket(packet);
     }
 

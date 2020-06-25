@@ -16,7 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_15_R1.EntityFox;
+import net.minecraft.server.v1_16_R1.EntityFox;
 import org.bukkit.entity.Fox;
 
 public enum FOX {
