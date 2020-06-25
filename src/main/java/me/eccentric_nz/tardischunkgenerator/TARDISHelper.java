@@ -21,6 +21,7 @@ import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
+import net.minecraft.server.v1_16_R1.Entity;
 import net.minecraft.server.v1_16_R1.*;
 import net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
@@ -34,12 +35,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftItemFrame;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftVillager;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -425,6 +424,18 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         IChatBaseComponent component = new ChatComponentText(message);
         PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO, player.getUniqueId());
         connection.sendPacket(packet);
+    }
+
+    @Override
+    public void setItemFrameTags(ItemFrame frame) {
+        EntityItemFrame nmsFrame = ((CraftItemFrame) frame).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+        // writes the entity's NBT data to the `tag` object
+        nmsFrame.saveData(tag);
+        tag.setBoolean("Invisible", true);
+        tag.setBoolean("Fixed", true);
+        // sets the frame's tag to the altered `tag`
+        nmsFrame.loadData(tag);
     }
 
     /**

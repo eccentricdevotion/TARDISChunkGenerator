@@ -237,4 +237,11 @@ public interface TARDISHelperAPI {
      * @param message the message to send
      */
     public void sendActionBarMessage(Player player, String message);
+
+    /**
+     * Set the Invisible and Fixed NBT tags on an item frame
+     *
+     * @param frame the item frame to set the tags for
+     */
+    public void setItemFrameTags(ItemFrame frame);
 }
