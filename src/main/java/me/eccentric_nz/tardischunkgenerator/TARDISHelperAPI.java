@@ -20,6 +20,7 @@ import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
@@ -237,4 +238,13 @@ public interface TARDISHelperAPI {
      * @param message the message to send
      */
     public void sendActionBarMessage(Player player, String message);
+
+    /**
+     * Search for a biome
+     *
+     * @param world  the world to search in
+     * @param biome  the biome to search for
+     * @param player the player who is searching
+     */
+    public Location searchBiome(World world, Biome biome, Player player);
 }

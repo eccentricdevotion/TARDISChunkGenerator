@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -425,6 +426,19 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         IChatBaseComponent component = new ChatComponentText(message);
         PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO, player.getUniqueId());
         connection.sendPacket(packet);
+    }
+
+    @Override
+    public Location searchBiome(World world, Biome biome, Player player) {
+        WorldServer worldServer = ((CraftWorld) world).getHandle();
+        BiomeBase biomeBase = IRegistry.BIOME.get(MinecraftKey.a(biome.getKey().getKey()));
+        CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
+        BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
+        BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
+        if (blockPosition != null) {
+            return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+        }
+        return null;
     }
 
     /**
