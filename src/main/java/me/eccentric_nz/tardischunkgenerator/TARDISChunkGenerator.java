@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -50,5 +51,10 @@ public class TARDISChunkGenerator extends ChunkGenerator {
             }
         }
         return result;
+    }
+
+    @Override
+    public Location getFixedSpawnLocation(World world, Random random) {
+        return new Location(world, 0, 70, 0);
     }
 }
