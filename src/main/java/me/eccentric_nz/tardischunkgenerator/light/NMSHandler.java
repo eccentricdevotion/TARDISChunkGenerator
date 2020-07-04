@@ -110,7 +110,11 @@ public class NMSHandler extends NmsHandlerBase {
         int finalLightLevel = lightlevel < 0 ? 0 : lightlevel > 15 ? 15 : lightlevel;
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
-                LightEngineSky les = (LightEngineSky) lightEngine.a(EnumSkyBlock.SKY);
+                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.SKY);
+                if (!(layer instanceof LightEngineSky)) {
+                    return;
+                }
+                LightEngineSky les = (LightEngineSky) layer;
                 if (finalLightLevel == 0) {
                     les.a(position);
                 } else if (les.a(SectionPosition.a(position)) != null) {
@@ -122,7 +126,11 @@ public class NMSHandler extends NmsHandlerBase {
                     }
                 }
             } else {
-                LightEngineBlock leb = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.BLOCK);
+                if (!(layer instanceof LightEngineBlock)) {
+                    return;
+                }
+                LightEngineBlock leb = (LightEngineBlock) layer;
                 if (finalLightLevel == 0) {
                     leb.a(position);
                 } else if (leb.a(SectionPosition.a(position)) != null) {
@@ -248,7 +256,7 @@ public class NMSHandler extends NmsHandlerBase {
                 // STEP 3: ##### Continue light engine mailbox to process its tasks. #####
                 // Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine tasks.
                 while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2)) {
-                    ;
+
                 }
                 // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may still be
                 // in the queue. Therefore, it is important to start the loop again to process tasks from the queue.
