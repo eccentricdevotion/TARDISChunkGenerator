@@ -22,6 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.map.MapView;
@@ -247,4 +248,9 @@ public interface TARDISHelperAPI {
      * @param player the player who is searching
      */
     public Location searchBiome(World world, Biome biome, Player player);
+
+    /**
+     * Remove a TileEntity from the world
+     */
+    public void removeTileEntity(BlockState tile);
 }

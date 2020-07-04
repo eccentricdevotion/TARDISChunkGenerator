@@ -26,13 +26,16 @@ import net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_16_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
@@ -439,6 +442,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
         }
         return null;
+    }
+
+    @Override
+    public void removeTileEntity(BlockState tile) {
+        net.minecraft.server.v1_16_R1.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
+        chunk.removeTileEntity(position);
+        tile.getBlock().setType(Material.AIR);
     }
 
     /**
