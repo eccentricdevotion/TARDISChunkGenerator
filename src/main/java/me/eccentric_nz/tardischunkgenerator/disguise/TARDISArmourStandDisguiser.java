@@ -16,10 +16,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -91,7 +91,7 @@ public class TARDISArmourStandDisguiser {
         entity.e(stand.getEntityId());
         float fixed = fixYaw(location.getYaw());
         entity.setHeadRotation(fixed);
-        entity.l(fixed);
+        entity.h(fixed);
         entity.yaw = fixed;
         entity.pitch = location.getPitch();
         EntityInsentient insentient = (EntityInsentient) entity;

@@ -16,14 +16,14 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -73,7 +73,7 @@ public class TARDISEPSDisguiser {
         entity.setPosition(location.getX(), location.getY(), location.getZ());
         float fixed = fixYaw(location.getYaw());
         entity.setHeadRotation(fixed);
-        entity.l(fixed);
+        entity.h(fixed);
         entity.yaw = fixed;
         entity.pitch = location.getPitch();
     }

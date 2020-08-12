@@ -21,8 +21,8 @@ import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
-import net.minecraft.server.v1_16_R1.*;
-import net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R2.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
@@ -35,11 +35,11 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_16_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_16_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftVillager;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -434,7 +434,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public Location searchBiome(World world, Biome biome, Player player) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
-        BiomeBase biomeBase = IRegistry.BIOME.get(MinecraftKey.a(biome.getKey().getKey()));
+        BiomeBase biomeBase = worldServer.r().b(IRegistry.ay).get(MinecraftKey.a(biome.getKey().getKey()));
         CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
         BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
         BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
@@ -446,7 +446,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void removeTileEntity(BlockState tile) {
-        net.minecraft.server.v1_16_R1.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        net.minecraft.server.v1_16_R2.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
         BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
         chunk.removeTileEntity(position);
         tile.getBlock().setType(Material.AIR);

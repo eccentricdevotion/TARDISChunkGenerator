@@ -16,11 +16,11 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import net.minecraft.server.v1_16_R1.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_16_R2.PacketPlayOutMapChunk;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Collection;
  */
 public class TARDISPacketMapChunk {
 
-    private final net.minecraft.server.v1_16_R1.Chunk chunk;
+    private final net.minecraft.server.v1_16_R2.Chunk chunk;
 
     /**
      * Creates a TARDISPacketMapChunk.
@@ -97,6 +97,6 @@ public class TARDISPacketMapChunk {
      * @param player The player.
      */
     public final void send(Player player) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20, true));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
     }
 }

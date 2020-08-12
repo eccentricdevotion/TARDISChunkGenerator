@@ -1,10 +1,10 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R1.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
@@ -16,7 +16,7 @@ public final class TARDISMapUpdater extends EntityHuman {
     public static final String NAME = "_____MapUpdater_____";
 
     public TARDISMapUpdater(World world, int x, int z) {
-        super(((CraftWorld) world).getHandle(), new BlockPosition(x, 64, z), new GameProfile(ID, NAME));
+        super(((CraftWorld) world).getHandle(), new BlockPosition(x, 64, z), 1.0f, new GameProfile(ID, NAME));
     }
 
     @Override

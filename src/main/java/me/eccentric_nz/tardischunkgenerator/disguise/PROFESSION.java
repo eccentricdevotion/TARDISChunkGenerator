@@ -16,7 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R1.VillagerProfession;
+import net.minecraft.server.v1_16_R2.VillagerProfession;
 import org.bukkit.entity.Villager;
 
 public enum PROFESSION {

@@ -16,7 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R1.EntityMushroomCow;
+import net.minecraft.server.v1_16_R2.EntityMushroomCow;
 import org.bukkit.entity.MushroomCow;
 
 public enum MUSHROOM_COW {
