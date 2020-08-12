@@ -132,7 +132,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public boolean getVillagerWilling(Villager v) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bB");
+            Field willingField = EntityVillager.class.getDeclaredField("bu");
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
@@ -145,7 +145,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void setVillagerWilling(Villager v, boolean w) {
         try {
             EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bB");
+            Field willingField = EntityVillager.class.getDeclaredField("bu");
             willingField.setAccessible(true);
             willingField.set(villager, w);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
