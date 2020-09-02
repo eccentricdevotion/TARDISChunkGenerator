@@ -123,7 +123,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         TileEntityFurnace furnace = (TileEntityFurnace) tile;
         boolean is = false;
         if (furnace.getCustomName() != null) {
-            is = furnace.getCustomName().getText().equals("TARDIS Artron Furnace");
+            is = furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
         }
         return is;
     }
