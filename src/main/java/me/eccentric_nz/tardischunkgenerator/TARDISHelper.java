@@ -445,6 +445,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public String getBiomeKey(Location location) {
+        CraftWorld world = (CraftWorld) location.getWorld();
+        WorldServer worldServer = world.getHandle();
+        BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
+        IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
+        return registry.getKey(base).toString();
+    }
+
+    @Override
     public void removeTileEntity(BlockState tile) {
         net.minecraft.server.v1_16_R2.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
         BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());

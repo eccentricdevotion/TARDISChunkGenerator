@@ -250,6 +250,13 @@ public interface TARDISHelperAPI {
     public Location searchBiome(World world, Biome biome, Player player);
 
     /**
+     * Gets the Namespaced key from a biome
+     *
+     * @param location the location to get the biome for
+     */
+    public String getBiomeKey(Location location);
+
+    /**
      * Remove a TileEntity from the world
      */
     public void removeTileEntity(BlockState tile);
