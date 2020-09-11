@@ -191,7 +191,7 @@ public class TARDISDisguise {
                                 if ((Boolean) o) {
                                     EntityPillager pillager = (EntityPillager) entity;
                                     ItemStack crossbow = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(org.bukkit.Material.CROSSBOW));
-                                    pillager.setEquipment(EnumItemSlot.MAINHAND, crossbow);
+                                    pillager.setSlot(EnumItemSlot.MAINHAND, crossbow);
                                     pillager.a(pillager, 1.0f);
                                 }
                                 break;

@@ -105,12 +105,12 @@ public class TARDISEPSDisguiser {
         ItemStack mainHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand());
         ItemStack offHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand());
         // set NPC equipment
-        npc.setEquipment(EnumItemSlot.FEET, feet);
-        npc.setEquipment(EnumItemSlot.LEGS, legs);
-        npc.setEquipment(EnumItemSlot.CHEST, chest);
-        npc.setEquipment(EnumItemSlot.HEAD, head);
-        npc.setEquipment(EnumItemSlot.MAINHAND, mainHand);
-        npc.setEquipment(EnumItemSlot.OFFHAND, offHand);
+        npc.setSlot(EnumItemSlot.FEET, feet);
+        npc.setSlot(EnumItemSlot.LEGS, legs);
+        npc.setSlot(EnumItemSlot.CHEST, chest);
+        npc.setSlot(EnumItemSlot.HEAD, head);
+        npc.setSlot(EnumItemSlot.MAINHAND, mainHand);
+        npc.setSlot(EnumItemSlot.OFFHAND, offHand);
     }
 
     public int showToAll() {
