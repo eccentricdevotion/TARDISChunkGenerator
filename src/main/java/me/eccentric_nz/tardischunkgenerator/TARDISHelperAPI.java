@@ -257,6 +257,11 @@ public interface TARDISHelperAPI {
     public String getBiomeKey(Location location);
 
     /**
+     * Loads a custom dimension from a TARDIS datapack
+     */
+    public void loadTARDISDimension(String dimension);
+
+    /**
      * Remove a TileEntity from the world
      */
     public void removeTileEntity(BlockState tile);

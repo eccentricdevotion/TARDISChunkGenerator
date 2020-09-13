@@ -454,6 +454,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
+    public void loadTARDISDimension(String dimension) {
+        try {
+            TARDISDimensions.load(dimension);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void removeTileEntity(BlockState tile) {
         net.minecraft.server.v1_16_R2.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
         BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
