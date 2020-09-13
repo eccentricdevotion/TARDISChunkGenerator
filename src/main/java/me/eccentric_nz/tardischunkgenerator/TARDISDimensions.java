@@ -55,8 +55,15 @@ public class TARDISDimensions {
                         properties.put("generate-structures", "true");
                         properties.put("level-type", "DEFAULT");
                         GeneratorSettings dimGenSettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
-                        WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(Bukkit.getDefaultGameMode().getValue()), false, //Hardcore
-                                EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
+                        WorldSettings worldSettings = new WorldSettings(
+                                name,
+                                EnumGamemode.getById(Bukkit.getDefaultGameMode().getValue()),
+                                false, // hardcore
+                                EnumDifficulty.EASY,
+                                false,
+                                new GameRules(),
+                                console.datapackconfiguration
+                        );
                         worldData = new WorldDataServer(worldSettings, dimGenSettings, Lifecycle.stable());
                     }
                     worldData.checkName(name);
@@ -69,9 +76,22 @@ public class TARDISDimensions {
                     // replace existing dimension manager, correctly setting the ID up (which is -1 for default worlds...)
                     ((RegistryMaterials<DimensionManager>) console.customRegistry.a()).a(OptionalInt.empty(), dimManResKey, dimensionmanager, Lifecycle.stable());
                     WorldLoadListener worldloadlistener = console.worldLoadListenerFactory.create(11);
-                    WorldServer worldserver = new WorldServer(console, console.executorService, session, worldData, worldKey, dimensionmanager, worldloadlistener, chunkgenerator, false, // isDebugWorld
+                    WorldServer worldserver = new WorldServer(
+                            console,
+                            console.executorService,
+                            session,
+                            worldData,
+                            worldKey,
+                            dimensionmanager,
+                            worldloadlistener,
+                            chunkgenerator,
+                            false, // isDebugWorld
                             BiomeManager.a(worldData.getGeneratorSettings().getSeed()), // biome seed
-                            spawners, false, org.bukkit.World.Environment.NORMAL, null);
+                            spawners,
+                            false, // tickTime
+                            org.bukkit.World.Environment.NORMAL,
+                            null // another chunk generator
+                    );
                     if (Bukkit.getWorld(name.toLowerCase(Locale.ENGLISH)) == null) {
                         System.out.println(TARDISHelper.messagePrefix + "Failed to load custom dimension " + name);
                     } else {
