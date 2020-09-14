@@ -73,8 +73,15 @@ public class TARDISDimensions {
                     }
                     List<MobSpawner> spawners = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worldData));
                     ResourceKey<DimensionManager> dimManResKey = ResourceKey.a(IRegistry.K, dimKey.a());
+                    RegistryMaterials<DimensionManager> dimRegistry = ((RegistryMaterials<DimensionManager>) console.customRegistry.a());
+                    MinecraftKey key = dimRegistry.getKey(dimensionmanager);
+                    if (key != null) {
+                        // the loaded manager is the same
+                        System.err.println("Dimension manager already loaded with key " + key + "! Skipping");
+                        continue;
+                    }
                     // replace existing dimension manager, correctly setting the ID up (which is -1 for default worlds...)
-                    ((RegistryMaterials<DimensionManager>) console.customRegistry.a()).a(OptionalInt.empty(), dimManResKey, dimensionmanager, Lifecycle.stable());
+                    dimRegistry.a(OptionalInt.empty(), dimManResKey, dimensionmanager, Lifecycle.stable());
                     WorldLoadListener worldloadlistener = console.worldLoadListenerFactory.create(11);
                     WorldServer worldserver = new WorldServer(
                             console,
@@ -88,7 +95,7 @@ public class TARDISDimensions {
                             false, // isDebugWorld
                             BiomeManager.a(worldData.getGeneratorSettings().getSeed()), // biome seed
                             spawners,
-                            false, // tickTime
+                            true, // tickTime
                             org.bukkit.World.Environment.NORMAL,
                             null // another chunk generator
                     );
