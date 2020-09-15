@@ -258,8 +258,11 @@ public interface TARDISHelperAPI {
 
     /**
      * Loads a custom dimension from a TARDIS datapack
+     *
+     * @param dimension the name of the dimension to load
+     * @return the world if it was successfully loaded or null
      */
-    public void loadTARDISDimension(String dimension);
+    public World loadTARDISDimension(String dimension);
 
     /**
      * Remove a TileEntity from the world

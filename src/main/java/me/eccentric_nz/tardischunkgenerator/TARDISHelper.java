@@ -454,11 +454,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void loadTARDISDimension(String dimension) {
+    public World loadTARDISDimension(String dimension) {
         try {
-            TARDISDimensions.load(dimension);
+            return TARDISDimensions.load(dimension);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 

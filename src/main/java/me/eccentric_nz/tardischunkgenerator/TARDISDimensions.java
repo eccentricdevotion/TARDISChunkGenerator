@@ -15,8 +15,9 @@ import java.util.*;
 
 public class TARDISDimensions {
 
-    public static void load(String dimension) throws Exception {
-        DedicatedServer console = ((CraftServer) Bukkit.getServer()).getServer();
+    public static org.bukkit.World load(String dimension) throws Exception {
+        org.bukkit.World loaded = null;
+                DedicatedServer console = ((CraftServer) Bukkit.getServer()).getServer();
         Field field = console.getClass().getSuperclass().getDeclaredField("saveData");
         field.setAccessible(true);
         SaveData saveData = (SaveData) field.get(console);
@@ -99,7 +100,8 @@ public class TARDISDimensions {
                             org.bukkit.World.Environment.NORMAL,
                             null // another chunk generator
                     );
-                    if (Bukkit.getWorld(name.toLowerCase(Locale.ENGLISH)) == null) {
+                    loaded = Bukkit.getWorld(name.toLowerCase(Locale.ENGLISH));
+                    if (loaded == null) {
                         System.out.println(TARDISHelper.messagePrefix + "Failed to load custom dimension " + name);
                     } else {
                         console.initWorld(worldserver, worldData, worldData, worldData.getGeneratorSettings());
@@ -112,5 +114,6 @@ public class TARDISDimensions {
                 }
             }
         }
+        return loaded;
     }
 }
