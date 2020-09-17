@@ -450,7 +450,24 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         WorldServer worldServer = world.getHandle();
         BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
         IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
-        return registry.getKey(base).toString();
+        MinecraftKey key = registry.getKey(base);
+        if (key != null) {
+            return key.toString();
+        } else {
+//            System.out.println("Biome key was null for " + location.toString());
+            switch (world.getEnvironment()) {
+                case NETHER:
+                    return "minecraft:nether_wastes";
+                case THE_END:
+                    return "minecraft:the_end";
+                default:
+                    if (world.getName().equalsIgnoreCase("skaro")) {
+                        return "tardis:skaro_lakes";
+                    } else {
+                        return "minecraft:plains";
+                    }
+            }
+        }
     }
 
     @Override
