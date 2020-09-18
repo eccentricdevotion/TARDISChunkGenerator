@@ -463,6 +463,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 default:
                     if (world.getName().equalsIgnoreCase("skaro")) {
                         return "tardis:skaro_lakes";
+                    } else if (world.getName().equalsIgnoreCase("gallifrey")) {
+                        return "tardis:gallifrey_badlands";
                     } else {
                         return "minecraft:plains";
                     }
