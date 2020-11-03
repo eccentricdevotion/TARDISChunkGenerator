@@ -3,9 +3,9 @@ package me.eccentric_nz.tardischunkgenerator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
@@ -17,7 +17,7 @@ public class TARDISDimensions {
 
     public static org.bukkit.World load(String dimension) throws Exception {
         org.bukkit.World loaded = null;
-                DedicatedServer console = ((CraftServer) Bukkit.getServer()).getServer();
+        DedicatedServer console = ((CraftServer) Bukkit.getServer()).getServer();
         Field field = console.getClass().getSuperclass().getDeclaredField("saveData");
         field.setAccessible(true);
         SaveData saveData = (SaveData) field.get(console);
@@ -56,21 +56,14 @@ public class TARDISDimensions {
                         properties.put("generate-structures", "true");
                         properties.put("level-type", "DEFAULT");
                         GeneratorSettings dimGenSettings = GeneratorSettings.a(console.getCustomRegistry(), properties);
-                        WorldSettings worldSettings = new WorldSettings(
-                                name,
-                                EnumGamemode.getById(Bukkit.getDefaultGameMode().getValue()),
-                                false, // hardcore
-                                EnumDifficulty.EASY,
-                                false,
-                                new GameRules(),
-                                console.datapackconfiguration
-                        );
+                        WorldSettings worldSettings = new WorldSettings(name, EnumGamemode.getById(Bukkit.getDefaultGameMode().getValue()), false, // hardcore
+                                EnumDifficulty.EASY, false, new GameRules(), console.datapackconfiguration);
                         worldData = new WorldDataServer(worldSettings, dimGenSettings, Lifecycle.stable());
                     }
                     worldData.checkName(name);
                     worldData.a(console.getServerModName(), console.getModded().isPresent());
                     if (console.options.has("forceUpgrade")) {
-                        net.minecraft.server.v1_16_R2.Main.convertWorld(session, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worldData.getGeneratorSettings().d().d().stream().map((entry2) -> ResourceKey.a(IRegistry.K, entry2.getKey().a())).collect(ImmutableSet.toImmutableSet()));
+                        net.minecraft.server.v1_16_R3.Main.convertWorld(session, DataConverterRegistry.a(), console.options.has("eraseCache"), () -> true, worldData.getGeneratorSettings().d().d().stream().map((entry2) -> ResourceKey.a(IRegistry.K, entry2.getKey().a())).collect(ImmutableSet.toImmutableSet()));
                     }
                     List<MobSpawner> spawners = ImmutableList.of(new MobSpawnerPhantom(), new MobSpawnerPatrol(), new MobSpawnerCat(), new VillageSiege(), new MobSpawnerTrader(worldData));
                     ResourceKey<DimensionManager> dimManResKey = ResourceKey.a(IRegistry.K, dimKey.a());
@@ -84,21 +77,10 @@ public class TARDISDimensions {
                     // replace existing dimension manager, correctly setting the ID up (which is -1 for default worlds...)
                     dimRegistry.a(OptionalInt.empty(), dimManResKey, dimensionmanager, Lifecycle.stable());
                     WorldLoadListener worldloadlistener = console.worldLoadListenerFactory.create(11);
-                    WorldServer worldserver = new WorldServer(
-                            console,
-                            console.executorService,
-                            session,
-                            worldData,
-                            worldKey,
-                            dimensionmanager,
-                            worldloadlistener,
-                            chunkgenerator,
-                            false, // isDebugWorld
+                    WorldServer worldserver = new WorldServer(console, console.executorService, session, worldData, worldKey, dimensionmanager, worldloadlistener, chunkgenerator, false, // isDebugWorld
                             BiomeManager.a(worldData.getGeneratorSettings().getSeed()), // biome seed
-                            spawners,
-                            true, // tickTime
-                            org.bukkit.World.Environment.NORMAL,
-                            null // another chunk generator
+                            spawners, true, // tickTime
+                            org.bukkit.World.Environment.NORMAL, null // another chunk generator
                     );
                     loaded = Bukkit.getWorld(name.toLowerCase(Locale.ENGLISH));
                     if (loaded == null) {

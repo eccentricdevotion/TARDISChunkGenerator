@@ -268,4 +268,9 @@ public interface TARDISHelperAPI {
      * Remove a TileEntity from the world
      */
     public void removeTileEntity(BlockState tile);
+
+    /**
+     * Reload commands for a player
+     */
+    public void reloadCommandsForPlayer(Player player);
 }

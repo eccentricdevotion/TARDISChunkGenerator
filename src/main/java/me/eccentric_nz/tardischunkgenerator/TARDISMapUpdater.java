@@ -1,10 +1,10 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R2.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
