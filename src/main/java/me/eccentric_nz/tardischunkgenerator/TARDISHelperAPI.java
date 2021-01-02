@@ -94,6 +94,11 @@ public interface TARDISHelperAPI {
     void openSignGUI(Player player, Sign sign);
 
     /**
+     * Stop listening for sign updates
+     */
+    void finishSignEditing(Player player);
+
+    /**
      * Sets a random seed value for a world.
      *
      * @param world the world to set the seed for

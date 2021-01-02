@@ -17,6 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
+import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
 import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
@@ -179,12 +180,18 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public void openSignGUI(Player player, Sign sign) {
         Location l = sign.getLocation();
         TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
-        ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(t.getUpdatePacket());
-        t.isEditable = true; // doesn't work in 1.14.x!
-        t.a(((CraftPlayer) player.getPlayer()).getHandle());
-        t.update();
+        EntityPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
+        entityPlayer.playerConnection.sendPacket(t.getUpdatePacket());
+        t.isEditable = true;
+        t.a(entityPlayer);
         PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(t.getPosition());
-        ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.sendPacket(packet);
+        entityPlayer.playerConnection.sendPacket(packet);
+        SignInputHandler.injectNetty(player, this);
+    }
+
+    @Override
+    public void finishSignEditing(Player player) {
+        SignInputHandler.ejectNetty(player);
     }
 
     @Override
