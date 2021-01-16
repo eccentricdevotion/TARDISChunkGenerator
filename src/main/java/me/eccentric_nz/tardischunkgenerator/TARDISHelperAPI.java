@@ -278,4 +278,9 @@ public interface TARDISHelperAPI {
      * Reload commands for a player
      */
     public void reloadCommandsForPlayer(Player player);
+
+    /**
+     * Calls a powerable block's interact method
+     */
+    public void setPowerableBlockInteract(Block block);
 }

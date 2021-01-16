@@ -39,6 +39,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
@@ -501,6 +502,50 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void reloadCommandsForPlayer(Player player) {
         ((CraftServer) Bukkit.getServer()).getHandle().getServer().getCommandDispatcher().a(((CraftPlayer) player).getHandle());
+    }
+
+    @Override
+    public void setPowerableBlockInteract(Block block) {
+        IBlockData data = ((CraftBlock) block).getNMS();
+        net.minecraft.server.v1_16_R3.World world = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPosition position = ((CraftBlock) block).getPosition();
+        if (block.getType().equals(Material.LEVER)) {
+            Blocks.LEVER.interact(data, world, position, null, null, null);
+        } else {
+            // BUTTON
+            switch (block.getType()) {
+                case ACACIA_BUTTON:
+                    Blocks.ACACIA_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case BIRCH_BUTTON:
+                    Blocks.BIRCH_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case CRIMSON_BUTTON:
+                    Blocks.CRIMSON_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case DARK_OAK_BUTTON:
+                    Blocks.DARK_OAK_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case JUNGLE_BUTTON:
+                    Blocks.JUNGLE_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case OAK_BUTTON:
+                    Blocks.OAK_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case POLISHED_BLACKSTONE_BUTTON:
+                    Blocks.POLISHED_BLACKSTONE_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case SPRUCE_BUTTON:
+                    Blocks.SPRUCE_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case STONE_BUTTON:
+                    Blocks.STONE_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+                case WARPED_BUTTON:
+                    Blocks.WARPED_BUTTON.interact(data, world, position, null, null, null);
+                    break;
+            }
+        }
     }
 
     /**
