@@ -26,6 +26,7 @@ import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 public class TARDISChameleonArchDisguiser {
 
@@ -83,7 +84,7 @@ public class TARDISChameleonArchDisguiser {
         }
         TARDISDisguiseTracker.ProfileData map = TARDISDisguiseTracker.ARCHED.get(player.getUniqueId());
         if (map == null) {
-            System.out.println(TARDISHelper.messagePrefix + "Could not get backed up profile data from tracker!");
+            Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Could not get backed up profile data from tracker!");
             return;
         }
         PropertyMap properties = map.getProperties();

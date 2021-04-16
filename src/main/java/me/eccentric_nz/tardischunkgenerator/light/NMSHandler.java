@@ -25,7 +25,9 @@
  */
 package me.eccentric_nz.tardischunkgenerator.light;
 
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 public class NMSHandler extends NmsHandlerBase {
 
@@ -239,7 +242,7 @@ public class NMSHandler extends NmsHandlerBase {
                     if (timeToWait == -1) {
                         // Try to wait 3 seconds until light engine mailbox is busy.
                         timeToWait = System.currentTimeMillis() + 3 * 1000;
-                        System.out.println("ThreadedMailbox is closing. Will wait...");
+                        Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "ThreadedMailbox is closing. Will wait...");
                     } else if (System.currentTimeMillis() >= timeToWait) {
                         throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
                     }

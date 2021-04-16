@@ -16,8 +16,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
@@ -29,6 +31,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 
 public class TARDISDisguise {
 
@@ -240,7 +243,7 @@ public class TARDISDisguise {
             }
             return entity;
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            System.err.println("[TARDISDisguise] " + e.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, TARDISHelper.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
             e.printStackTrace();
         }
         return null;

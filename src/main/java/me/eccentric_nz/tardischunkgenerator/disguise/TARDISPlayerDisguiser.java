@@ -19,6 +19,7 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class TARDISPlayerDisguiser {
 
@@ -65,7 +67,7 @@ public class TARDISPlayerDisguiser {
                 profile.getProperties().removeAll("textures");
                 return profile.getProperties().put("textures", new Property("textures", skin, signature));
             } else {
-                System.out.println("Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
+                Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
                 return false;
             }
         } catch (IOException e) {

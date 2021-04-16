@@ -16,12 +16,18 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISDimensions;
+import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPacketMapChunk;
 import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
 import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
+import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import net.minecraft.server.v1_16_R3.*;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
@@ -139,7 +145,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             willingField.setAccessible(true);
             return willingField.getBoolean(villager);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to get villager willingness: " + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to get villager willingness: " + ex.getMessage());
             return false;
         }
     }
@@ -152,7 +158,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             willingField.setAccessible(true);
             willingField.set(villager, w);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            System.err.println("[TARDISHelper] Failed to set villager willingness: " + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
         }
     }
 
@@ -212,7 +218,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
                 fileoutputstream.close();
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
             }
         }
     }
@@ -232,14 +238,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
                 NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
                 fileoutputstream.close();
-                System.out.println("[TCG] Renamed level to " + newName);
+                Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed level to " + newName);
                 // rename the directory
                 File directory = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName);
                 File folder = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + newName);
                 directory.renameTo(folder);
-                System.out.println("[TCG] Renamed directory to " + newName);
+                Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed directory to " + newName);
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
             }
         }
     }
@@ -275,7 +281,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
                 fileoutputstream.close();
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
             }
         }
     }
@@ -319,15 +325,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                     case "amplified":
                         worldType = WorldType.AMPLIFIED;
                         break;
-//                    case "buffet":
-//                        worldType = WorldType.BUFFET;
-//                        break;
-//                    case "customized":
-//                        worldType = WorldType.CUSTOMIZED;
-//                        break;
-//                    case "verion_1_1":
-//                        worldType = WorldType.VERSION_1_1;
-//                        break;
                     default: // default or unknown
                         worldType = WorldType.NORMAL;
                         break;
@@ -343,11 +340,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 }
                 return new TARDISPlanetData(gameMode, environment, worldType);
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
                 return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
             }
         }
-        System.out.println("Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
+        Bukkit.getLogger().log(Level.INFO, messagePrefix + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
         return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
     }
 
@@ -463,7 +460,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (key != null) {
             return key.toString();
         } else {
-//            System.out.println("Biome key was null for " + location.toString());
+//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location.toString());
             switch (world.getEnvironment()) {
                 case NETHER:
                     return "minecraft:nether_wastes";
