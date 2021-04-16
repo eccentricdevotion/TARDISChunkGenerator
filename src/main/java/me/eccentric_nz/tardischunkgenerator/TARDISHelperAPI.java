@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISPlanetData;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

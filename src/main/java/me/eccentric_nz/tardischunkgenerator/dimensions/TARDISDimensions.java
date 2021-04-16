@@ -1,8 +1,9 @@
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.dimensions;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Lifecycle;
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
@@ -12,6 +13,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.logging.Level;
 
 public class TARDISDimensions {
 
@@ -38,7 +40,7 @@ public class TARDISDimensions {
                 String name = dimKey.a().getKey();
                 // this is the dimension we want to load
                 if (name.equalsIgnoreCase(dimension)) {
-                    System.out.println(TARDISHelper.messagePrefix + "Loading " + name);
+                    Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Loading " + name);
                     Convertable.ConversionSession session = convertable.new ConversionSession(name, dimKey) {
                         // the original session isn't prepared for custom dimensions
                         @Override
@@ -71,7 +73,7 @@ public class TARDISDimensions {
                     MinecraftKey key = dimRegistry.getKey(dimensionmanager);
                     if (key != null) {
                         // the loaded manager is the same
-                        System.err.println("Dimension manager already loaded with key " + key + "! Skipping");
+                        Bukkit.getLogger().log(Level.SEVERE, TARDISHelper.messagePrefix + "Dimension manager already loaded with key " + key + "! Skipping");
                         continue;
                     }
                     // replace existing dimension manager, correctly setting the ID up (which is -1 for default worlds...)
@@ -84,7 +86,7 @@ public class TARDISDimensions {
                     );
                     loaded = Bukkit.getWorld(name.toLowerCase(Locale.ENGLISH));
                     if (loaded == null) {
-                        System.out.println(TARDISHelper.messagePrefix + "Failed to load custom dimension " + name);
+                        Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Failed to load custom dimension " + name);
                     } else {
                         console.initWorld(worldserver, worldData, worldData, worldData.getGeneratorSettings());
                         worldserver.setSpawnFlags(true, true);

@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.helpers;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_16_R3.*;

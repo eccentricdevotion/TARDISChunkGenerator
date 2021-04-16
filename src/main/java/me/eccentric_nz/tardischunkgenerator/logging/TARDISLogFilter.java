@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.logging;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
