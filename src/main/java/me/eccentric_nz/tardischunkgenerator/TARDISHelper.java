@@ -16,8 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISDimensions;
-import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISPlanetData;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
@@ -475,16 +474,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                         return "minecraft:plains";
                     }
             }
-        }
-    }
-
-    @Override
-    public World loadTARDISDimension(String dimension) {
-        try {
-            return TARDISDimensions.load(dimension);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

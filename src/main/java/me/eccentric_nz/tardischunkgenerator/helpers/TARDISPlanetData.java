@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.dimensions;
+package me.eccentric_nz.tardischunkgenerator.helpers;
 
 import org.bukkit.GameMode;
 import org.bukkit.World;

@@ -16,7 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.dimensions.TARDISPlanetData;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -261,14 +261,6 @@ public interface TARDISHelperAPI {
      * @param location the location to get the biome for
      */
     public String getBiomeKey(Location location);
-
-    /**
-     * Loads a custom dimension from a TARDIS datapack
-     *
-     * @param dimension the name of the dimension to load
-     * @return the world if it was successfully loaded or null
-     */
-    public World loadTARDISDimension(String dimension);
 
     /**
      * Remove a TileEntity from the world
