@@ -178,11 +178,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void sendJson(Player player, String json) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json), ChatMessageType.CHAT, player.getUniqueId()));
-    }
-
-    @Override
     public void openSignGUI(Player player, Sign sign) {
         Location l = sign.getLocation();
         TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
