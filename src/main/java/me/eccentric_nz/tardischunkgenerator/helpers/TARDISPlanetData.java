@@ -22,25 +22,25 @@ import org.bukkit.WorldType;
 
 public class TARDISPlanetData {
 
-    private final GameMode gameMode;
-    private final World.Environment environment;
-    private final WorldType worldType;
+	private final GameMode gameMode;
+	private final World.Environment environment;
+	private final WorldType worldType;
 
-    public TARDISPlanetData(GameMode gameMode, World.Environment environment, WorldType worldType) {
-        this.gameMode = gameMode;
-        this.environment = environment;
-        this.worldType = worldType;
-    }
+	public TARDISPlanetData(GameMode gameMode, World.Environment environment, WorldType worldType) {
+		this.gameMode = gameMode;
+		this.environment = environment;
+		this.worldType = worldType;
+	}
 
-    public GameMode getGameMode() {
-        return gameMode;
-    }
+	public GameMode getGameMode() {
+		return gameMode;
+	}
 
-    public World.Environment getEnvironment() {
-        return environment;
-    }
+	public World.Environment getEnvironment() {
+		return environment;
+	}
 
-    public WorldType getWorldType() {
-        return worldType;
-    }
+	public WorldType getWorldType() {
+		return worldType;
+	}
 }

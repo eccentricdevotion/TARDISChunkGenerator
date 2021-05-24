@@ -31,90 +31,90 @@ import java.util.Collection;
 
 public class ChunkInfo {
 
-    private final World world;
-    private final int x;
-    private final int z;
-    private int y;
-    private Collection<? extends Player> receivers;
+	private final World world;
+	private final int x;
+	private final int z;
+	private int y;
+	private Collection<? extends Player> receivers;
 
-    @Deprecated
-    public ChunkInfo(World world, int chunkX, int chunkZ, Collection<? extends Player> players) {
-        this(world, chunkX, 256, chunkZ, players);
-    }
+	@Deprecated
+	public ChunkInfo(World world, int chunkX, int chunkZ, Collection<? extends Player> players) {
+		this(world, chunkX, 256, chunkZ, players);
+	}
 
-    public ChunkInfo(World world, int chunkX, int chunk_y_height, int chunkZ, Collection<? extends Player> players) {
-        this.world = world;
-        x = chunkX;
-        y = chunk_y_height >> 4;
-        z = chunkZ;
-        receivers = players;
-    }
+	public ChunkInfo(World world, int chunkX, int chunk_y_height, int chunkZ, Collection<? extends Player> players) {
+		this.world = world;
+		x = chunkX;
+		y = chunk_y_height >> 4;
+		z = chunkZ;
+		receivers = players;
+	}
 
-    public World getWorld() {
-        return world;
-    }
+	public World getWorld() {
+		return world;
+	}
 
-    public int getChunkX() {
-        return x;
-    }
+	public int getChunkX() {
+		return x;
+	}
 
-    public int getChunkY() {
-        return y;
-    }
+	public int getChunkY() {
+		return y;
+	}
 
-    public int getChunkZ() {
-        return z;
-    }
+	public int getChunkZ() {
+		return z;
+	}
 
-    @Deprecated
-    public int getChunkYHeight() {
-        return y << 4;
-    }
+	@Deprecated
+	public int getChunkYHeight() {
+		return y << 4;
+	}
 
-    @Deprecated
-    public void setChunkYHeight(int y) {
-        this.y = y;
-    }
+	@Deprecated
+	public void setChunkYHeight(int y) {
+		this.y = y;
+	}
 
-    public Collection<? extends Player> getReceivers() {
-        return receivers;
-    }
+	public Collection<? extends Player> getReceivers() {
+		return receivers;
+	}
 
-    public void setReceivers(Collection<? extends Player> receivers) {
-        this.receivers = receivers;
-    }
+	public void setReceivers(Collection<? extends Player> receivers) {
+		this.receivers = receivers;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((world == null) ? 0 : world.hashCode());
-        result = prime * result + x;
-        result = prime * result + z;
-        result = prime * result + y;
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((world == null) ? 0 : world.hashCode());
+		result = prime * result + x;
+		result = prime * result + z;
+		result = prime * result + y;
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ChunkInfo)) {
-            return false;
-        }
-        ChunkInfo other = (ChunkInfo) obj;
-        if (world != other.world) {
-            return false;
-        }
-        return x == other.x && z == other.z && y == other.y;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ChunkInfo)) {
+			return false;
+		}
+		ChunkInfo other = (ChunkInfo) obj;
+		if (world != other.world) {
+			return false;
+		}
+		return x == other.x && z == other.z && y == other.y;
+	}
 
-    @Override
-    public String toString() {
-        return "ChunkInfo [world=" + world + ", x=" + x + ", y=" + y + ", z=" + z + "]";
-    }
+	@Override
+	public String toString() {
+		return "ChunkInfo [world=" + world + ", x=" + x + ", y=" + y + ", z=" + z + "]";
+	}
 }

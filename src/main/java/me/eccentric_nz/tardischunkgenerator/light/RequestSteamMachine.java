@@ -31,82 +31,82 @@ import java.util.concurrent.*;
 
 public class RequestSteamMachine implements Runnable {
 
-    private final Queue<Runnable> REQUEST_QUEUE = new ConcurrentLinkedQueue<>();
-    private final Map<ChunkLocation, ChunkUpdateInfo> chunksToUpdate = new HashMap<>();
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private boolean isStarted;
-    private int maxIterationsPerTick;
-    // THREADS
-    private ScheduledFuture<?> sch;
+	private final Queue<Runnable> REQUEST_QUEUE = new ConcurrentLinkedQueue<>();
+	private final Map<ChunkLocation, ChunkUpdateInfo> chunksToUpdate = new HashMap<>();
+	private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	private boolean isStarted;
+	private int maxIterationsPerTick;
+	// THREADS
+	private ScheduledFuture<?> sch;
 
-    public void start(int ticks, int maxIterationsPerTick) {
-        if (!isStarted) {
-            this.maxIterationsPerTick = maxIterationsPerTick;
-            sch = executor.scheduleWithFixedDelay(this, 0, 50 * ticks, TimeUnit.MILLISECONDS);
-            isStarted = true;
-        }
-    }
+	public void start(int ticks, int maxIterationsPerTick) {
+		if (!isStarted) {
+			this.maxIterationsPerTick = maxIterationsPerTick;
+			sch = executor.scheduleWithFixedDelay(this, 0, 50 * ticks, TimeUnit.MILLISECONDS);
+			isStarted = true;
+		}
+	}
 
-    public void shutdown() {
-        if (isStarted) {
-            REQUEST_QUEUE.clear();
-            maxIterationsPerTick = 0;
-            sch.cancel(false);
-            isStarted = false;
-        }
-    }
+	public void shutdown() {
+		if (isStarted) {
+			REQUEST_QUEUE.clear();
+			maxIterationsPerTick = 0;
+			sch.cancel(false);
+			isStarted = false;
+		}
+	}
 
-    public boolean isStarted() {
-        return isStarted;
-    }
+	public boolean isStarted() {
+		return isStarted;
+	}
 
-    public boolean addToQueue(Runnable request) {
-        if (request != null) {
-            REQUEST_QUEUE.add(request);
-            return true;
-        }
-        return false;
-    }
+	public boolean addToQueue(Runnable request) {
+		if (request != null) {
+			REQUEST_QUEUE.add(request);
+			return true;
+		}
+		return false;
+	}
 
-    public void addChunkToUpdate(ChunkInfo info, LightType lightType, Collection<? extends Player> receivers) {
-        int SectionY = info.getChunkY();
-        INMSHandler nmsHandler = new NMSHandler();
-        if (nmsHandler.isValidSectionY(SectionY)) {
-            ChunkLocation chunk = new ChunkLocation(info.getWorld(), info.getChunkX(), info.getChunkZ());
-            int sectionYMask = nmsHandler.asSectionMask(SectionY);
-            Collection<Player> players = new ArrayList<>(receivers != null ? receivers : info.getReceivers());
-            addToQueue(() -> {
-                ChunkUpdateInfo chunkUpdateInfo = chunksToUpdate.get(chunk);
-                if (chunkUpdateInfo == null) {
-                    chunksToUpdate.put(chunk, chunkUpdateInfo = new ChunkUpdateInfo());
-                }
-                chunkUpdateInfo.add(lightType, sectionYMask, players);
-            });
-        }
-    }
+	public void addChunkToUpdate(ChunkInfo info, LightType lightType, Collection<? extends Player> receivers) {
+		int SectionY = info.getChunkY();
+		INMSHandler nmsHandler = new NMSHandler();
+		if (nmsHandler.isValidSectionY(SectionY)) {
+			ChunkLocation chunk = new ChunkLocation(info.getWorld(), info.getChunkX(), info.getChunkZ());
+			int sectionYMask = nmsHandler.asSectionMask(SectionY);
+			Collection<Player> players = new ArrayList<>(receivers != null ? receivers : info.getReceivers());
+			addToQueue(() -> {
+				ChunkUpdateInfo chunkUpdateInfo = chunksToUpdate.get(chunk);
+				if (chunkUpdateInfo == null) {
+					chunksToUpdate.put(chunk, chunkUpdateInfo = new ChunkUpdateInfo());
+				}
+				chunkUpdateInfo.add(lightType, sectionYMask, players);
+			});
+		}
+	}
 
-    @Override
-    public void run() {
-        try {
-            int iterationsCount = 0;
-            Runnable request;
-            while (iterationsCount < maxIterationsPerTick && (request = REQUEST_QUEUE.poll()) != null) {
-                request.run();
-                iterationsCount++;
-            }
-            INMSHandler nmsHandler = new NMSHandler();
-            for (Map.Entry<ChunkLocation, ChunkUpdateInfo> item : chunksToUpdate.entrySet()) {
-                ChunkLocation chunk = item.getKey();
-                ChunkUpdateInfo chunkUpdateInfo = item.getValue();
-                int sectionMaskSky = chunkUpdateInfo.getSectionMaskSky();
-                int sectionMaskBlock = chunkUpdateInfo.getSectionMaskBlock();
-                Collection<? extends Player> players = nmsHandler.filterVisiblePlayers(chunk.getWorld(), chunk.getX(), chunk.getZ(), chunkUpdateInfo.getPlayers());
-                nmsHandler.sendChunkSectionsUpdate(chunk.getWorld(), chunk.getX(), chunk.getZ(), sectionMaskSky, sectionMaskBlock, players);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            chunksToUpdate.clear();
-        }
-    }
+	@Override
+	public void run() {
+		try {
+			int iterationsCount = 0;
+			Runnable request;
+			while (iterationsCount < maxIterationsPerTick && (request = REQUEST_QUEUE.poll()) != null) {
+				request.run();
+				iterationsCount++;
+			}
+			INMSHandler nmsHandler = new NMSHandler();
+			for (Map.Entry<ChunkLocation, ChunkUpdateInfo> item : chunksToUpdate.entrySet()) {
+				ChunkLocation chunk = item.getKey();
+				ChunkUpdateInfo chunkUpdateInfo = item.getValue();
+				int sectionMaskSky = chunkUpdateInfo.getSectionMaskSky();
+				int sectionMaskBlock = chunkUpdateInfo.getSectionMaskBlock();
+				Collection<? extends Player> players = nmsHandler.filterVisiblePlayers(chunk.getWorld(), chunk.getX(), chunk.getZ(), chunkUpdateInfo.getPlayers());
+				nmsHandler.sendChunkSectionsUpdate(chunk.getWorld(), chunk.getX(), chunk.getZ(), sectionMaskSky, sectionMaskBlock, players);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		} finally {
+			chunksToUpdate.clear();
+		}
+	}
 }

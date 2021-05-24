@@ -29,114 +29,114 @@ import java.util.UUID;
 
 public class TARDISArmourStandDisguiser {
 
-    private final ArmorStand stand;
-    private final Object[] options;
-    private final EntityType entityType;
-    private Entity entity;
+	private final ArmorStand stand;
+	private final Object[] options;
+	private final EntityType entityType;
+	private Entity entity;
 
-    public TARDISArmourStandDisguiser(ArmorStand stand, EntityType entityType, Object[] options) {
-        this.stand = stand;
-        this.entityType = entityType;
-        this.options = options;
-        createDisguise();
-    }
+	public TARDISArmourStandDisguiser(ArmorStand stand, EntityType entityType, Object[] options) {
+		this.stand = stand;
+		this.entityType = entityType;
+		this.options = options;
+		createDisguise();
+	}
 
-    public static void disguiseToPlayer(Player to, org.bukkit.World world) {
-        for (Map.Entry<UUID, TARDISDisguise> map : TARDISDisguiseTracker.DISGUISED_ARMOR_STANDS.entrySet()) {
-            ArmorStand stand = (ArmorStand) Bukkit.getEntity(map.getKey());
-            if (stand != null && stand.getWorld() == world) {
-                Entity mob = TARDISDisguise.createMobDisguise(map.getValue(), world);
-                if (mob != null) {
-                    // set location
-                    setEntityLocationIdAndName(mob, stand.getLocation(), stand);
-                    PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
-                    PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
-                    PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
-                    PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(mob.getId(), (byte) mob.yaw, (byte) mob.pitch, true);
-                    PlayerConnection connection = ((CraftPlayer) to).getHandle().playerConnection;
-                    connection.sendPacket(packetPlayOutEntityDestroy);
-                    connection.sendPacket(packetPlayOutSpawnEntityLiving);
-                    connection.sendPacket(packetPlayOutEntityMetadata);
-                    connection.sendPacket(packetPlayOutEntityLook);
-                }
-            }
-        }
-    }
+	public static void disguiseToPlayer(Player to, org.bukkit.World world) {
+		for (Map.Entry<UUID, TARDISDisguise> map : TARDISDisguiseTracker.DISGUISED_ARMOR_STANDS.entrySet()) {
+			ArmorStand stand = (ArmorStand) Bukkit.getEntity(map.getKey());
+			if (stand != null && stand.getWorld() == world) {
+				Entity mob = TARDISDisguise.createMobDisguise(map.getValue(), world);
+				if (mob != null) {
+					// set location
+					setEntityLocationIdAndName(mob, stand.getLocation(), stand);
+					PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
+					PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
+					PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
+					PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(mob.getId(), (byte) mob.yaw, (byte) mob.pitch, true);
+					PlayerConnection connection = ((CraftPlayer) to).getHandle().playerConnection;
+					connection.sendPacket(packetPlayOutEntityDestroy);
+					connection.sendPacket(packetPlayOutSpawnEntityLiving);
+					connection.sendPacket(packetPlayOutEntityMetadata);
+					connection.sendPacket(packetPlayOutEntityLook);
+				}
+			}
+		}
+	}
 
-    public static void redisguise(ArmorStand stand, org.bukkit.World world) {
-        TARDISDisguise disguise = TARDISDisguiseTracker.DISGUISED_AS_MOB.get(stand.getUniqueId());
-        Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
-        if (mob != null) {
-            // set location
-            setEntityLocationIdAndName(mob, stand.getLocation(), stand);
-            TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(disguise.getEntityType(), disguise.getOptions()));
-            PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
-            PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
-            PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
-            PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(mob.getId(), (byte) mob.yaw, (byte) mob.pitch, true);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (stand.getWorld() == p.getWorld()) {
-                    PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-                    connection.sendPacket(packetPlayOutEntityDestroy);
-                    connection.sendPacket(packetPlayOutSpawnEntityLiving);
-                    connection.sendPacket(packetPlayOutEntityMetadata);
-                    connection.sendPacket(packetPlayOutEntityLook);
-                }
-            }
-        }
-    }
+	public static void redisguise(ArmorStand stand, org.bukkit.World world) {
+		TARDISDisguise disguise = TARDISDisguiseTracker.DISGUISED_AS_MOB.get(stand.getUniqueId());
+		Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
+		if (mob != null) {
+			// set location
+			setEntityLocationIdAndName(mob, stand.getLocation(), stand);
+			TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(disguise.getEntityType(), disguise.getOptions()));
+			PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
+			PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
+			PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
+			PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(mob.getId(), (byte) mob.yaw, (byte) mob.pitch, true);
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (stand.getWorld() == p.getWorld()) {
+					PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+					connection.sendPacket(packetPlayOutEntityDestroy);
+					connection.sendPacket(packetPlayOutSpawnEntityLiving);
+					connection.sendPacket(packetPlayOutEntityMetadata);
+					connection.sendPacket(packetPlayOutEntityLook);
+				}
+			}
+		}
+	}
 
-    private static void setEntityLocationIdAndName(Entity entity, Location location, ArmorStand stand) {
-        entity.setPosition(location.getX(), location.getY(), location.getZ());
-        entity.e(stand.getEntityId());
-        float fixed = fixYaw(location.getYaw());
-        entity.setHeadRotation(fixed);
-        entity.h(fixed);
-        entity.yaw = fixed;
-        entity.pitch = location.getPitch();
-        EntityInsentient insentient = (EntityInsentient) entity;
-        insentient.setNoAI(true);
-    }
+	private static void setEntityLocationIdAndName(Entity entity, Location location, ArmorStand stand) {
+		entity.setPosition(location.getX(), location.getY(), location.getZ());
+		entity.e(stand.getEntityId());
+		float fixed = fixYaw(location.getYaw());
+		entity.setHeadRotation(fixed);
+		entity.h(fixed);
+		entity.yaw = fixed;
+		entity.pitch = location.getPitch();
+		EntityInsentient insentient = (EntityInsentient) entity;
+		insentient.setNoAI(true);
+	}
 
-    private static float fixYaw(float yaw) {
-        return yaw * 256.0F / 360.0F;
-    }
+	private static float fixYaw(float yaw) {
+		return yaw * 256.0F / 360.0F;
+	}
 
-    public static void removeDisguise(ArmorStand stand) {
-        TARDISDisguiseTracker.DISGUISED_ARMOR_STANDS.remove(stand.getUniqueId());
-        PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (stand.getWorld() == p.getWorld()) {
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
-            }
-        }
-    }
+	public static void removeDisguise(ArmorStand stand) {
+		TARDISDisguiseTracker.DISGUISED_ARMOR_STANDS.remove(stand.getUniqueId());
+		PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (stand.getWorld() == p.getWorld()) {
+				((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
+			}
+		}
+	}
 
-    private void createDisguise() {
-        if (entityType != null) {
-            Location location = stand.getLocation();
-            TARDISDisguise disguise = new TARDISDisguise(entityType, options);
-            entity = TARDISDisguise.createMobDisguise(disguise, location.getWorld());
-            if (entity != null) {
-                setEntityLocationIdAndName(entity, location, stand);
-            }
-        }
-    }
+	private void createDisguise() {
+		if (entityType != null) {
+			Location location = stand.getLocation();
+			TARDISDisguise disguise = new TARDISDisguise(entityType, options);
+			entity = TARDISDisguise.createMobDisguise(disguise, location.getWorld());
+			if (entity != null) {
+				setEntityLocationIdAndName(entity, location, stand);
+			}
+		}
+	}
 
-    public void disguiseToAll() {
-        TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(entityType, options));
-        PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
-        PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) entity);
-        PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(entity.getId(), entity.getDataWatcher(), false);
-        PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(entity.getId(), (byte) entity.yaw, (byte) entity.pitch, true);
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (stand.getWorld() == p.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-                connection.sendPacket(packetPlayOutEntityDestroy);
-                connection.sendPacket(packetPlayOutSpawnEntityLiving);
-                connection.sendPacket(packetPlayOutEntityMetadata);
-                connection.sendPacket(packetPlayOutEntityLook);
-            }
-        }
-    }
+	public void disguiseToAll() {
+		TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(entityType, options));
+		PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(stand.getEntityId());
+		PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) entity);
+		PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(entity.getId(), entity.getDataWatcher(), false);
+		PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(entity.getId(), (byte) entity.yaw, (byte) entity.pitch, true);
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (stand.getWorld() == p.getWorld()) {
+				PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+				connection.sendPacket(packetPlayOutEntityDestroy);
+				connection.sendPacket(packetPlayOutSpawnEntityLiving);
+				connection.sendPacket(packetPlayOutEntityMetadata);
+				connection.sendPacket(packetPlayOutEntityLook);
+			}
+		}
+	}
 }

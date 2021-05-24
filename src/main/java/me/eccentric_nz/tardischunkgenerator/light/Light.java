@@ -33,55 +33,55 @@ import java.util.List;
 
 public class Light {
 
-    // To synchronize nms create/delete light methods to avoid conflicts in multi-threaded calls. Got a better idea?
-    private static final Object lock = new Object();
-    private static final NMSHandler nmsHandler = new NMSHandler();
+	// To synchronize nms create/delete light methods to avoid conflicts in multi-threaded calls. Got a better idea?
+	private static final Object lock = new Object();
+	private static final NMSHandler nmsHandler = new NMSHandler();
 
-    public static boolean createLight(World world, int x, int y, int z, LightType lightType, int lightlevel, boolean async) {
-        CreateLightEvent event = new CreateLightEvent(world, x, y, z, lightType, lightlevel, async);
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            Runnable request = () -> {
-                synchronized (lock) {
-                    nmsHandler.createLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType(), event.getLightLevel());
-                }
-            };
-            if (event.isAsync()) {
-                TARDISHelper.machine.addToQueue(request);
-            } else {
-                request.run();
-            }
-            return true;
-        }
-        return false;
-    }
+	public static boolean createLight(World world, int x, int y, int z, LightType lightType, int lightlevel, boolean async) {
+		CreateLightEvent event = new CreateLightEvent(world, x, y, z, lightType, lightlevel, async);
+		Bukkit.getPluginManager().callEvent(event);
+		if (!event.isCancelled()) {
+			Runnable request = () -> {
+				synchronized (lock) {
+					nmsHandler.createLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType(), event.getLightLevel());
+				}
+			};
+			if (event.isAsync()) {
+				TARDISHelper.machine.addToQueue(request);
+			} else {
+				request.run();
+			}
+			return true;
+		}
+		return false;
+	}
 
-    public static boolean deleteLight(World world, int x, int y, int z, LightType lightType, boolean async) {
-        DeleteLightEvent event = new DeleteLightEvent(world, x, y, z, lightType, async);
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            Runnable request = () -> nmsHandler.deleteLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType());
-            if (event.isAsync()) {
-                TARDISHelper.machine.addToQueue(request);
-            } else {
-                request.run();
-            }
-            return true;
-        }
-        return false;
-    }
+	public static boolean deleteLight(World world, int x, int y, int z, LightType lightType, boolean async) {
+		DeleteLightEvent event = new DeleteLightEvent(world, x, y, z, lightType, async);
+		Bukkit.getPluginManager().callEvent(event);
+		if (!event.isCancelled()) {
+			Runnable request = () -> nmsHandler.deleteLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType());
+			if (event.isAsync()) {
+				TARDISHelper.machine.addToQueue(request);
+			} else {
+				request.run();
+			}
+			return true;
+		}
+		return false;
+	}
 
-    public static List<ChunkInfo> collectChunks(World world, int x, int y, int z, LightType lightType, int lightLevel) {
-        return nmsHandler.collectChunks(world, x, y, z, lightType, lightLevel);
-    }
+	public static List<ChunkInfo> collectChunks(World world, int x, int y, int z, LightType lightType, int lightLevel) {
+		return nmsHandler.collectChunks(world, x, y, z, lightType, lightLevel);
+	}
 
-    public static boolean updateChunk(ChunkInfo info, LightType lightType, Collection<? extends Player> players) {
-        UpdateChunkEvent event = new UpdateChunkEvent(info, lightType);
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            TARDISHelper.machine.addChunkToUpdate(info, lightType, players);
-            return true;
-        }
-        return false;
-    }
+	public static boolean updateChunk(ChunkInfo info, LightType lightType, Collection<? extends Player> players) {
+		UpdateChunkEvent event = new UpdateChunkEvent(info, lightType);
+		Bukkit.getPluginManager().callEvent(event);
+		if (!event.isCancelled()) {
+			TARDISHelper.machine.addChunkToUpdate(info, lightType, players);
+			return true;
+		}
+		return false;
+	}
 }

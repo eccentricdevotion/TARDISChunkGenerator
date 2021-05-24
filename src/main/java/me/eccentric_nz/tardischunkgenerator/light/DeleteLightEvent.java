@@ -31,93 +31,93 @@ import org.bukkit.event.HandlerList;
 
 public class DeleteLightEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
-    private boolean cancel;
-    private World world;
-    private int x;
-    private int y;
-    private int z;
-    private LightType lightType;
-    private boolean async;
+	private static final HandlerList handlers = new HandlerList();
+	private boolean cancel;
+	private World world;
+	private int x;
+	private int y;
+	private int z;
+	private LightType lightType;
+	private boolean async;
 
-    @Deprecated
-    public DeleteLightEvent(World world, int x, int y, int z, boolean async) {
-        this(world, x, y, z, LightType.BLOCK, async);
-    }
+	@Deprecated
+	public DeleteLightEvent(World world, int x, int y, int z, boolean async) {
+		this(world, x, y, z, LightType.BLOCK, async);
+	}
 
-    public DeleteLightEvent(World world, int x, int y, int z, LightType lightType, boolean async) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.lightType = lightType;
-        this.async = async;
-    }
+	public DeleteLightEvent(World world, int x, int y, int z, LightType lightType, boolean async) {
+		this.world = world;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.lightType = lightType;
+		this.async = async;
+	}
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
 
-    @Override
-    public boolean isCancelled() {
-        return cancel;
-    }
+	@Override
+	public boolean isCancelled() {
+		return cancel;
+	}
 
-    @Override
-    public void setCancelled(boolean arg0) {
-        cancel = arg0;
-    }
+	@Override
+	public void setCancelled(boolean arg0) {
+		cancel = arg0;
+	}
 
-    public int getX() {
-        return x;
-    }
+	public int getX() {
+		return x;
+	}
 
-    public void setX(int x) {
-        this.x = x;
-    }
+	public void setX(int x) {
+		this.x = x;
+	}
 
-    public int getY() {
-        return y;
-    }
+	public int getY() {
+		return y;
+	}
 
-    public void setY(int y) {
-        this.y = y;
-    }
+	public void setY(int y) {
+		this.y = y;
+	}
 
-    public int getZ() {
-        return z;
-    }
+	public int getZ() {
+		return z;
+	}
 
-    public void setZ(int z) {
-        this.z = z;
-    }
+	public void setZ(int z) {
+		this.z = z;
+	}
 
-    public World getWorld() {
-        return world;
-    }
+	public World getWorld() {
+		return world;
+	}
 
-    public void setWorld(World world) {
-        this.world = world;
-    }
+	public void setWorld(World world) {
+		this.world = world;
+	}
 
-    public boolean isAsync() {
-        return async;
-    }
+	public boolean isAsync() {
+		return async;
+	}
 
-    public void setAsync(boolean flag) {
-        async = flag;
-    }
+	public void setAsync(boolean flag) {
+		async = flag;
+	}
 
-    public LightType getLightType() {
-        return lightType;
-    }
+	public LightType getLightType() {
+		return lightType;
+	}
 
-    public void setLightType(LightType lightType) {
-        this.lightType = lightType;
-    }
+	public void setLightType(LightType lightType) {
+		this.lightType = lightType;
+	}
 }

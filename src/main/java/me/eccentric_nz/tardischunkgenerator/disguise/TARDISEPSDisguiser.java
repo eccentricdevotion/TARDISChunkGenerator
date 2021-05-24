@@ -31,103 +31,103 @@ import java.util.UUID;
 
 public class TARDISEPSDisguiser {
 
-    private final Player player;
-    private final Location location;
-    private EntityPlayer npc;
+	private final Player player;
+	private final Location location;
+	private EntityPlayer npc;
 
-    public TARDISEPSDisguiser(Player player, Location location) {
-        this.player = player;
-        this.location = location;
-        disguiseStand();
-    }
+	public TARDISEPSDisguiser(Player player, Location location) {
+		this.player = player;
+		this.location = location;
+		disguiseStand();
+	}
 
-    public static void disguiseToPlayer(Player player, World world) {
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-        for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
-            Entity stand = nmsWorld.entitiesById.get(map.getKey());
-            if (stand != null && stand.getWorld() == world) {
-                EntityPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
-                EntityPlayer npc = new EntityPlayer(server, nmsWorld, entityPlayer.getProfile(), new PlayerInteractManager(nmsWorld));
-                // set location
-                setEntityLocation(npc, new Location(world, stand.locX(), stand.locY(), stand.locZ()));
-                // send packets
-                PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
-                PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
-                PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
-                PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
-                PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-                connection.sendPacket(packetPlayOutPlayerInfo);
-                connection.sendPacket(packetPlayOutNamedEntitySpawn);
-                connection.sendPacket(packetPlayOutEntityHeadRotation);
-                connection.sendPacket(packetPlayOutEntityLook);
-            }
-        }
-    }
+	public static void disguiseToPlayer(Player player, World world) {
+		MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
+		for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
+			Entity stand = nmsWorld.entitiesById.get(map.getKey());
+			if (stand != null && stand.getWorld() == world) {
+				EntityPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
+				EntityPlayer npc = new EntityPlayer(server, nmsWorld, entityPlayer.getProfile(), new PlayerInteractManager(nmsWorld));
+				// set location
+				setEntityLocation(npc, new Location(world, stand.locX(), stand.locY(), stand.locZ()));
+				// send packets
+				PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
+				PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
+				PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
+				PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
+				PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+				connection.sendPacket(packetPlayOutPlayerInfo);
+				connection.sendPacket(packetPlayOutNamedEntitySpawn);
+				connection.sendPacket(packetPlayOutEntityHeadRotation);
+				connection.sendPacket(packetPlayOutEntityLook);
+			}
+		}
+	}
 
-    private static float fixYaw(float yaw) {
-        return yaw * 256.0f / 360.0f;
-    }
+	private static float fixYaw(float yaw) {
+		return yaw * 256.0f / 360.0f;
+	}
 
-    private static void setEntityLocation(Entity entity, Location location) {
-        entity.setPosition(location.getX(), location.getY(), location.getZ());
-        float fixed = fixYaw(location.getYaw());
-        entity.setHeadRotation(fixed);
-        entity.h(fixed);
-        entity.yaw = fixed;
-        entity.pitch = location.getPitch();
-    }
+	private static void setEntityLocation(Entity entity, Location location) {
+		entity.setPosition(location.getX(), location.getY(), location.getZ());
+		float fixed = fixYaw(location.getYaw());
+		entity.setHeadRotation(fixed);
+		entity.h(fixed);
+		entity.yaw = fixed;
+		entity.pitch = location.getPitch();
+	}
 
-    public static void removeNPC(int id, World world) {
-        TARDISDisguiseTracker.DISGUISED_NPCS.remove(id);
-        PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(id);
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (world == p.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-                connection.sendPacket(packetPlayOutEntityDestroy);
-            }
-        }
-    }
+	public static void removeNPC(int id, World world) {
+		TARDISDisguiseTracker.DISGUISED_NPCS.remove(id);
+		PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(id);
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (world == p.getWorld()) {
+				PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+				connection.sendPacket(packetPlayOutEntityDestroy);
+			}
+		}
+	}
 
-    public void disguiseStand() {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-        // set skin
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        npc = new EntityPlayer(server, world, entityPlayer.getProfile(), new PlayerInteractManager(world));
-        // set location
-        setEntityLocation(npc, location);
-        // get Player equipment
-        ItemStack feet = CraftItemStack.asNMSCopy(player.getInventory().getBoots());
-        ItemStack legs = CraftItemStack.asNMSCopy(player.getInventory().getLeggings());
-        ItemStack chest = CraftItemStack.asNMSCopy(player.getInventory().getChestplate());
-        ItemStack head = CraftItemStack.asNMSCopy(player.getInventory().getHelmet());
-        ItemStack mainHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand());
-        ItemStack offHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand());
-        // set NPC equipment
-        npc.setSlot(EnumItemSlot.FEET, feet);
-        npc.setSlot(EnumItemSlot.LEGS, legs);
-        npc.setSlot(EnumItemSlot.CHEST, chest);
-        npc.setSlot(EnumItemSlot.HEAD, head);
-        npc.setSlot(EnumItemSlot.MAINHAND, mainHand);
-        npc.setSlot(EnumItemSlot.OFFHAND, offHand);
-    }
+	public void disguiseStand() {
+		EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+		// set skin
+		MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+		WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+		npc = new EntityPlayer(server, world, entityPlayer.getProfile(), new PlayerInteractManager(world));
+		// set location
+		setEntityLocation(npc, location);
+		// get Player equipment
+		ItemStack feet = CraftItemStack.asNMSCopy(player.getInventory().getBoots());
+		ItemStack legs = CraftItemStack.asNMSCopy(player.getInventory().getLeggings());
+		ItemStack chest = CraftItemStack.asNMSCopy(player.getInventory().getChestplate());
+		ItemStack head = CraftItemStack.asNMSCopy(player.getInventory().getHelmet());
+		ItemStack mainHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand());
+		ItemStack offHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand());
+		// set NPC equipment
+		npc.setSlot(EnumItemSlot.FEET, feet);
+		npc.setSlot(EnumItemSlot.LEGS, legs);
+		npc.setSlot(EnumItemSlot.CHEST, chest);
+		npc.setSlot(EnumItemSlot.HEAD, head);
+		npc.setSlot(EnumItemSlot.MAINHAND, mainHand);
+		npc.setSlot(EnumItemSlot.OFFHAND, offHand);
+	}
 
-    public int showToAll() {
-        TARDISDisguiseTracker.DISGUISED_NPCS.put(npc.getId(), player.getUniqueId());
-        PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
-        PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
-        PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
-        PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getWorld() == location.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
-                connection.sendPacket(packetPlayOutPlayerInfo);
-                connection.sendPacket(packetPlayOutNamedEntitySpawn);
-                connection.sendPacket(packetPlayOutEntityHeadRotation);
-                connection.sendPacket(packetPlayOutEntityLook);
-            }
-        }
-        return npc.getId();
-    }
+	public int showToAll() {
+		TARDISDisguiseTracker.DISGUISED_NPCS.put(npc.getId(), player.getUniqueId());
+		PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
+		PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
+		PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
+		PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (p.getWorld() == location.getWorld()) {
+				PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+				connection.sendPacket(packetPlayOutPlayerInfo);
+				connection.sendPacket(packetPlayOutNamedEntitySpawn);
+				connection.sendPacket(packetPlayOutEntityHeadRotation);
+				connection.sendPacket(packetPlayOutEntityLook);
+			}
+		}
+		return npc.getId();
+	}
 }

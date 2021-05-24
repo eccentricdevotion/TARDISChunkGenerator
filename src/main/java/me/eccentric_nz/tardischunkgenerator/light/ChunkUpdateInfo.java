@@ -30,32 +30,32 @@ import java.util.HashSet;
 
 public class ChunkUpdateInfo {
 
-    private final Collection<Player> players = new HashSet<>();
-    private int sectionMaskSky = 0;
-    private int sectionMaskBlock = 0;
+	private final Collection<Player> players = new HashSet<>();
+	private int sectionMaskSky = 0;
+	private int sectionMaskBlock = 0;
 
-    public void add(LightType lightType, int sectionMask, Collection<? extends Player> players) {
-        if (lightType == LightType.SKY) {
-            sectionMaskSky |= sectionMask;
-        } else {
-            sectionMaskBlock |= sectionMask;
-        }
-        add(players);
-    }
+	public void add(LightType lightType, int sectionMask, Collection<? extends Player> players) {
+		if (lightType == LightType.SKY) {
+			sectionMaskSky |= sectionMask;
+		} else {
+			sectionMaskBlock |= sectionMask;
+		}
+		add(players);
+	}
 
-    private void add(Collection<? extends Player> players) {
-        this.players.addAll(players);
-    }
+	private void add(Collection<? extends Player> players) {
+		this.players.addAll(players);
+	}
 
-    public Collection<Player> getPlayers() {
-        return players;
-    }
+	public Collection<Player> getPlayers() {
+		return players;
+	}
 
-    public int getSectionMaskSky() {
-        return sectionMaskSky;
-    }
+	public int getSectionMaskSky() {
+		return sectionMaskSky;
+	}
 
-    public int getSectionMaskBlock() {
-        return sectionMaskBlock;
-    }
+	public int getSectionMaskBlock() {
+		return sectionMaskBlock;
+	}
 }

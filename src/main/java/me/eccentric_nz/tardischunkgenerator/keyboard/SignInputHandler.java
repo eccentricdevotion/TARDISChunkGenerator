@@ -16,49 +16,49 @@ import java.util.List;
 
 public class SignInputHandler {
 
-    private static Field channelField;
+	private static Field channelField;
 
-    static {
-        for (Field field : NetworkManager.class.getDeclaredFields()) {
-            if (field.getType().isAssignableFrom(Channel.class)) {
-                channelField = field;
-                break;
-            }
-        }
-    }
+	static {
+		for (Field field : NetworkManager.class.getDeclaredFields()) {
+			if (field.getType().isAssignableFrom(Channel.class)) {
+				channelField = field;
+				break;
+			}
+		}
+	}
 
-    public static void injectNetty(Player player, TARDISHelper plugin) {
-        try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
-            if (channel != null) {
-                channel.pipeline().addAfter("decoder", "update_sign", new MessageToMessageDecoder<Packet>() {
+	public static void injectNetty(Player player, TARDISHelper plugin) {
+		try {
+			Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
+			if (channel != null) {
+				channel.pipeline().addAfter("decoder", "update_sign", new MessageToMessageDecoder<Packet>() {
 
-                    @Override
-                    protected void decode(ChannelHandlerContext chc, Packet packet, List<Object> out) throws Exception {
-                        if (packet instanceof PacketPlayInUpdateSign) {
+					@Override
+					protected void decode(ChannelHandlerContext chc, Packet packet, List<Object> out) throws Exception {
+						if (packet instanceof PacketPlayInUpdateSign) {
 
-                            PacketPlayInUpdateSign usePacket = (PacketPlayInUpdateSign) packet;
-                            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerInputEvent(usePacket, player)));
-                        }
-                        out.add(packet);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+							PacketPlayInUpdateSign usePacket = (PacketPlayInUpdateSign) packet;
+							Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerInputEvent(usePacket, player)));
+						}
+						out.add(packet);
+					}
+				});
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public static void ejectNetty(Player player) {
-        try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
-            if (channel != null) {
-                if (channel.pipeline().get("update_sign") != null) {
-                    channel.pipeline().remove("update_sign");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public static void ejectNetty(Player player) {
+		try {
+			Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
+			if (channel != null) {
+				if (channel.pipeline().get("update_sign") != null) {
+					channel.pipeline().remove("update_sign");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

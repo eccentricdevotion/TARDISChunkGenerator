@@ -29,32 +29,32 @@ import java.util.Random;
  */
 public class TARDISChunkGenerator extends ChunkGenerator {
 
-    /**
-     * Generates an empty world!
-     *
-     * @param world  the world to generate chunks in
-     * @param random
-     * @param cx
-     * @param cz
-     * @return
-     */
-    @Override
-    public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
+	/**
+	 * Generates an empty world!
+	 *
+	 * @param world  the world to generate chunks in
+	 * @param random
+	 * @param cx
+	 * @param cz
+	 * @return
+	 */
+	@Override
+	public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
 
-        ChunkData result = createChunkData(world);
-        result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                for (int y = 0; y < world.getMaxHeight(); y++) {
-                    biome.setBiome(x, y, z, Biome.THE_VOID);
-                }
-            }
-        }
-        return result;
-    }
+		ChunkData result = createChunkData(world);
+		result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
+		for (int x = 0; x < 16; x++) {
+			for (int z = 0; z < 16; z++) {
+				for (int y = 0; y < world.getMaxHeight(); y++) {
+					biome.setBiome(x, y, z, Biome.THE_VOID);
+				}
+			}
+		}
+		return result;
+	}
 
-    @Override
-    public Location getFixedSpawnLocation(World world, Random random) {
-        return new Location(world, 0, 70, 0);
-    }
+	@Override
+	public Location getFixedSpawnLocation(World world, Random random) {
+		return new Location(world, 0, 70, 0);
+	}
 }

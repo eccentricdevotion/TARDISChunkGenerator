@@ -26,6 +26,6 @@
 package me.eccentric_nz.tardischunkgenerator.light;
 
 public enum LightType {
-    SKY,
-    BLOCK
+	SKY,
+	BLOCK
 }
