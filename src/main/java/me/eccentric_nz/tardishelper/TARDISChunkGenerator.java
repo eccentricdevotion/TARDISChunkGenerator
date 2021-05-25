@@ -21,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -32,14 +33,14 @@ public class TARDISChunkGenerator extends ChunkGenerator {
 	/**
 	 * Generates an empty world!
 	 *
-	 * @param world  the world to generate chunks in
+	 * @param world the world to generate chunks in
 	 * @param random
 	 * @param cx
 	 * @param cz
 	 * @return
 	 */
 	@Override
-	public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
+	public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int cx, int cz, @NotNull BiomeGrid biome) {
 
 		ChunkData result = createChunkData(world);
 		result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
@@ -54,7 +55,7 @@ public class TARDISChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public Location getFixedSpawnLocation(World world, Random random) {
+	public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
 		return new Location(world, 0, 70, 0);
 	}
 }

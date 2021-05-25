@@ -3,13 +3,13 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>me.eccentric_nz.TARDIS</groupId>
+		<groupId>me.eccentric_nz.tardis</groupId>
 		<artifactId>TARDIS</artifactId>
-		<version>4.6.1</version>
+		<version>4.6.2</version>
 	</parent>
 	<groupId>me.eccentric_nz.tardischunkgenerator</groupId>
 	<artifactId>TARDISChunkGenerator</artifactId>
-	<version>4.6.1</version>
+	<version>4.6.2</version>
 	<name>TARDISChunkGenerator</name>
 	<description>Generates empty space for the TARDIS-TimeVortex world</description>
 	<url>https://github.com/eccentricdevotion/TARDISChunkGenerator</url>
@@ -24,6 +24,14 @@
 		<repository>
 			<id>paper</id>
 			<url>https://papermc.io/repo/repository/maven-public</url>
+		</repository>
+		<repository>
+			<id>placeholderapi-repo</id>
+			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+		</repository>
+		<repository>
+			<id>tardis-repo</id>
+			<url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 	<!-- Profiles are used to detect whether this is a local or Jenkins build 
@@ -40,43 +48,19 @@
 		</profile>
 	</profiles>
 	<build>
-		<finalName>${project.name}</finalName>
+		<finalName>${project.artifactId}-${project.version}-${project.buildNumber}</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.2</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>16</source>
 					<target>16</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.16.5-R0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.massivecraft</groupId>
-			<artifactId>factions</artifactId>
-			<version>3.3.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Factions.jar</systemPath>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.massivecraft</groupId>
-			<artifactId>massivecore</artifactId>
-			<version>3.3.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/MassiveCore.jar</systemPath>
-			<optional>true</optional>
-		</dependency>
-	</dependencies>
 </project>

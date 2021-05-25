@@ -36,7 +36,7 @@ public interface TARDISHelperAPI {
 	 * Names a furnace GUI
 	 *
 	 * @param block the furnace block
-	 * @param name  the name to give the furnace GUI
+	 * @param name the name to give the furnace GUI
 	 */
 	void nameFurnaceGUI(Block block, String name);
 
@@ -51,40 +51,32 @@ public interface TARDISHelperAPI {
 	/**
 	 * Gets a Villager's willingness to breed/trade.
 	 *
-	 * @param v the Villager
+	 * @param villager the Villager
 	 * @return whether the villager is willing
 	 */
-	boolean getVillagerWilling(Villager v);
+	boolean getVillagerWilling(Villager villager);
 
 	/**
 	 * Set a Villager's willingness to breed/trade.
 	 *
-	 * @param v the Villager
-	 * @param w whether the villager is willing
+	 * @param villager the Villager
+	 * @param willing whether the villager is willing
 	 */
-	void setVillagerWilling(Villager v, boolean w);
+	void setVillagerWilling(Villager villager, boolean willing);
 
 	/**
 	 * Refresh a chunk.
 	 *
-	 * @param c the chunk to refresh
+	 * @param chunk the chunk to refresh
 	 */
-	void refreshChunk(Chunk c);
+	void refreshChunk(Chunk chunk);
 
 	/**
 	 * Set the FallFlying NBT tag on an entity.
 	 *
-	 * @param e the entity to set the NBT tag for
+	 * @param entity the entity to set the NBT tag for
 	 */
-	void setFallFlyingTag(Entity e);
-
-	/**
-	 * Send JSON chat to a player.
-	 *
-	 * @param player the player to send the chat to
-	 * @param json   the JSON text to send
-	 */
-	void sendJson(Player player, String json);
+	void setFallFlyingTag(Entity entity);
 
 	/**
 	 * Open a sign editing GUI.
@@ -118,9 +110,9 @@ public interface TARDISHelperAPI {
 	 * Sets the GameType value for a world.
 	 *
 	 * @param world the world to set the GameMode for
-	 * @param gm    the GameMode to set the world to
+	 * @param gamemode    the GameMode to set the world to
 	 */
-	public void setWorldGameMode(String world, GameMode gm);
+	void setWorldGameMode(String world, GameMode gamemode);
 
 	/**
 	 * Gets some data of a world by reading its level.dat file.
@@ -128,7 +120,7 @@ public interface TARDISHelperAPI {
 	 * @param world the world to get the data for
 	 * @return the GameMode, Environment and WorldType of a world
 	 */
-	public TARDISPlanetData getLevelData(String world);
+	TARDISPlanetData getLevelData(String world);
 
 	/**
 	 * Disguises a player as another entity.
@@ -136,7 +128,7 @@ public interface TARDISHelperAPI {
 	 * @param entityType the entity type to disguise as
 	 * @param player     the player to disguise
 	 */
-	public void disguise(EntityType entityType, Player player);
+	void disguise(EntityType entityType, Player player);
 
 	/**
 	 * Disguises a player as another entity.
@@ -145,7 +137,7 @@ public interface TARDISHelperAPI {
 	 * @param player     the player to disguise
 	 * @param options    an array of entity options
 	 */
-	public void disguise(EntityType entityType, Player player, Object[] options);
+	void disguise(EntityType entityType, Player player, Object[] options);
 
 	/**
 	 * Disguises a player as a randomly named Chameleon Arch player.
@@ -153,7 +145,7 @@ public interface TARDISHelperAPI {
 	 * @param player the player to disguise
 	 * @param name   the random name for the disguise
 	 */
-	public void disguise(Player player, String name);
+	void disguise(Player player, String name);
 
 	/**
 	 * Disguises a player as another player.
@@ -161,21 +153,21 @@ public interface TARDISHelperAPI {
 	 * @param player the player to disguise
 	 * @param uuid   the UUID of the player to disguise as
 	 */
-	public void disguise(Player player, UUID uuid);
+	void disguise(Player player, UUID uuid);
 
 	/**
 	 * Undisguises a player.
 	 *
 	 * @param player the player to undisguise
 	 */
-	public void undisguise(Player player);
+	void undisguise(Player player);
 
 	/**
 	 * Undisguises a Chameleon arched player.
 	 *
 	 * @param player the player to undisguise
 	 */
-	public void reset(Player player);
+	void reset(Player player);
 
 	/**
 	 * Spawns Emergency Programme One.
@@ -183,14 +175,14 @@ public interface TARDISHelperAPI {
 	 * @param player   the player to disguise the EP1 NPC as
 	 * @param location the location to spawn the NPC disguise
 	 */
-	public int spawnEmergencyProgrammeOne(Player player, Location location);
+	int spawnEmergencyProgrammeOne(Player player, Location location);
 
 	/**
 	 * Removes an NPC.
 	 *
 	 * @param id the id of the NPC to undisguise
 	 */
-	public void removeNPC(int id, World world);
+	void removeNPC(int id, World world);
 
 	/**
 	 * Disguises an armour stand as another entity.
@@ -199,28 +191,28 @@ public interface TARDISHelperAPI {
 	 * @param entityType the entity type to disguise as
 	 * @param options    an array of entity options
 	 */
-	public void disguiseArmourStand(ArmorStand stand, EntityType entityType, Object[] options);
+	void disguiseArmourStand(ArmorStand stand, EntityType entityType, Object[] options);
 
 	/**
 	 * Undisguises an armour stand.
 	 *
 	 * @param stand the armour stand to undisguise
 	 */
-	public void undisguiseArmourStand(ArmorStand stand);
+	void undisguiseArmourStand(ArmorStand stand);
 
 	/**
 	 * Create a light source
 	 *
 	 * @param location the location where the light will be created
 	 */
-	public void createLight(Location location);
+	void createLight(Location location);
 
 	/**
 	 * Delete a light source
 	 *
 	 * @param location the location where the light will be removed
 	 */
-	public void deleteLight(Location location);
+	void deleteLight(Location location);
 
 	/**
 	 * Check a Factions location is valid for TARDIS actions
@@ -228,7 +220,7 @@ public interface TARDISHelperAPI {
 	 * @param player   the player who is performing the TARDIS action
 	 * @param location the location where the light will be removed
 	 */
-	public boolean isInFaction(Player player, Location location);
+	boolean isInFaction(Player player, Location location);
 
 	/**
 	 * Update a TARDIS scanner map
@@ -236,7 +228,7 @@ public interface TARDISHelperAPI {
 	 * @param world   the world the map is displaying
 	 * @param mapView the mapview of the map
 	 */
-	public void updateMap(World world, MapView mapView);
+	void updateMap(World world, MapView mapView);
 
 	/**
 	 * Send an action bar message to a player
@@ -253,27 +245,27 @@ public interface TARDISHelperAPI {
 	 * @param biome  the biome to search for
 	 * @param player the player who is searching
 	 */
-	public Location searchBiome(World world, Biome biome, Player player);
+	Location searchBiome(World world, Biome biome, Player player);
 
 	/**
 	 * Gets the Namespaced key from a biome
 	 *
 	 * @param location the location to get the biome for
 	 */
-	public String getBiomeKey(Location location);
+	String getBiomeKey(Location location);
 
 	/**
 	 * Remove a TileEntity from the world
 	 */
-	public void removeTileEntity(BlockState tile);
+	void removeTileEntity(BlockState tile);
 
 	/**
 	 * Reload commands for a player
 	 */
-	public void reloadCommandsForPlayer(Player player);
+	void reloadCommandsForPlayer(Player player);
 
 	/**
 	 * Calls a powerable block's interact method
 	 */
-	public void setPowerableBlockInteract(Block block);
+	void setPowerableBlockInteract(Block block);
 }

@@ -28,7 +28,6 @@ import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import net.minecraft.server.v1_16_R3.*;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent.ChatSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Chunk;
@@ -55,16 +54,14 @@ import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
@@ -104,7 +101,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	}
 
 	@Override
-	public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+	public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
 		return new TARDISChunkGenerator();
 	}
 
@@ -113,10 +110,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 		WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
 		BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
 		TileEntity tile = ws.getTileEntity(bp);
-		if (tile == null || !(tile instanceof TileEntityFurnace)) {
+		if (!(tile instanceof TileEntityFurnace furnace)) {
 			return;
 		}
-		TileEntityFurnace furnace = (TileEntityFurnace) tile;
 		furnace.setCustomName(new ChatMessage(name));
 	}
 
@@ -125,10 +121,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 		WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
 		BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
 		TileEntity tile = ws.getTileEntity(bp);
-		if (tile == null || !(tile instanceof TileEntityFurnace)) {
+		if (!(tile instanceof TileEntityFurnace furnace)) {
 			return false;
 		}
-		TileEntityFurnace furnace = (TileEntityFurnace) tile;
 		boolean is = false;
 		if (furnace.getCustomName() != null) {
 			is = furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
@@ -150,25 +145,25 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	}
 
 	@Override
-	public void setVillagerWilling(Villager v, boolean w) {
+	public void setVillagerWilling(Villager v, boolean willing) {
 		try {
 			EntityVillager villager = ((CraftVillager) v).getHandle();
 			Field willingField = EntityVillager.class.getDeclaredField("bu");
 			willingField.setAccessible(true);
-			willingField.set(villager, w);
+			willingField.set(villager, willing);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
 			Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
 		}
 	}
 
 	@Override
-	public void refreshChunk(Chunk c) {
-		TARDISPacketMapChunk.refreshChunk(c);
+	public void refreshChunk(Chunk chunk) {
+		TARDISPacketMapChunk.refreshChunk(chunk);
 	}
 
 	@Override
-	public void setFallFlyingTag(org.bukkit.entity.Entity e) {
-		Entity nmsEntity = ((CraftEntity) e).getHandle();
+	public void setFallFlyingTag(org.bukkit.entity.Entity entity) {
+		Entity nmsEntity = ((CraftEntity) entity).getHandle();
 		NBTTagCompound tag = new NBTTagCompound();
 		// writes the entity's NBT data to the `tag` object
 		nmsEntity.save(tag);
@@ -178,15 +173,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	}
 
 	@Override
-	public void sendJson(Player player, String json) {
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(json), ChatMessageType.CHAT, player.getUniqueId()));
-	}
-
-	@Override
 	public void openSignGUI(Player player, Sign sign) {
 		Location l = sign.getLocation();
-		TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
-		EntityPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
+		TileEntitySign t = (TileEntitySign) ((CraftWorld) Objects.requireNonNull(l.getWorld())).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
+		EntityPlayer entityPlayer = ((CraftPlayer) Objects.requireNonNull(player.getPlayer())).getHandle();
+		assert t != null;
 		entityPlayer.playerConnection.sendPacket(t.getUpdatePacket());
 		t.isEditable = true;
 		t.a(entityPlayer);
@@ -250,7 +241,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	}
 
 	@Override
-	public void setWorldGameMode(String world, GameMode gm) {
+	public void setWorldGameMode(String world, GameMode gamemode) {
 		File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
 		if (file.exists()) {
 			try {
@@ -258,21 +249,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 				NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
 				NBTTagCompound data = tagCompound.getCompound("Data");
 				fileinputstream.close();
-				int mode;
-				switch (gm) {
-					case CREATIVE:
-						mode = 1;
-						break;
-					case ADVENTURE:
-						mode = 2;
-						break;
-					case SPECTATOR:
-						mode = 3;
-						break;
-					default: // SURVIVAL
-						mode = 0;
-						break;
-				}
+				int mode = switch (gamemode) {
+					case CREATIVE -> 1;
+					case ADVENTURE -> 2;
+					case SPECTATOR -> 3;
+					default -> // SURVIVAL
+							0;
+				};
 				// set GameType tag
 				data.setInt("GameType", mode);
 				tagCompound.set("Data", data);
@@ -297,37 +280,22 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 				// get GameType tag
 				GameMode gameMode;
 				int gm = data.getInt("GameType");
-				switch (gm) {
-					case 1:
-						gameMode = GameMode.CREATIVE;
-						break;
-					case 2:
-						gameMode = GameMode.ADVENTURE;
-						break;
-					case 3:
-						gameMode = GameMode.SPECTATOR;
-						break;
-					default:
-						gameMode = GameMode.SURVIVAL;
-						break;
-				}
+				gameMode = switch (gm) {
+					case 1 -> GameMode.CREATIVE;
+					case 2 -> GameMode.ADVENTURE;
+					case 3 -> GameMode.SPECTATOR;
+					default -> GameMode.SURVIVAL;
+				};
 				// get generatorName tag
 				WorldType worldType;
 				String wt = data.getString("generatorName");
-				switch (wt.toLowerCase(Locale.ENGLISH)) {
-					case "flat":
-						worldType = WorldType.FLAT;
-						break;
-					case "largeBiomes":
-						worldType = WorldType.LARGE_BIOMES;
-						break;
-					case "amplified":
-						worldType = WorldType.AMPLIFIED;
-						break;
-					default: // default or unknown
-						worldType = WorldType.NORMAL;
-						break;
-				}
+				worldType = switch (wt.toLowerCase(Locale.ENGLISH)) {
+					case "flat" -> WorldType.FLAT;
+					case "largeBiomes" -> WorldType.LARGE_BIOMES;
+					case "amplified" -> WorldType.AMPLIFIED;
+					default -> // default or unknown
+							WorldType.NORMAL;
+				};
 				World.Environment environment = World.Environment.NORMAL;
 				File dimDashOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1");
 				File dimOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1");
@@ -400,7 +368,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	@Override
 	public void createLight(Location location) {
 		Light.createLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15, true);
-		Collection<Player> players = location.getWorld().getPlayers();
+		Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
 		for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
 			Light.updateChunk(info, LightType.BLOCK, players);
 		}
@@ -409,7 +377,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	@Override
 	public void deleteLight(Location location) {
 		Light.deleteLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, true);
-		Collection<Player> players = location.getWorld().getPlayers();
+		Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
 		for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
 			Light.updateChunk(info, LightType.BLOCK, players);
 		}
@@ -452,6 +420,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	@Override
 	public String getBiomeKey(Location location) {
 		CraftWorld world = (CraftWorld) location.getWorld();
+		assert world != null;
 		WorldServer worldServer = world.getHandle();
 		BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
 		IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
@@ -459,7 +428,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 		if (key != null) {
 			return key.toString();
 		} else {
-//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location.toString());
+			//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location.toString());
 			switch (world.getEnvironment()) {
 				case NETHER:
 					return "minecraft:nether_wastes";
@@ -500,36 +469,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 		} else {
 			// BUTTON
 			switch (block.getType()) {
-				case ACACIA_BUTTON:
-					Blocks.ACACIA_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case BIRCH_BUTTON:
-					Blocks.BIRCH_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case CRIMSON_BUTTON:
-					Blocks.CRIMSON_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case DARK_OAK_BUTTON:
-					Blocks.DARK_OAK_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case JUNGLE_BUTTON:
-					Blocks.JUNGLE_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case OAK_BUTTON:
-					Blocks.OAK_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case POLISHED_BLACKSTONE_BUTTON:
-					Blocks.POLISHED_BLACKSTONE_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case SPRUCE_BUTTON:
-					Blocks.SPRUCE_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case STONE_BUTTON:
-					Blocks.STONE_BUTTON.interact(data, world, position, null, null, null);
-					break;
-				case WARPED_BUTTON:
-					Blocks.WARPED_BUTTON.interact(data, world, position, null, null, null);
-					break;
+				case ACACIA_BUTTON -> Blocks.ACACIA_BUTTON.interact(data, world, position, null, null, null);
+				case BIRCH_BUTTON -> Blocks.BIRCH_BUTTON.interact(data, world, position, null, null, null);
+				case CRIMSON_BUTTON -> Blocks.CRIMSON_BUTTON.interact(data, world, position, null, null, null);
+				case DARK_OAK_BUTTON -> Blocks.DARK_OAK_BUTTON.interact(data, world, position, null, null, null);
+				case JUNGLE_BUTTON -> Blocks.JUNGLE_BUTTON.interact(data, world, position, null, null, null);
+				case OAK_BUTTON -> Blocks.OAK_BUTTON.interact(data, world, position, null, null, null);
+				case POLISHED_BLACKSTONE_BUTTON -> Blocks.POLISHED_BLACKSTONE_BUTTON.interact(data, world, position, null, null, null);
+				case SPRUCE_BUTTON -> Blocks.SPRUCE_BUTTON.interact(data, world, position, null, null, null);
+				case STONE_BUTTON -> Blocks.STONE_BUTTON.interact(data, world, position, null, null, null);
+				case WARPED_BUTTON -> Blocks.WARPED_BUTTON.interact(data, world, position, null, null, null);
 			}
 		}
 	}
