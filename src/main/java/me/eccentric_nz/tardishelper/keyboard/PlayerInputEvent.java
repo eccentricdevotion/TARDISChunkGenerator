@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.keyboard;
+package me.eccentric_nz.tardishelper.keyboard;
 
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class PlayerInputEvent extends PlayerEvent {
 
@@ -19,22 +22,21 @@ public class PlayerInputEvent extends PlayerEvent {
 	}
 
 	@Override
-	public HandlerList getHandlers() {
+	public @NotNull HandlerList getHandlers() {
 		return handlerList;
 	}
 
 	public void updateSign(Player p, PacketPlayInUpdateSign packet) {
-		EntityPlayer player = ((CraftPlayer) p.getPlayer()).getHandle();
+		EntityPlayer player = ((CraftPlayer) Objects.requireNonNull(p.getPlayer())).getHandle();
 		player.resetIdleTimer();
 		WorldServer worldserver = player.getWorldServer();
 		BlockPosition blockposition = packet.b();
 		if (worldserver.isLoaded(blockposition)) {
 			IBlockData iblockdata = worldserver.getType(blockposition);
 			TileEntity tileentity = worldserver.getTileEntity(blockposition);
-			if (!(tileentity instanceof TileEntitySign)) {
+			if (!(tileentity instanceof TileEntitySign tileentitysign)) {
 				return;
 			}
-			TileEntitySign tileentitysign = (TileEntitySign) tileentity;
 			tileentitysign.isEditable = true;
 			String[] lines = packet.c();
 			for (int i = 0; i < lines.length; ++i) {

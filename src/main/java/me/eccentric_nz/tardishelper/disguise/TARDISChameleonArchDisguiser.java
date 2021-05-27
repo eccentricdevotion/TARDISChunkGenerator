@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -52,7 +52,7 @@ public class TARDISChameleonArchDisguiser {
 			GameProfile arch = new GameProfile(player.getUniqueId(), name);
 			arch.getProperties().removeAll("textures");
 			arch.getProperties().put("textures", new Property("textures", archSkin, archSignature));
-			Field gpField = EntityHuman.class.getDeclaredField("bW");
+			Field gpField = EntityHuman.class.getDeclaredField("bw");
 			gpField.setAccessible(true);
 			gpField.set(entityPlayer, arch);
 			gpField.setAccessible(false);
@@ -84,7 +84,7 @@ public class TARDISChameleonArchDisguiser {
 		}
 		TARDISDisguiseTracker.ProfileData map = TARDISDisguiseTracker.ARCHED.get(player.getUniqueId());
 		if (map == null) {
-			Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Could not get backed up profile data from tracker!");
+			Bukkit.getLogger().log(Level.INFO, TARDISHelperPlugin.messagePrefix + "Could not get backed up profile data from tracker!");
 			return;
 		}
 		PropertyMap properties = map.getProperties();
@@ -96,7 +96,7 @@ public class TARDISChameleonArchDisguiser {
 			nameField.set(arch, oldName);
 			nameField.setAccessible(false);
 			arch.getProperties().putAll(properties);
-			Field gpField = EntityHuman.class.getDeclaredField("bW");
+			Field gpField = EntityHuman.class.getDeclaredField("bw");
 			gpField.setAccessible(true);
 			gpField.set(entityPlayer, arch);
 			gpField.setAccessible(false);

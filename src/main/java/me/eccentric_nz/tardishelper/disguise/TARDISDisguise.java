@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
@@ -44,47 +44,23 @@ public class TARDISDisguise {
 	}
 
 	public static Entity createMobDisguise(TARDISDisguise disguise, World w) {
-		String str;
-		switch (disguise.getEntityType()) {
-			case ZOMBIE_HORSE:
-			case SKELETON_HORSE:
-			case ELDER_GUARDIAN:
-			case WITHER_SKELETON:
-			case TRADER_LLAMA:
-				str = switchAndCapitalise(disguise.getEntityType().toString());
-				break;
-			case WANDERING_TRADER:
-				str = "VillagerTrader";
-				break;
-			case HUSK:
-				str = "ZombieHusk";
-				break;
-			case STRAY:
-				str = "SkeletonStray";
-				break;
-			case PUFFERFISH:
-				str = "PufferFish";
-				break;
-			case ILLUSIONER:
-				str = "IllagerIllusioner";
-				break;
-			case GIANT:
-				str = "GiantZombie";
-				break;
-			case DONKEY:
-			case MULE:
-				str = "Horse" + capitalise(disguise.getEntityType().toString());
-				break;
-			default:
-				str = capitalise(disguise.getEntityType().toString());
-				break;
-		}
+		String str = switch (disguise.getEntityType()) {
+			case ZOMBIE_HORSE, SKELETON_HORSE, ELDER_GUARDIAN, WITHER_SKELETON, TRADER_LLAMA -> switchAndCapitalise(disguise.getEntityType().toString());
+			case WANDERING_TRADER -> "VillagerTrader";
+			case HUSK -> "ZombieHusk";
+			case STRAY -> "SkeletonStray";
+			case PUFFERFISH -> "PufferFish";
+			case ILLUSIONER -> "IllagerIllusioner";
+			case GIANT -> "GiantZombie";
+			case DONKEY, MULE -> "Horse" + capitalise(disguise.getEntityType().toString());
+			default -> capitalise(disguise.getEntityType().toString());
+		};
 		try {
-			Class entityClass = Class.forName("net.minecraft.server.v1_16_R3.Entity" + str);
-			Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_16_R3.World.class);
-			EntityTypes type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
+			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName("net.minecraft.server.v1_16_R3.Entity" + str);
+			Constructor<? extends Entity> constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_16_R3.World.class);
+			EntityTypes<? extends Entity> type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
 			net.minecraft.server.v1_16_R3.World world = ((CraftWorld) w).getHandle();
-			Entity entity = (Entity) constructor.newInstance(type, world);
+			Entity entity = constructor.newInstance(type, world);
 			if (disguise.getOptions() != null) {
 				for (Object o : disguise.getOptions()) {
 					if (o instanceof DyeColor) {
@@ -243,7 +219,7 @@ public class TARDISDisguise {
 			}
 			return entity;
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-			Bukkit.getLogger().log(Level.SEVERE, TARDISHelper.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
+			Bukkit.getLogger().log(Level.SEVERE, TARDISHelperPlugin.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

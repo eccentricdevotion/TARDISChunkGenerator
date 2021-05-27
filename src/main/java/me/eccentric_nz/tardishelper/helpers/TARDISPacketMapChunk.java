@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.helpers;
+package me.eccentric_nz.tardishelper.helpers;
 
 import net.minecraft.server.v1_16_R3.PacketPlayOutMapChunk;
 import org.bukkit.Bukkit;
@@ -57,7 +57,7 @@ public class TARDISPacketMapChunk {
 	 *
 	 * @param chunk The chunk.
 	 */
-	public static final void refreshChunk(org.bukkit.Chunk chunk) {
+	public static void refreshChunk(org.bukkit.Chunk chunk) {
 		refreshChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
 	}
 
@@ -68,7 +68,7 @@ public class TARDISPacketMapChunk {
 	 * @param x     The chunk's X.
 	 * @param z     The chunk's Z.
 	 */
-	public static final void refreshChunk(World world, int x, int z) {
+	public static void refreshChunk(World world, int x, int z) {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		refreshChunk(world, x, z, players.toArray(new Player[players.size()]));
 	}
@@ -81,7 +81,7 @@ public class TARDISPacketMapChunk {
 	 * @param z       The chunk's Z.
 	 * @param players The players.
 	 */
-	public static final void refreshChunk(World world, int x, int z, Player... players) {
+	public static void refreshChunk(World world, int x, int z, Player... players) {
 		TARDISPacketMapChunk packet = new TARDISPacketMapChunk(world.getChunkAt(x, z));
 		for (Player player : players) {
 			packet.send(player);

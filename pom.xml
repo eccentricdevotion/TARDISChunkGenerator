@@ -2,19 +2,17 @@
 		 xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>me.eccentric_nz.tardis</groupId>
-		<artifactId>TARDIS</artifactId>
-		<version>4.6.2</version>
-	</parent>
 	<groupId>me.eccentric_nz.tardischunkgenerator</groupId>
 	<artifactId>TARDISChunkGenerator</artifactId>
-	<version>4.6.2</version>
+	<version>4.6.2-SNAPSHOT</version>
 	<name>TARDISChunkGenerator</name>
 	<description>Generates empty space for the TARDIS-TimeVortex world</description>
 	<url>https://github.com/eccentricdevotion/TARDISChunkGenerator</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>16</maven.compiler.source>
+		<maven.compiler.target>16</maven.compiler.target>
+		<java.version>16</java.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -22,7 +20,7 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
-			<id>paper</id>
+			<id>paper-repo</id>
 			<url>https://papermc.io/repo/repository/maven-public</url>
 		</repository>
 		<repository>
@@ -34,17 +32,73 @@
 			<url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
-	<!-- Profiles are used to detect whether this is a local or Jenkins build 
-		and adjust the build number accordingly -->
 	<profiles>
+		<!-- Profiles are used to detect whether this is a local or Jenkins build and adjust the build number accordingly -->
+		<profile>
+			<id>local</id>
+			<activation>
+				<property>
+					<name>!env.BUILD_NUMBER</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- Set the build number to the date and time of the build -->
+				<project.buildNumber>${timestamp}</project.buildNumber>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>buildnumber-maven-plugin</artifactId>
+						<version>1.4</version>
+						<configuration>
+							<revisionOnScmFailure>no.scm.config.in.pom</revisionOnScmFailure>
+						</configuration>
+						<executions>
+							<execution>
+								<id>buildnumber</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>create</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>jenkins</id>
-			<repositories>
-				<repository>
-					<id>macgeek</id>
-					<url>http://localhost:8888</url>
-				</repository>
-			</repositories>
+			<activation>
+				<property>
+					<name>env.BUILD_NUMBER</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- Get the build number from Jenkins -->
+				<project.buildNumber>${env.BUILD_NUMBER}</project.buildNumber>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.3.0</version>
+						<configuration>
+							<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+						</configuration>
+						<executions>
+							<execution>
+								<id>javadoc-jar</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 	<build>
@@ -56,11 +110,41 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>16</source>
-					<target>16</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.16.5-R0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.massivecraft.factions</groupId>
+			<artifactId>Factions</artifactId>
+			<version>2.14.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.massivecraft.massivecore</groupId>
+			<artifactId>MassiveCore</artifactId>
+			<version>2.14.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>21.0.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>

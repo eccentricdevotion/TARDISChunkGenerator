@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package me.eccentric_nz.tardischunkgenerator.light;
+package me.eccentric_nz.tardishelper.light;
 
 import org.bukkit.entity.Player;
 
@@ -42,7 +42,7 @@ public class RequestSteamMachine implements Runnable {
 	public void start(int ticks, int maxIterationsPerTick) {
 		if (!isStarted) {
 			this.maxIterationsPerTick = maxIterationsPerTick;
-			sch = executor.scheduleWithFixedDelay(this, 0, 50 * ticks, TimeUnit.MILLISECONDS);
+			sch = executor.scheduleWithFixedDelay(this, 0, 50L * ticks, TimeUnit.MILLISECONDS);
 			isStarted = true;
 		}
 	}

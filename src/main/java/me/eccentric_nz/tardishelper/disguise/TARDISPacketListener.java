@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
 import io.netty.channel.*;
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,24 +49,22 @@ public class TARDISPacketListener {
 
 			@Override
 			public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
-				if (packet instanceof PacketPlayOutNamedEntitySpawn) {
-					PacketPlayOutNamedEntitySpawn namedEntitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
+				if (packet instanceof PacketPlayOutNamedEntitySpawn namedEntitySpawn) {
 					try {
 						Field f = namedEntitySpawn.getClass().getDeclaredField("b"); //NoSuchFieldException
 						f.setAccessible(true);
 						UUID uuid = (UUID) f.get(namedEntitySpawn);
 						if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
 							Entity entity = Bukkit.getEntity(uuid);
+							assert entity != null;
 							if (entity.getType().equals(EntityType.PLAYER)) {
 								Player player = (Player) entity;
-								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(TARDISHelper.getTardisHelper(), () -> {
-									TARDISDisguiser.redisguise(player, entity.getWorld());
-								}, 5L);
+								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(TARDISHelperPlugin.getTardisHelper(), () -> TARDISDisguiser.redisguise(player, entity.getWorld()), 5L);
 							}
 							f.setAccessible(false);
 						}
 					} catch (NoSuchFieldException | IllegalAccessException e) {
-						Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelper.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
+						Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelperPlugin.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
 					}
 				}
 				super.write(channelHandlerContext, packet, channelPromise);

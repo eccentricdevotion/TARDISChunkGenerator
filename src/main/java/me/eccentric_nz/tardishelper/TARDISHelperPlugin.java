@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardishelper;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.*;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPacketMapChunk;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
-import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
-import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
-import me.eccentric_nz.tardischunkgenerator.light.Light;
-import me.eccentric_nz.tardischunkgenerator.light.LightType;
-import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
-import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
+import me.eccentric_nz.tardishelper.disguise.*;
+import me.eccentric_nz.tardishelper.helpers.TARDISFactions;
+import me.eccentric_nz.tardishelper.helpers.TARDISMapUpdater;
+import me.eccentric_nz.tardishelper.helpers.TARDISPacketMapChunk;
+import me.eccentric_nz.tardishelper.helpers.TARDISPlanetData;
+import me.eccentric_nz.tardishelper.keyboard.SignInputHandler;
+import me.eccentric_nz.tardishelper.light.ChunkInfo;
+import me.eccentric_nz.tardishelper.light.Light;
+import me.eccentric_nz.tardishelper.light.LightType;
+import me.eccentric_nz.tardishelper.light.RequestSteamMachine;
+import me.eccentric_nz.tardishelper.logging.TARDISLogFilter;
 import net.minecraft.server.v1_16_R3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -64,13 +64,13 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
 
-public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
+public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
-	public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
+	public static final String messagePrefix = ChatColor.AQUA + "[TARDISHelper] " + ChatColor.RESET;
 	public static final RequestSteamMachine machine = new RequestSteamMachine();
-	public static TARDISHelper tardisHelper;
+	public static TARDISHelperPlugin tardisHelper;
 
-	public static TARDISHelper getTardisHelper() {
+	public static TARDISHelperPlugin getTardisHelper() {
 		return tardisHelper;
 	}
 
@@ -103,32 +103,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	@Override
 	public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
 		return new TARDISChunkGenerator();
-	}
-
-	@Override
-	public void nameFurnaceGUI(Block block, String name) {
-		WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-		BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-		TileEntity tile = ws.getTileEntity(bp);
-		if (!(tile instanceof TileEntityFurnace furnace)) {
-			return;
-		}
-		furnace.setCustomName(new ChatMessage(name));
-	}
-
-	@Override
-	public boolean isArtronFurnace(Block block) {
-		WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-		BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-		TileEntity tile = ws.getTileEntity(bp);
-		if (!(tile instanceof TileEntityFurnace furnace)) {
-			return false;
-		}
-		boolean is = false;
-		if (furnace.getCustomName() != null) {
-			is = furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
-		}
-		return is;
 	}
 
 	@Override
@@ -351,8 +325,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 	}
 
 	@Override
-	public void removeNPC(int id, World world) {
-		TARDISEPSDisguiser.removeNPC(id, world);
+	public void removeNPC(int npcId, World world) {
+		TARDISEPSDisguiser.removeNPC(npcId, world);
 	}
 
 	@Override

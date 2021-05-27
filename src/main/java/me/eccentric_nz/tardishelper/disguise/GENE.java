@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
 import net.minecraft.server.v1_16_R3.EntityPanda;
 import org.bukkit.entity.Panda;

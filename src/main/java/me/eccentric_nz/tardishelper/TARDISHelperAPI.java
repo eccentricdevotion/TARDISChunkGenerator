@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardishelper;
 
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
+import me.eccentric_nz.tardishelper.helpers.TARDISPlanetData;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -33,22 +33,6 @@ import java.util.UUID;
 public interface TARDISHelperAPI {
 
 	/**
-	 * Names a furnace GUI
-	 *
-	 * @param block the furnace block
-	 * @param name the name to give the furnace GUI
-	 */
-	void nameFurnaceGUI(Block block, String name);
-
-	/**
-	 * Gets the name from a furnace GUI
-	 *
-	 * @param block the furnace block
-	 * @return true if the block is a furnace named 'TARDIS Artron Furnace'
-	 */
-	boolean isArtronFurnace(Block block);
-
-	/**
 	 * Gets a Villager's willingness to breed/trade.
 	 *
 	 * @param villager the Villager
@@ -60,7 +44,7 @@ public interface TARDISHelperAPI {
 	 * Set a Villager's willingness to breed/trade.
 	 *
 	 * @param villager the Villager
-	 * @param willing whether the villager is willing
+	 * @param willing  whether the villager is willing
 	 */
 	void setVillagerWilling(Villager villager, boolean willing);
 
@@ -109,8 +93,8 @@ public interface TARDISHelperAPI {
 	/**
 	 * Sets the GameType value for a world.
 	 *
-	 * @param world the world to set the GameMode for
-	 * @param gamemode    the GameMode to set the world to
+	 * @param world    the world to set the GameMode for
+	 * @param gamemode the GameMode to set the world to
 	 */
 	void setWorldGameMode(String world, GameMode gamemode);
 
@@ -180,9 +164,9 @@ public interface TARDISHelperAPI {
 	/**
 	 * Removes an NPC.
 	 *
-	 * @param id the id of the NPC to undisguise
+	 * @param npcId the id of the NPC to undisguise
 	 */
-	void removeNPC(int id, World world);
+	void removeNPC(int npcId, World world);
 
 	/**
 	 * Disguises an armour stand as another entity.
@@ -236,7 +220,7 @@ public interface TARDISHelperAPI {
 	 * @param player  the player to send the action bar to
 	 * @param message the message to send
 	 */
-	public void sendActionBarMessage(Player player, String message);
+	void sendActionBarMessage(Player player, String message);
 
 	/**
 	 * Search for a biome

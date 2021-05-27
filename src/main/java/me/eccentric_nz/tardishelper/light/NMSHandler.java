@@ -23,9 +23,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package me.eccentric_nz.tardischunkgenerator.light;
+package me.eccentric_nz.tardishelper.light;
 
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -75,7 +75,7 @@ public class NMSHandler extends NmsHandlerBase {
 		if (e instanceof RuntimeException) {
 			return (RuntimeException) e;
 		}
-		Class cls = e.getClass();
+		Class<? extends Throwable> cls = e.getClass();
 		return new RuntimeException(String.format("(%s) %s", RuntimeException.class.getPackage().equals(cls.getPackage()) ? cls.getSimpleName() : cls.getName(), e.getMessage()), e);
 	}
 
@@ -110,14 +110,13 @@ public class NMSHandler extends NmsHandlerBase {
 		BlockPosition position = new BlockPosition(blockX, blockY, blockZ);
 		LightEngineThreaded lightEngine = worldServer.getChunkProvider().getLightEngine();
 
-		int finalLightLevel = lightlevel < 0 ? 0 : lightlevel > 15 ? 15 : lightlevel;
+		int finalLightLevel = lightlevel < 0 ? 0 : Math.min(lightlevel, 15);
 		executeSync(lightEngine, () -> {
 			if (type == LightType.SKY) {
 				LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.SKY);
-				if (!(layer instanceof LightEngineSky)) {
+				if (!(layer instanceof LightEngineSky les)) {
 					return;
 				}
-				LightEngineSky les = (LightEngineSky) layer;
 				if (finalLightLevel == 0) {
 					les.a(position);
 				} else if (les.a(SectionPosition.a(position)) != null) {
@@ -130,10 +129,9 @@ public class NMSHandler extends NmsHandlerBase {
 				}
 			} else {
 				LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.BLOCK);
-				if (!(layer instanceof LightEngineBlock)) {
+				if (!(layer instanceof LightEngineBlock leb)) {
 					return;
 				}
-				LightEngineBlock leb = (LightEngineBlock) layer;
 				if (finalLightLevel == 0) {
 					leb.a(position);
 				} else if (leb.a(SectionPosition.a(position)) != null) {
@@ -171,7 +169,10 @@ public class NMSHandler extends NmsHandlerBase {
 							if (isValidSectionY(sectionY)) {
 								int chunkX = blockX >> 4;
 								int chunkZ = blockZ >> 4;
-								ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
+								ChunkInfo cCoord = new ChunkInfo(world,
+										chunkX + dx,
+										sectionY << 4,
+										chunkZ + dz, players != null ? players : (players = world.getPlayers()));
 								list.add(cCoord);
 							}
 						}
@@ -179,7 +180,10 @@ public class NMSHandler extends NmsHandlerBase {
 							if (isValidSectionY(sectionY)) {
 								int chunkX = blockX >> 4;
 								int chunkZ = blockZ >> 4;
-								ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
+								ChunkInfo cCoord = new ChunkInfo(world,
+										chunkX + dx,
+										sectionY << 4,
+										chunkZ + dz, players != null ? players : (players = world.getPlayers()));
 								list.add(cCoord);
 							}
 						}
@@ -242,7 +246,8 @@ public class NMSHandler extends NmsHandlerBase {
 					if (timeToWait == -1) {
 						// Try to wait 3 seconds until light engine mailbox is busy.
 						timeToWait = System.currentTimeMillis() + 3 * 1000;
-						Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "ThreadedMailbox is closing. Will wait...");
+						Bukkit.getLogger().log(Level.INFO,
+								TARDISHelperPlugin.messagePrefix + "ThreadedMailbox is closing. Will wait...");
 					} else if (System.currentTimeMillis() >= timeToWait) {
 						throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
 					}
@@ -259,7 +264,6 @@ public class NMSHandler extends NmsHandlerBase {
 				// STEP 3: ##### Continue light engine mailbox to process its tasks. #####
 				// Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine tasks.
 				while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2)) {
-
 				}
 				// Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may still be
 				// in the queue. Therefore, it is important to start the loop again to process tasks from the queue.
@@ -273,7 +277,7 @@ public class NMSHandler extends NmsHandlerBase {
 		}
 	}
 
-	private void lightEngineLayer_a(LightEngineLayer les, BlockPosition var0, int var1) {
+	private void lightEngineLayer_a(LightEngineLayer<LightEngineStorageSky.a, LightEngineStorageSky> les, BlockPosition var0, int var1) {
 		try {
 			LightEngineStorage ls = (LightEngineStorage) lightEngineLayer_c.get(les);
 			lightEngineStorage_d.invoke(ls);

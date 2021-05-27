@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
@@ -27,6 +27,7 @@ import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TARDISEPSDisguiser {
@@ -46,21 +47,8 @@ public class TARDISEPSDisguiser {
 		WorldServer nmsWorld = ((CraftWorld) world).getHandle();
 		for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
 			Entity stand = nmsWorld.entitiesById.get(map.getKey());
-			if (stand != null && stand.getWorld() == world) {
-				EntityPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
-				EntityPlayer npc = new EntityPlayer(server, nmsWorld, entityPlayer.getProfile(), new PlayerInteractManager(nmsWorld));
-				// set location
-				setEntityLocation(npc, new Location(world, stand.locX(), stand.locY(), stand.locZ()));
-				// send packets
-				PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
-				PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
-				PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
-				PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
-				PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-				connection.sendPacket(packetPlayOutPlayerInfo);
-				connection.sendPacket(packetPlayOutNamedEntitySpawn);
-				connection.sendPacket(packetPlayOutEntityHeadRotation);
-				connection.sendPacket(packetPlayOutEntityLook);
+			if (stand != null) {
+				stand.getWorld();
 			}
 		}
 	}
@@ -93,7 +81,7 @@ public class TARDISEPSDisguiser {
 		EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
 		// set skin
 		MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-		WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+		WorldServer world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
 		npc = new EntityPlayer(server, world, entityPlayer.getProfile(), new PlayerInteractManager(world));
 		// set location
 		setEntityLocation(npc, location);

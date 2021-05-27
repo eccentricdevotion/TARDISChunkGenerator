@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package me.eccentric_nz.tardischunkgenerator.light;
+package me.eccentric_nz.tardishelper.light;
 
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class Light {
 				}
 			};
 			if (event.isAsync()) {
-				TARDISHelper.machine.addToQueue(request);
+				TARDISHelperPlugin.machine.addToQueue(request);
 			} else {
 				request.run();
 			}
@@ -62,7 +62,7 @@ public class Light {
 		if (!event.isCancelled()) {
 			Runnable request = () -> nmsHandler.deleteLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType());
 			if (event.isAsync()) {
-				TARDISHelper.machine.addToQueue(request);
+				TARDISHelperPlugin.machine.addToQueue(request);
 			} else {
 				request.run();
 			}
@@ -79,7 +79,7 @@ public class Light {
 		UpdateChunkEvent event = new UpdateChunkEvent(info, lightType);
 		Bukkit.getPluginManager().callEvent(event);
 		if (!event.isCancelled()) {
-			TARDISHelper.machine.addChunkToUpdate(info, lightType, players);
+			TARDISHelperPlugin.machine.addChunkToUpdate(info, lightType, players);
 			return true;
 		}
 		return false;

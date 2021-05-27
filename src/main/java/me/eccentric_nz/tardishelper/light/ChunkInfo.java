@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package me.eccentric_nz.tardischunkgenerator.light;
+package me.eccentric_nz.tardishelper.light;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -103,10 +103,9 @@ public class ChunkInfo {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof ChunkInfo)) {
+		if (!(obj instanceof ChunkInfo other)) {
 			return false;
 		}
-		ChunkInfo other = (ChunkInfo) obj;
 		if (world != other.world) {
 			return false;
 		}

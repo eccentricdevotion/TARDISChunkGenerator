@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.helpers;
+package me.eccentric_nz.tardishelper.helpers;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_16_R3.*;
@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class TARDISMapUpdater extends EntityHuman {
@@ -30,7 +31,7 @@ public final class TARDISMapUpdater extends EntityHuman {
 	}
 
 	public void update(MapView mapView) {
-		if (((CraftWorld) mapView.getWorld()).getHandle() != world) {
+		if (((CraftWorld) Objects.requireNonNull(mapView.getWorld())).getHandle() != world) {
 			throw new IllegalArgumentException("world of mapView cannot be different");
 		}
 		try {

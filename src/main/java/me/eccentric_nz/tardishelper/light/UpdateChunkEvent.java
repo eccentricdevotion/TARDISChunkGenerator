@@ -22,11 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package me.eccentric_nz.tardischunkgenerator.light;
+package me.eccentric_nz.tardishelper.light;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class UpdateChunkEvent extends Event implements Cancellable {
 
@@ -49,7 +50,7 @@ public class UpdateChunkEvent extends Event implements Cancellable {
 	}
 
 	@Override
-	public HandlerList getHandlers() {
+	public @NotNull HandlerList getHandlers() {
 		return handlers;
 	}
 

@@ -1,9 +1,9 @@
-package me.eccentric_nz.tardischunkgenerator.keyboard;
+package me.eccentric_nz.tardishelper.keyboard;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.NetworkManager;
 import net.minecraft.server.v1_16_R3.Packet;
 import net.minecraft.server.v1_16_R3.PacketPlayInUpdateSign;
@@ -27,17 +27,15 @@ public class SignInputHandler {
 		}
 	}
 
-	public static void injectNetty(Player player, TARDISHelper plugin) {
+	public static void injectNetty(Player player, TARDISHelperPlugin plugin) {
 		try {
 			Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
 			if (channel != null) {
 				channel.pipeline().addAfter("decoder", "update_sign", new MessageToMessageDecoder<Packet>() {
 
 					@Override
-					protected void decode(ChannelHandlerContext chc, Packet packet, List<Object> out) throws Exception {
-						if (packet instanceof PacketPlayInUpdateSign) {
-
-							PacketPlayInUpdateSign usePacket = (PacketPlayInUpdateSign) packet;
+					protected void decode(ChannelHandlerContext chc, Packet packet, List<Object> out) {
+						if (packet instanceof PacketPlayInUpdateSign usePacket) {
 							Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getPluginManager().callEvent(new PlayerInputEvent(usePacket, player)));
 						}
 						out.add(packet);

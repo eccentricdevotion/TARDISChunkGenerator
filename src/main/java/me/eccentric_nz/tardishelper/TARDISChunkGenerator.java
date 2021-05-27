@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardishelper;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,16 +31,17 @@ import java.util.Random;
 public class TARDISChunkGenerator extends ChunkGenerator {
 
 	/**
-	 * Generates an empty world!
+	 * Generates an empty world.
 	 *
-	 * @param world the world to generate chunks in
+	 * @param world  the world for which to create ChunkData
 	 * @param random
-	 * @param cx
-	 * @param cz
-	 * @return
+	 * @param chunkX
+	 * @param chunkZ
+	 * @param biome
+	 * @return a new ChunkData for the world
 	 */
 	@Override
-	public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int cx, int cz, @NotNull BiomeGrid biome) {
+	public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
 
 		ChunkData result = createChunkData(world);
 		result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
@@ -54,6 +55,13 @@ public class TARDISChunkGenerator extends ChunkGenerator {
 		return result;
 	}
 
+	/**
+	 * Gets the fixed spawn location of a world.
+	 *
+	 * @param world  the world from which to get the spawn location
+	 * @param random
+	 * @return the spawn location of the world
+	 */
 	@Override
 	public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
 		return new Location(world, 0, 70, 0);

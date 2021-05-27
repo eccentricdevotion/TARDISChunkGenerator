@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardishelper.disguise;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
-import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardishelper.TARDISHelperPlugin;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -67,7 +67,7 @@ public class TARDISPlayerDisguiser {
 				profile.getProperties().removeAll("textures");
 				return profile.getProperties().put("textures", new Property("textures", skin, signature));
 			} else {
-				Bukkit.getLogger().log(Level.INFO, TARDISHelper.messagePrefix + "Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
+				Bukkit.getLogger().log(Level.INFO, TARDISHelperPlugin.messagePrefix + "Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
 				return false;
 			}
 		} catch (IOException e) {
