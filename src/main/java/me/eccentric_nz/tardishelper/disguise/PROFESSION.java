@@ -43,7 +43,7 @@ public enum PROFESSION {
 		nms = nmsProfession;
 	}
 
-	public static PROFESSION getFromVillagerProfression(Villager.Profession profession) {
+	public static PROFESSION getFromVillagerProfession(Villager.Profession profession) {
 		return PROFESSION.valueOf(profession.toString());
 	}
 
