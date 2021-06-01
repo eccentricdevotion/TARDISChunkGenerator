@@ -52,7 +52,8 @@ public class TARDISPlayerDisguiser {
 	public void disguisePlayer() {
 		EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
 		// set skin
-		if (setSkin(entityPlayer.getProfile(), uuid) && !TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
+		if (setSkin(entityPlayer.getProfile(), uuid) &&
+			!TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
 			TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
 		}
 	}
@@ -67,7 +68,9 @@ public class TARDISPlayerDisguiser {
 				profile.getProperties().removeAll("textures");
 				return profile.getProperties().put("textures", new Property("textures", skin, signature));
 			} else {
-				Bukkit.getLogger().log(Level.INFO, TARDISHelperPlugin.messagePrefix + "Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
+				Bukkit.getLogger().log(Level.INFO,
+						TARDISHelperPlugin.messagePrefix + "Connection could not be opened (Response code " +
+						connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
 				return false;
 			}
 		} catch (IOException e) {

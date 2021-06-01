@@ -64,7 +64,10 @@ public class TARDISPacketListener {
 							f.setAccessible(false);
 						}
 					} catch (NoSuchFieldException | IllegalAccessException e) {
-						Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelperPlugin.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
+						Bukkit.getServer().getConsoleSender().sendMessage(
+								TARDISHelperPlugin.messagePrefix + ChatColor.RED +
+								" Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET +
+								e.getMessage());
 					}
 				}
 				super.write(channelHandlerContext, packet, channelPromise);

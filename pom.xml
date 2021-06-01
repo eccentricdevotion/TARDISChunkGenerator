@@ -4,16 +4,37 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.eccentric_nz.tardischunkgenerator</groupId>
 	<artifactId>TARDISChunkGenerator</artifactId>
-	<version>4.6.2-SNAPSHOT</version>
+	<version>4.6.2</version>
+	<packaging>jar</packaging>
 	<name>TARDISChunkGenerator</name>
 	<description>Generates empty space for the TARDIS-TimeVortex world</description>
 	<url>https://github.com/eccentricdevotion/TARDISChunkGenerator</url>
+	<inceptionYear>2013</inceptionYear>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 		<java.version>16</java.version>
 	</properties>
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0</name>
+			<url>https://github.com/eccentricdevotion/TARDISChunkGenerator/blob/master/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/eccentricdevotion/TARDISChunkGenerator/issues</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:ssh://github.com/eccentricdevotion/TARDISChunkGenerator</connection>
+		<developerConnection>scm:git:ssh://github.com/eccentricdevotion/TARDISChunkGenerator</developerConnection>
+	</scm>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://tardisjenkins.duckdns.org:8080</url>
+	</ciManagement>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
@@ -37,13 +58,11 @@
 		<profile>
 			<id>local</id>
 			<activation>
-				<property>
-					<name>!env.BUILD_NUMBER</name>
-				</property>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
 				<!-- Set the build number to the date and time of the build -->
-				<project.buildNumber>${timestamp}</project.buildNumber>
+				<build.number>${timestamp}</build.number>
 			</properties>
 			<build>
 				<plugins>
@@ -56,11 +75,14 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>buildnumber</id>
+								<id>create-timestamp-id</id>
 								<phase>validate</phase>
 								<goals>
-									<goal>create</goal>
+									<goal>create-timestamp</goal>
 								</goals>
+								<configuration>
+									<timestampFormat>yyyy.MM.dd-HH.mm.ss</timestampFormat>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -76,11 +98,12 @@
 			</activation>
 			<properties>
 				<!-- Get the build number from Jenkins -->
-				<project.buildNumber>${env.BUILD_NUMBER}</project.buildNumber>
+				<build.number>${env.BUILD_NUMBER}</build.number>
 			</properties>
 			<build>
 				<plugins>
 					<plugin>
+						<!-- Attach Javadocs -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>3.3.0</version>
@@ -102,8 +125,8 @@
 		</profile>
 	</profiles>
 	<build>
-		<finalName>${project.artifactId}-${project.version}-${project.buildNumber}</finalName>
-		<sourceDirectory>src/main/java</sourceDirectory>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<defaultGoal>clean package install</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -126,18 +149,20 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.massivecraft.factions</groupId>
-			<artifactId>Factions</artifactId>
-			<version>2.14.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.massivecraft.massivecore</groupId>
 			<artifactId>MassiveCore</artifactId>
-			<version>2.14.0</version>
+			<version>3.3.3</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/MassiveCore.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.massivecraft.factions</groupId>
+			<artifactId>Factions</artifactId>
+			<version>3.3.3</version>
+			<type>jar</type>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/Factions.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>

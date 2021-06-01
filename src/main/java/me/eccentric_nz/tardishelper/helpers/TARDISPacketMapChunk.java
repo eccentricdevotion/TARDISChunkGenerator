@@ -70,7 +70,7 @@ public class TARDISPacketMapChunk {
 	 */
 	public static void refreshChunk(World world, int x, int z) {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		refreshChunk(world, x, z, players.toArray(new Player[players.size()]));
+		refreshChunk(world, x, z, players.toArray(new Player[0]));
 	}
 
 	/**

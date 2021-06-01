@@ -65,7 +65,11 @@ public abstract class NmsHandlerBase implements INMSHandler {
 									if (isValidSectionY(sectionY)) {
 										int chunkX = blockX >> 4;
 										int chunkZ = blockZ >> 4;
-										ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
+										ChunkInfo cCoord = new ChunkInfo(world,
+												chunkX + dx,
+												sectionY << 4,
+												chunkZ + dz,
+												players != null ? players : (players = world.getPlayers()));
 										list.add(cCoord);
 									}
 								}

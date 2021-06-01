@@ -56,7 +56,8 @@ public class TARDISDisguise {
 			default -> capitalise(disguise.getEntityType().toString());
 		};
 		try {
-			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName("net.minecraft.server.v1_16_R3.Entity" + str);
+			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(
+					"net.minecraft.server.v1_16_R3.Entity" + str);
 			Constructor<? extends Entity> constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_16_R3.World.class);
 			EntityTypes<? extends Entity> type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
 			net.minecraft.server.v1_16_R3.World world = ((CraftWorld) w).getHandle();
@@ -202,7 +203,8 @@ public class TARDISDisguise {
 								break;
 						}
 					}
-					if (o instanceof TropicalFish.Pattern && disguise.getEntityType().equals(EntityType.TROPICAL_FISH)) {
+					if (o instanceof TropicalFish.Pattern &&
+						disguise.getEntityType().equals(EntityType.TROPICAL_FISH)) {
 						EntityTropicalFish fish = (EntityTropicalFish) entity;
 						int var5 = ThreadLocalRandom.current().nextInt(2); // shape
 						int var6 = ((TropicalFish.Pattern) o).ordinal(); // pattern
@@ -219,7 +221,8 @@ public class TARDISDisguise {
 			}
 			return entity;
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-			Bukkit.getLogger().log(Level.SEVERE, TARDISHelperPlugin.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
+			Bukkit.getLogger().log(Level.SEVERE,
+					TARDISHelperPlugin.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

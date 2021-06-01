@@ -298,7 +298,8 @@ public class TextUtils {
 				 * This "else" branch deals with lines in the stacktrace that either start next singular stacktrace or are the last line in current
 				 * singular stacktrace and it is of the form "... X more" where X is a number.
 				 */
-				if (trimmedLine.startsWith(CAUSE_STACKTRACE_PREFIX) || trimmedLine.startsWith(SUPPRESSED_STACKTRACE_PREFIX)) {
+				if (trimmedLine.startsWith(CAUSE_STACKTRACE_PREFIX) ||
+					trimmedLine.startsWith(SUPPRESSED_STACKTRACE_PREFIX)) {
 					/*
 					 * If this is the first line of next singular stacktrace we break out of the current cycle and return this line for the next
 					 * iteration which will invoke this method again
@@ -332,7 +333,9 @@ public class TextUtils {
 
 	private static void error(Throwable t) {
 		if (RELEVANT_PACKAGE != null && !RELEVANT_PACKAGE.isEmpty()) {
-			logger.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace" + getStacktrace(t));
+			logger.error(
+					"Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace" +
+					getStacktrace(t));
 		} else {
 			logger.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace", t);
 		}

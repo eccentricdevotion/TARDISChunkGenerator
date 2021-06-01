@@ -89,7 +89,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 		// start RequestStreamMachine
 		machine.start(2, 400);
 		// should we filter the log?
-		String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+		String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" +
+						  File.separator;
 		// get the TARDIS config
 		FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
 		if (configuration.getBoolean("debug")) {
@@ -113,7 +114,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 			willingField.setAccessible(true);
 			return willingField.getBoolean(villager);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to get villager willingness: " + ex.getMessage());
+			Bukkit.getLogger().log(Level.SEVERE,
+					messagePrefix + "Failed to get villager willingness: " + ex.getMessage());
 			return false;
 		}
 	}
@@ -126,7 +128,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 			willingField.setAccessible(true);
 			willingField.set(villager, willing);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
+			Bukkit.getLogger().log(Level.SEVERE,
+					messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
 		}
 	}
 
@@ -167,7 +170,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
 	@Override
 	public void setRandomSeed(String world) {
-		File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+		File file = new File(
+				Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
 		if (file.exists()) {
 			try {
 				FileInputStream fileinputstream = new FileInputStream(file);
@@ -189,7 +193,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
 	@Override
 	public void setLevelName(String oldName, String newName) {
-		File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName + File.separator + "level.dat");
+		File file = new File(
+				Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName + File.separator + "level.dat");
 		if (file.exists()) {
 			try {
 				FileInputStream fileinputstream = new FileInputStream(file);
@@ -216,7 +221,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
 	@Override
 	public void setWorldGameMode(String world, GameMode gamemode) {
-		File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+		File file = new File(
+				Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
 		if (file.exists()) {
 			try {
 				FileInputStream fileinputstream = new FileInputStream(file);
@@ -244,7 +250,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
 	@Override
 	public TARDISPlanetData getLevelData(String world) {
-		File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
+		File file = new File(
+				Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
 		if (file.exists()) {
 			try {
 				FileInputStream fileinputstream = new FileInputStream(file);
@@ -271,8 +278,12 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 							WorldType.NORMAL;
 				};
 				World.Environment environment = World.Environment.NORMAL;
-				File dimDashOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1");
-				File dimOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1");
+				File dimDashOne = new File(
+						Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator +
+						"DIM-1");
+				File dimOne = new File(
+						Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator +
+						"DIM1");
 				if (dimDashOne.exists() && !dimOne.exists()) {
 					environment = World.Environment.NETHER;
 				}
@@ -285,7 +296,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 				return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
 			}
 		}
-		Bukkit.getLogger().log(Level.INFO, messagePrefix + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
+		Bukkit.getLogger().log(Level.INFO,
+				messagePrefix + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
 		return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
 	}
 
@@ -396,7 +408,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 		CraftWorld world = (CraftWorld) location.getWorld();
 		assert world != null;
 		WorldServer worldServer = world.getHandle();
-		BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
+		BiomeBase base = worldServer.getBiome(
+				location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
 		IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
 		MinecraftKey key = registry.getKey(base);
 		if (key != null) {
