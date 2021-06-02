@@ -16,6 +16,10 @@
  */
 package me.eccentric_nz.tardishelper.disguise;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
@@ -26,8 +30,8 @@ import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.UUID;
@@ -60,11 +64,17 @@ public class TARDISPlayerDisguiser {
 
 	private boolean setSkin(GameProfile profile, UUID uuid) {
 		try {
-			HttpsURLConnection connection = (HttpsURLConnection) new URL(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false", UUIDTypeAdapter.fromUUID(uuid))).openConnection();
+			URL url = new URL(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false", UUIDTypeAdapter.fromUUID(uuid)));
+			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+			connection.connect();
 			if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				String reply = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-				String skin = reply.split("\"value\":\"")[1].split("\"")[0];
-				String signature = reply.split("\"signature\":\"")[1].split("\"")[0];
+				JsonParser jp = new JsonParser();
+				JsonElement root = jp.parse(new InputStreamReader((InputStream) connection.getContent())); //Convert the input stream to a json element
+				JsonObject rootobj = root.getAsJsonObject();
+				JsonArray jsonArray = rootobj.getAsJsonArray("properties");
+				JsonObject properties = jsonArray.get(0).getAsJsonObject();
+				String skin = properties.get("value").getAsString();
+				String signature = properties.get("signature").getAsString();
 				profile.getProperties().removeAll("textures");
 				return profile.getProperties().put("textures", new Property("textures", skin, signature));
 			} else {
