@@ -33,10 +33,10 @@ public class TARDISChunkGenerator extends ChunkGenerator {
      * Generates an empty world!
      *
      * @param world  the world to generate chunks in
-     * @param random
-     * @param cx
-     * @param cz
-     * @return
+     * @param random a pseudorandom number generator
+     * @param cx     the chunk's x coordinate
+     * @param cz     the chunk's z coordinate
+     * @return the ChunkData to be generated
      */
     @Override
     public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
@@ -53,6 +53,13 @@ public class TARDISChunkGenerator extends ChunkGenerator {
         return result;
     }
 
+    /**
+     * Gets the fixed spawn location of a world.
+     *
+     * @param world  the world from which to get the spawn location
+     * @param random a pseudorandom number generator
+     * @return the spawn location of the world
+     */
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
         return new Location(world, 0, 70, 0);
