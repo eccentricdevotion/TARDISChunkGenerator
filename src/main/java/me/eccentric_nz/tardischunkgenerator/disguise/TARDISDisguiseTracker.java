@@ -25,28 +25,28 @@ import java.util.UUID;
 
 public class TARDISDisguiseTracker {
 
-	public static final List<UUID> DISGUISED_AS_PLAYER = new ArrayList<>();
-	public static final HashMap<Integer, UUID> DISGUISED_NPCS = new HashMap<>();
-	public static final HashMap<UUID, TARDISDisguise> DISGUISED_ARMOR_STANDS = new HashMap<>();
-	public static final HashMap<UUID, TARDISDisguise> DISGUISED_AS_MOB = new HashMap<>();
-	public static final HashMap<UUID, ProfileData> ARCHED = new HashMap<>();
+    public static final List<UUID> DISGUISED_AS_PLAYER = new ArrayList<>();
+    public static final HashMap<Integer, UUID> DISGUISED_NPCS = new HashMap<>();
+    public static final HashMap<UUID, TARDISDisguise> DISGUISED_ARMOR_STANDS = new HashMap<>();
+    public static final HashMap<UUID, TARDISDisguise> DISGUISED_AS_MOB = new HashMap<>();
+    public static final HashMap<UUID, ProfileData> ARCHED = new HashMap<>();
 
-	public static class ProfileData {
+    public static class ProfileData {
 
-		PropertyMap properties;
-		String name;
+        PropertyMap properties;
+        String name;
 
-		public ProfileData(PropertyMap properties, String name) {
-			this.properties = properties;
-			this.name = name;
-		}
+        public ProfileData(PropertyMap properties, String name) {
+            this.properties = properties;
+            this.name = name;
+        }
 
-		public PropertyMap getProperties() {
-			return properties;
-		}
+        public PropertyMap getProperties() {
+            return properties;
+        }
 
-		public String getName() {
-			return name;
-		}
-	}
+        public String getName() {
+            return name;
+        }
+    }
 }

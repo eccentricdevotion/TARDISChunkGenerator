@@ -32,22 +32,22 @@ import java.util.List;
 
 public interface INMSHandler {
 
-	// Lights...
-	void createLight(World world, int x, int y, int z, LightType lightType, int light);
+    // Lights...
+    void createLight(World world, int x, int y, int z, LightType lightType, int light);
 
-	void deleteLight(World world, int x, int y, int z, LightType lightType);
+    void deleteLight(World world, int x, int y, int z, LightType lightType);
 
-	// Chunks...
-	List<ChunkInfo> collectChunks(World world, int blockX, int blockY, int blockZ, LightType lightType, int lightLevel);
+    // Chunks...
+    List<ChunkInfo> collectChunks(World world, int blockX, int blockY, int blockZ, LightType lightType, int lightLevel);
 
-	void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Collection<? extends Player> players);
+    void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Collection<? extends Player> players);
 
-	void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Player player);
+    void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Player player);
 
-	// Utils...
-	boolean isValidSectionY(int sectionY);
+    // Utils...
+    boolean isValidSectionY(int sectionY);
 
-	int asSectionMask(int sectionY);
+    int asSectionMask(int sectionY);
 
-	Collection<? extends Player> filterVisiblePlayers(World world, int chunkX, int chunkZ, Collection<? extends Player> players);
+    Collection<? extends Player> filterVisiblePlayers(World world, int chunkX, int chunkZ, Collection<? extends Player> players);
 }

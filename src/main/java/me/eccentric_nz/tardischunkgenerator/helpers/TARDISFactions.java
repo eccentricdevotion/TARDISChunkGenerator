@@ -32,22 +32,22 @@ import org.bukkit.entity.Player;
  */
 public class TARDISFactions {
 
-	/**
-	 * Checks whether a location is in the player's faction or 'wilderness'... ie NOT in a claimed faction that this
-	 * player doesn't belong to.
-	 *
-	 * @param player   a player
-	 * @param location the location instance to check.
-	 * @return true or false depending on whether the player belongs to the faction who controls the location
-	 */
-	public boolean isInFaction(Player player, Location location) {
-		boolean bool = true;
-		MPlayer uplayer = MPlayer.get(player);
-		Faction ufac = uplayer.getFaction();
-		Faction lfac = BoardColl.get().getFactionAt(PS.valueOf(location));
-		if (!ufac.equals(lfac) && !lfac.isNone()) {
-			bool = false;
-		}
-		return bool;
-	}
+    /**
+     * Checks whether a location is in the player's faction or 'wilderness'... ie NOT in a claimed faction that this
+     * player doesn't belong to.
+     *
+     * @param player   a player
+     * @param location the location instance to check.
+     * @return true or false depending on whether the player belongs to the faction who controls the location
+     */
+    public boolean isInFaction(Player player, Location location) {
+        boolean bool = true;
+        MPlayer uplayer = MPlayer.get(player);
+        Faction ufac = uplayer.getFaction();
+        Faction lfac = BoardColl.get().getFactionAt(PS.valueOf(location));
+        if (!ufac.equals(lfac) && !lfac.isNone()) {
+            bool = false;
+        }
+        return bool;
+    }
 }

@@ -39,63 +39,60 @@ import java.util.logging.Level;
 
 public class TARDISPlayerDisguiser {
 
-	private final Player player;
-	private final UUID uuid;
+    private final Player player;
+    private final UUID uuid;
 
-	public TARDISPlayerDisguiser(Player player, UUID uuid) {
-		this.player = player;
-		this.uuid = uuid;
-		disguisePlayer();
-	}
+    public TARDISPlayerDisguiser(Player player, UUID uuid) {
+        this.player = player;
+        this.uuid = uuid;
+        disguisePlayer();
+    }
 
-	public static void disguiseToPlayer(Player disguised, Player to) {
-		to.hidePlayer(disguised);
-		to.showPlayer(disguised);
-	}
+    public static void disguiseToPlayer(Player disguised, Player to) {
+        to.hidePlayer(disguised);
+        to.showPlayer(disguised);
+    }
 
-	public void disguisePlayer() {
-		EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-		// set skin
-		if (setSkin(entityPlayer.getProfile(), uuid) &&
-			!TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
-			TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
-		}
-	}
+    public void disguisePlayer() {
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        // set skin
+        if (setSkin(entityPlayer.getProfile(), uuid) && !TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
+            TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
+        }
+    }
 
-	private boolean setSkin(GameProfile profile, UUID uuid) {
-		try {
-			URL url = new URL(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false", UUIDTypeAdapter.fromUUID(uuid)));
-			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-			connection.connect();
-			if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				JsonParser jp = new JsonParser();
-				JsonElement root = jp.parse(new InputStreamReader((InputStream) connection.getContent())); //Convert the input stream to a json element
-				JsonObject rootobj = root.getAsJsonObject();
-				JsonArray jsonArray = rootobj.getAsJsonArray("properties");
-				JsonObject properties = jsonArray.get(0).getAsJsonObject();
-				String skin = properties.get("value").getAsString();
-				String signature = properties.get("signature").getAsString();
-				profile.getProperties().removeAll("textures");
-				return profile.getProperties().put("textures", new Property("textures", skin, signature));
-			} else {
-				Bukkit.getLogger().log(Level.INFO,
-						TARDISHelperPlugin.messagePrefix + "Connection could not be opened (Response code " +
-						connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
-				return false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+    private boolean setSkin(GameProfile profile, UUID uuid) {
+        try {
+            URL url = new URL(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false", UUIDTypeAdapter.fromUUID(uuid)));
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.connect();
+            if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) connection.getContent())); //Convert the input stream to a json element
+                JsonObject rootobj = root.getAsJsonObject();
+                JsonArray jsonArray = rootobj.getAsJsonArray("properties");
+                JsonObject properties = jsonArray.get(0).getAsJsonObject();
+                String skin = properties.get("value").getAsString();
+                String signature = properties.get("signature").getAsString();
+                profile.getProperties().removeAll("textures");
+                return profile.getProperties().put("textures", new Property("textures", skin, signature));
+            } else {
+                Bukkit.getLogger().log(Level.INFO, TARDISHelperPlugin.messagePrefix + "Connection could not be opened (Response code " + connection.getResponseCode() + ", " + connection.getResponseMessage() + ")");
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public void disguiseToAll() {
-		TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (p != player && player.getWorld() == p.getWorld()) {
-				p.hidePlayer(player);
-				p.showPlayer(player);
-			}
-		}
-	}
+    public void disguiseToAll() {
+        TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p != player && player.getWorld() == p.getWorld()) {
+                p.hidePlayer(player);
+                p.showPlayer(player);
+            }
+        }
+    }
 }

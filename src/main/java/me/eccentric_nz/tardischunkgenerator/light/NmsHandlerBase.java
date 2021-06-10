@@ -34,85 +34,81 @@ import java.util.List;
 
 public abstract class NmsHandlerBase implements INMSHandler {
 
-	protected int getViewDistance(Player player) {
-		return Bukkit.getViewDistance();
-	}
+    protected int getViewDistance(Player player) {
+        return Bukkit.getViewDistance();
+    }
 
-	private boolean isVisibleToPlayer(World world, int chunkX, int chunkZ, Player player) {
-		Location location = player.getLocation();
-		if (!world.equals(location.getWorld())) {
-			return false;
-		}
-		double dx = chunkX - (location.getBlockX() >> 4);
-		double dz = chunkZ - (location.getBlockZ() >> 4);
-		return (int) Math.sqrt(dx * dx + dz * dz) < getViewDistance(player);
-	}
+    private boolean isVisibleToPlayer(World world, int chunkX, int chunkZ, Player player) {
+        Location location = player.getLocation();
+        if (!world.equals(location.getWorld())) {
+            return false;
+        }
+        double dx = chunkX - (location.getBlockX() >> 4);
+        double dz = chunkZ - (location.getBlockZ() >> 4);
+        return (int) Math.sqrt(dx * dx + dz * dz) < getViewDistance(player);
+    }
 
-	@Override
-	public List<ChunkInfo> collectChunks(World world, int blockX, int blockY, int blockZ, LightType lightType, int lightLevel) {
-		List<ChunkInfo> list = new ArrayList<>();
-		Collection<Player> players = null;
-		if (lightLevel > 0) {
-			for (int dx = -1; dx <= 1; dx++) {
-				int lightLevelX = lightLevel - getDeltaLight(blockX & 15, dx);
-				if (lightLevelX > 0) {
-					for (int dz = -1; dz <= 1; dz++) {
-						int lightLevelZ = lightLevelX - getDeltaLight(blockZ & 15, dz);
-						if (lightLevelZ > 0) {
-							for (int dy = -1; dy <= 1; dy++) {
-								if (lightLevelZ > getDeltaLight(blockY & 15, dy)) {
-									int sectionY = (blockY >> 4) + dy;
-									if (isValidSectionY(sectionY)) {
-										int chunkX = blockX >> 4;
-										int chunkZ = blockZ >> 4;
-										ChunkInfo cCoord = new ChunkInfo(world,
-												chunkX + dx,
-												sectionY << 4,
-												chunkZ + dz,
-												players != null ? players : (players = world.getPlayers()));
-										list.add(cCoord);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return list;
-	}
+    @Override
+    public List<ChunkInfo> collectChunks(World world, int blockX, int blockY, int blockZ, LightType lightType, int lightLevel) {
+        List<ChunkInfo> list = new ArrayList<>();
+        Collection<Player> players = null;
+        if (lightLevel > 0) {
+            for (int dx = -1; dx <= 1; dx++) {
+                int lightLevelX = lightLevel - getDeltaLight(blockX & 15, dx);
+                if (lightLevelX > 0) {
+                    for (int dz = -1; dz <= 1; dz++) {
+                        int lightLevelZ = lightLevelX - getDeltaLight(blockZ & 15, dz);
+                        if (lightLevelZ > 0) {
+                            for (int dy = -1; dy <= 1; dy++) {
+                                if (lightLevelZ > getDeltaLight(blockY & 15, dy)) {
+                                    int sectionY = (blockY >> 4) + dy;
+                                    if (isValidSectionY(sectionY)) {
+                                        int chunkX = blockX >> 4;
+                                        int chunkZ = blockZ >> 4;
+                                        ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
+                                        list.add(cCoord);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
 
-	@Override
-	public void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Collection<? extends Player> players) {
-		for (Player player : players) {
-			sendChunkSectionsUpdate(world, chunkX, chunkZ, sectionsMaskSky, sectionsMaskBlock, player);
-		}
-	}
+    @Override
+    public void sendChunkSectionsUpdate(World world, int chunkX, int chunkZ, int sectionsMaskSky, int sectionsMaskBlock, Collection<? extends Player> players) {
+        for (Player player : players) {
+            sendChunkSectionsUpdate(world, chunkX, chunkZ, sectionsMaskSky, sectionsMaskBlock, player);
+        }
+    }
 
-	@Override
-	public boolean isValidSectionY(int sectionY) {
-		return sectionY >= 0 && sectionY < 16;
-	}
+    @Override
+    public boolean isValidSectionY(int sectionY) {
+        return sectionY >= 0 && sectionY < 16;
+    }
 
-	@Override
-	public int asSectionMask(int sectionY) {
-		return 1 << sectionY;
-	}
+    @Override
+    public int asSectionMask(int sectionY) {
+        return 1 << sectionY;
+    }
 
-	@Override
-	public Collection<? extends Player> filterVisiblePlayers(World world, int chunkX, int chunkZ, Collection<? extends Player> players) {
-		List<Player> result = new ArrayList<>();
-		for (Player player : players) {
-			if (isVisibleToPlayer(world, chunkX, chunkZ, player)) {
-				result.add(player);
-			}
-		}
-		return result;
-	}
+    @Override
+    public Collection<? extends Player> filterVisiblePlayers(World world, int chunkX, int chunkZ, Collection<? extends Player> players) {
+        List<Player> result = new ArrayList<>();
+        for (Player player : players) {
+            if (isVisibleToPlayer(world, chunkX, chunkZ, player)) {
+                result.add(player);
+            }
+        }
+        return result;
+    }
 
-	private int getDeltaLight(int x, int dx) {
-		return (((x ^ ((-dx >> 4) & 15)) + 1) & (-(dx & 1)));
-	}
+    private int getDeltaLight(int x, int dx) {
+        return (((x ^ ((-dx >> 4) & 15)) + 1) & (-(dx & 1)));
+    }
 
-	protected abstract void recalculateLighting(World world, int x, int y, int z, LightType lightType);
+    protected abstract void recalculateLighting(World world, int x, int y, int z, LightType lightType);
 }

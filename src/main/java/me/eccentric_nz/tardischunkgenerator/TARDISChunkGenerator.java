@@ -30,35 +30,35 @@ import java.util.Random;
  */
 public class TARDISChunkGenerator extends ChunkGenerator {
 
-	/**
-	 * Generates an empty world.
-	 *
-	 * @param world the world for which to create ChunkData
-	 * @return a new ChunkData for the world
-	 */
-	@Override
-	public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
+    /**
+     * Generates an empty world.
+     *
+     * @param world the world for which to create ChunkData
+     * @return a new ChunkData for the world
+     */
+    @Override
+    public @NotNull ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
 
-		ChunkData result = createChunkData(world);
-		result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				for (int y = 0; y < world.getMaxHeight(); y++) {
-					biome.setBiome(x, y, z, Biome.THE_VOID);
-				}
-			}
-		}
-		return result;
-	}
+        ChunkData result = createChunkData(world);
+        result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = 0; y < world.getMaxHeight(); y++) {
+                    biome.setBiome(x, y, z, Biome.THE_VOID);
+                }
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Gets the fixed spawn location of a world.
-	 *
-	 * @param world the world from which to get the spawn location
-	 * @return the spawn location of the world
-	 */
-	@Override
-	public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
-		return new Location(world, 0, 70, 0);
-	}
+    /**
+     * Gets the fixed spawn location of a world.
+     *
+     * @param world the world from which to get the spawn location
+     * @return the spawn location of the world
+     */
+    @Override
+    public Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
+        return new Location(world, 0, 70, 0);
+    }
 }

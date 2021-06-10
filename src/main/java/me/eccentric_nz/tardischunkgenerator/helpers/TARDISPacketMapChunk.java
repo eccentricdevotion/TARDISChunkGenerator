@@ -30,73 +30,73 @@ import java.util.Collection;
  */
 public class TARDISPacketMapChunk {
 
-	private final net.minecraft.server.v1_16_R3.Chunk chunk;
+    private final net.minecraft.server.v1_16_R3.Chunk chunk;
 
-	/**
-	 * Creates a TARDISPacketMapChunk.
-	 *
-	 * @param world The chunk's world.
-	 * @param x     The chunk's X.
-	 * @param z     The chunk's Z.
-	 */
-	public TARDISPacketMapChunk(World world, int x, int z) {
-		this(world.getChunkAt(x, z));
-	}
+    /**
+     * Creates a TARDISPacketMapChunk.
+     *
+     * @param world The chunk's world.
+     * @param x     The chunk's X.
+     * @param z     The chunk's Z.
+     */
+    public TARDISPacketMapChunk(World world, int x, int z) {
+        this(world.getChunkAt(x, z));
+    }
 
-	/**
-	 * Creates a TARDISPacketMapChunk.
-	 *
-	 * @param chunk The chunk.
-	 */
-	public TARDISPacketMapChunk(org.bukkit.Chunk chunk) {
-		this.chunk = ((CraftChunk) chunk).getHandle();
-	}
+    /**
+     * Creates a TARDISPacketMapChunk.
+     *
+     * @param chunk The chunk.
+     */
+    public TARDISPacketMapChunk(org.bukkit.Chunk chunk) {
+        this.chunk = ((CraftChunk) chunk).getHandle();
+    }
 
-	/**
-	 * Refresh a chunk.
-	 *
-	 * @param chunk The chunk.
-	 */
-	public static void refreshChunk(org.bukkit.Chunk chunk) {
-		refreshChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
-	}
+    /**
+     * Refresh a chunk.
+     *
+     * @param chunk The chunk.
+     */
+    public static void refreshChunk(org.bukkit.Chunk chunk) {
+        refreshChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
+    }
 
-	/**
-	 * Wrapper for <code>world.refreshChunk(...)</code>
-	 *
-	 * @param world The world.
-	 * @param x     The chunk's X.
-	 * @param z     The chunk's Z.
-	 */
-	public static void refreshChunk(World world, int x, int z) {
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		refreshChunk(world, x, z, players.toArray(new Player[0]));
-	}
+    /**
+     * Wrapper for <code>world.refreshChunk(...)</code>
+     *
+     * @param world The world.
+     * @param x     The chunk's X.
+     * @param z     The chunk's Z.
+     */
+    public static void refreshChunk(World world, int x, int z) {
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        refreshChunk(world, x, z, players.toArray(new Player[0]));
+    }
 
-	/**
-	 * Refresh a chunk for the selected players.
-	 *
-	 * @param world   The chunk's world.
-	 * @param x       The chunk's X.
-	 * @param z       The chunk's Z.
-	 * @param players The players.
-	 */
-	public static void refreshChunk(World world, int x, int z, Player... players) {
-		TARDISPacketMapChunk packet = new TARDISPacketMapChunk(world.getChunkAt(x, z));
-		for (Player player : players) {
-			packet.send(player);
-		}
-		world.refreshChunk(x, z);
-	}
+    /**
+     * Refresh a chunk for the selected players.
+     *
+     * @param world   The chunk's world.
+     * @param x       The chunk's X.
+     * @param z       The chunk's Z.
+     * @param players The players.
+     */
+    public static void refreshChunk(World world, int x, int z, Player... players) {
+        TARDISPacketMapChunk packet = new TARDISPacketMapChunk(world.getChunkAt(x, z));
+        for (Player player : players) {
+            packet.send(player);
+        }
+        world.refreshChunk(x, z);
+    }
 
-	/**
-	 * Sends this packet to a player.
-	 * <br>You still need to refresh it manually with
-	 * <code>world.refreshChunk(...)</code>.
-	 *
-	 * @param player The player.
-	 */
-	public final void send(Player player) {
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
-	}
+    /**
+     * Sends this packet to a player.
+     * <br>You still need to refresh it manually with
+     * <code>world.refreshChunk(...)</code>.
+     *
+     * @param player The player.
+     */
+    public final void send(Player player) {
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 20));
+    }
 }

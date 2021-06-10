@@ -21,20 +21,20 @@ import org.bukkit.entity.Fox;
 
 public enum FOX {
 
-	RED(EntityFox.Type.RED),
-	SNOW(EntityFox.Type.SNOW);
+    RED(EntityFox.Type.RED),
+    SNOW(EntityFox.Type.SNOW);
 
-	private final EntityFox.Type nmsType;
+    private final EntityFox.Type nmsType;
 
-	FOX(EntityFox.Type nmsType) {
-		this.nmsType = nmsType;
-	}
+    FOX(EntityFox.Type nmsType) {
+        this.nmsType = nmsType;
+    }
 
-	public static FOX getFromFoxType(Fox.Type type) {
-		return FOX.valueOf(type.toString());
-	}
+    public static FOX getFromFoxType(Fox.Type type) {
+        return FOX.valueOf(type.toString());
+    }
 
-	public EntityFox.Type getNmsType() {
-		return nmsType;
-	}
+    public EntityFox.Type getNmsType() {
+        return nmsType;
+    }
 }
