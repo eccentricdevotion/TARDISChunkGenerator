@@ -2,7 +2,7 @@ authors: [eccentric_nz]
 main: me.eccentric_nz.tardischunkgenerator.TARDISHelper
 name: TARDISHelper
 description: Chunk generator for the TARDIS plugin
-version: 4.6.3
+version: 4.7.0
 api-version: 1.16
 website: http://tardisjenkins.duckdns.org:8080/job/TARDISChunkGenerator/
 dev-url: http://github.com/eccentricdevotion/TARDISChunkGenerator/
