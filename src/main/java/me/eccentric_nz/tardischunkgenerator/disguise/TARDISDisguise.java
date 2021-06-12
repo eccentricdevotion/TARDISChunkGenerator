@@ -160,6 +160,10 @@ public class TARDISDisguise {
                 str = "Hoglin";
                 packagePath += "monster.hoglin.";
                 break;
+            case WITHER:
+                str = "Wither";
+                packagePath += "boss.wither.";
+                break;
             case PIGLIN:
             case PIGLIN_BRUTE:
                 str = capitalise(disguise.getEntityType().toString());
