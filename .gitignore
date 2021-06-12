@@ -13,6 +13,9 @@ build/*
 *.xcworkspace
 xcuserdata
 
+# vscode
+.vscode/*
+
 # svn & cvs
 .svn
 CVS
@@ -21,8 +24,14 @@ CVS
 /psd/
 /nbproject/
 /bin/
-/.idea/
+/movies/
+/OTG_Files/
 
 # other stuff
 .classpath
+.project
+.settings
+nb-configuration.xml
+
+.idea/
 *.iml
