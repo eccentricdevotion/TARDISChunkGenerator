@@ -26,17 +26,26 @@
 package me.eccentric_nz.tardischunkgenerator.light;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.SectionPosition;
+import net.minecraft.network.protocol.game.PacketPlayOutLightUpdate;
+import net.minecraft.server.level.LightEngineThreaded;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.util.thread.ThreadedMailbox;
+import net.minecraft.world.level.EnumSkyBlock;
+import net.minecraft.world.level.chunk.Chunk;
+import net.minecraft.world.level.lighting.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,28 +53,28 @@ import java.util.logging.Level;
 
 public class NMSHandler extends NmsHandlerBase {
 
-    private final Field lightEngine_ThreadedMailbox;
-    private final Field threadedMailbox_State;
-    private final Method threadedMailbox_DoLoopStep;
-    private final Field lightEngineLayer_c;
+    private final Field lightEngine_ThreadedMailbox_e;
+    private final Field threadedMailbox_State_d;
+    private final Method threadedMailbox_DoLoopStep_g;
+    private final Field lightEngineLayer_d;
     private final Method lightEngineStorage_d;
-    private final Method lightEngineGraph_a;
+    private final Method lightEngineGraph_b;
 
     public NMSHandler() {
         try {
-            threadedMailbox_DoLoopStep = ThreadedMailbox.class.getDeclaredMethod("f");
-            threadedMailbox_DoLoopStep.setAccessible(true);
-            threadedMailbox_State = ThreadedMailbox.class.getDeclaredField("c");
-            threadedMailbox_State.setAccessible(true);
-            lightEngine_ThreadedMailbox = LightEngineThreaded.class.getDeclaredField("b");
-            lightEngine_ThreadedMailbox.setAccessible(true);
+            threadedMailbox_DoLoopStep_g = ThreadedMailbox.class.getDeclaredMethod("g");
+            threadedMailbox_DoLoopStep_g.setAccessible(true);
+            threadedMailbox_State_d = ThreadedMailbox.class.getDeclaredField("d");
+            threadedMailbox_State_d.setAccessible(true);
+            lightEngine_ThreadedMailbox_e = LightEngineThreaded.class.getDeclaredField("e");
+            lightEngine_ThreadedMailbox_e.setAccessible(true);
 
-            lightEngineLayer_c = LightEngineLayer.class.getDeclaredField("c");
-            lightEngineLayer_c.setAccessible(true);
+            lightEngineLayer_d = LightEngineLayer.class.getDeclaredField("d");
+            lightEngineLayer_d.setAccessible(true);
             lightEngineStorage_d = LightEngineStorage.class.getDeclaredMethod("d");
             lightEngineStorage_d.setAccessible(true);
-            lightEngineGraph_a = LightEngineGraph.class.getDeclaredMethod("a", long.class, long.class, int.class, boolean.class);
-            lightEngineGraph_a.setAccessible(true);
+            lightEngineGraph_b = LightEngineGraph.class.getDeclaredMethod("b", long.class, long.class, int.class, boolean.class);
+            lightEngineGraph_b.setAccessible(true);
         } catch (Exception e) {
             throw toRuntimeException(e);
         }
@@ -101,8 +110,11 @@ public class NMSHandler extends NmsHandlerBase {
         // 18 bits, with the lowest bit corresponding to chunk section -1 (in the void,
         // y=-16 to y=-1) and the highest bit for chunk section 16 (above the world,
         // y=256 to y=271).
-        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(chunk.getPos(), chunk.e(), sectionsMaskSky, sectionsMaskBlock, true);
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        LightEngine let = chunk.i.getChunkProvider().getLightEngine();
+        BitSet sky = new BitSet(sectionsMaskSky);
+        BitSet block = new BitSet(sectionsMaskBlock);
+        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(chunk.getPos(), let, sky, block, true);
+        ((CraftPlayer) player).getHandle().b.sendPacket(packet); // b = playerConnection
     }
 
     private void setRawLightLevel(World world, LightType type, int blockX, int blockY, int blockZ, int lightlevel) {
@@ -113,7 +125,7 @@ public class NMSHandler extends NmsHandlerBase {
         int finalLightLevel = lightlevel < 0 ? 0 : lightlevel > 15 ? 15 : lightlevel;
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
-                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.SKY);
+                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.a); // a = SKY
                 if (!(layer instanceof LightEngineSky)) {
                     return;
                 }
@@ -129,7 +141,7 @@ public class NMSHandler extends NmsHandlerBase {
                     }
                 }
             } else {
-                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.BLOCK);
+                LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.b); // b = BLOCK
                 if (!(layer instanceof LightEngineBlock)) {
                     return;
                 }
@@ -206,16 +218,16 @@ public class NMSHandler extends NmsHandlerBase {
         LightEngineThreaded lightEngine = worldServer.getChunkProvider().getLightEngine();
 
         // Do not recalculate if no changes!
-        if (!lightEngine.a()) {
+        if (!lightEngine.z_()) {
             return;
         }
 
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
-                LightEngineSky les = (LightEngineSky) lightEngine.a(EnumSkyBlock.SKY);
+                LightEngineSky les = (LightEngineSky) lightEngine.a(EnumSkyBlock.a); // a = SKY
                 les.a(Integer.MAX_VALUE, true, true);
             } else {
-                LightEngineBlock leb = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+                LightEngineBlock leb = (LightEngineBlock) lightEngine.a(EnumSkyBlock.b); // b = BLOCK
                 leb.a(Integer.MAX_VALUE, true, true);
             }
         });
@@ -224,11 +236,11 @@ public class NMSHandler extends NmsHandlerBase {
     private void executeSync(LightEngineThreaded lightEngine, Runnable task) {
         try {
             // ##### STEP 1: Pause light engine mailbox to process its tasks. #####
-            ThreadedMailbox<Runnable> threadedMailbox = (ThreadedMailbox<Runnable>) lightEngine_ThreadedMailbox.get(lightEngine);
+            ThreadedMailbox<Runnable> threadedMailbox = (ThreadedMailbox<Runnable>) lightEngine_ThreadedMailbox_e.get(lightEngine);
             // State flags bit mask:
             // 0x0001 - Closing flag (ThreadedMailbox is closing if non zero).
             // 0x0002 - Busy flag (ThreadedMailbox performs a task from queue if non zero).
-            AtomicInteger stateFlags = (AtomicInteger) threadedMailbox_State.get(threadedMailbox);
+            AtomicInteger stateFlags = (AtomicInteger) threadedMailbox_State_d.get(threadedMailbox);
             int flags; // to hold values from stateFlags
             long timeToWait = -1;
             // Trying to set bit 1 in state bit mask when it is not set yet.
@@ -264,7 +276,7 @@ public class NMSHandler extends NmsHandlerBase {
                 // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may still be
                 // in the queue. Therefore, it is important to start the loop again to process tasks from the queue.
                 // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
-                threadedMailbox_DoLoopStep.invoke(threadedMailbox);
+                threadedMailbox_DoLoopStep_g.invoke(threadedMailbox);
             }
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
@@ -275,9 +287,9 @@ public class NMSHandler extends NmsHandlerBase {
 
     private void lightEngineLayer_a(LightEngineLayer les, BlockPosition var0, int var1) {
         try {
-            LightEngineStorage ls = (LightEngineStorage) lightEngineLayer_c.get(les);
+            LightEngineStorage ls = (LightEngineStorage) lightEngineLayer_d.get(les);
             lightEngineStorage_d.invoke(ls);
-            lightEngineGraph_a.invoke(les, 9223372036854775807L, var0.asLong(), 15 - var1, true);
+            lightEngineGraph_b.invoke(les, 9223372036854775807L, var0.asLong(), 15 - var1, true);
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
         } catch (IllegalAccessException e) {

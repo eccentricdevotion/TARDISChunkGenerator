@@ -1,8 +1,15 @@
 package me.eccentric_nz.tardischunkgenerator.keyboard;
 
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.network.chat.ChatComponentText;
+import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntitySign;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.SignChangeEvent;
@@ -35,7 +42,7 @@ public class PlayerInputEvent extends PlayerEvent {
                 return;
             }
             TileEntitySign tileentitysign = (TileEntitySign) tileentity;
-            tileentitysign.isEditable = true;
+            tileentitysign.f = true; // f = isEditable
             String[] lines = packet.c();
             for (int i = 0; i < lines.length; ++i) {
                 tileentitysign.a(i, new ChatComponentText(lines[i]));

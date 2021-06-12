@@ -16,13 +16,13 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R3.EntityFox;
+import net.minecraft.world.entity.animal.EntityFox;
 import org.bukkit.entity.Fox;
 
 public enum FOX {
 
-    RED(EntityFox.Type.RED),
-    SNOW(EntityFox.Type.SNOW);
+    RED(EntityFox.Type.a), // RED
+    SNOW(EntityFox.Type.b); // SNOW
 
     private final EntityFox.Type nmsType;
 

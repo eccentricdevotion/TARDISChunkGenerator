@@ -17,14 +17,27 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.server.v1_16_R3.Entity;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.core.IRegistry;
+import net.minecraft.network.chat.ChatMessage;
+import net.minecraft.world.entity.EntityAgeable;
+import net.minecraft.world.entity.EntityTameableAnimal;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.entity.ambient.EntityBat;
+import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.npc.EntityVillager;
+import net.minecraft.world.item.EnumColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.*;
 
 import java.lang.reflect.Constructor;
@@ -43,7 +56,7 @@ public class TARDISDisguise {
         this.options = options;
     }
 
-    public static Entity createMobDisguise(TARDISDisguise disguise, World w) {
+    public static net.minecraft.world.entity.Entity createMobDisguise(TARDISDisguise disguise, World w) {
         String str;
         switch (disguise.getEntityType()) {
             case ZOMBIE_HORSE:
@@ -80,11 +93,12 @@ public class TARDISDisguise {
                 break;
         }
         try {
-            Class entityClass = Class.forName("net.minecraft.server.v1_16_R3.Entity" + str);
-            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.server.v1_16_R3.World.class);
-            EntityTypes type = IRegistry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
-            net.minecraft.server.v1_16_R3.World world = ((CraftWorld) w).getHandle();
-            Entity entity = (Entity) constructor.newInstance(type, world);
+            Class entityClass = Class.forName("net.minecraft.server.Entity" + str);
+
+            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.world.level.World.class);
+            EntityTypes type = IRegistry.Y.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
+            net.minecraft.world.level.World world = ((CraftWorld) w).getHandle();
+            net.minecraft.world.entity.Entity entity = (net.minecraft.world.entity.Entity) constructor.newInstance(type, world);
             if (disguise.getOptions() != null) {
                 for (Object o : disguise.getOptions()) {
                     if (o instanceof DyeColor) {
@@ -174,7 +188,7 @@ public class TARDISDisguise {
                             case ENDERMAN:
                                 if ((Boolean) o) {
                                     EntityEnderman enderman = (EntityEnderman) entity;
-                                    IBlockData block = Blocks.PURPUR_BLOCK.getBlockData();
+                                    IBlockData block = Blocks.iN.getBlockData(); // iN = PURPUR_BLOCK
                                     enderman.setCarried(block);
                                 }
                                 break;
@@ -194,7 +208,7 @@ public class TARDISDisguise {
                                 if ((Boolean) o) {
                                     EntityPillager pillager = (EntityPillager) entity;
                                     ItemStack crossbow = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(org.bukkit.Material.CROSSBOW));
-                                    pillager.setSlot(EnumItemSlot.MAINHAND, crossbow);
+                                    pillager.setSlot(EnumItemSlot.a, crossbow); // a = MAINHAND
                                     pillager.a(pillager, 1.0f);
                                 }
                                 break;
@@ -202,7 +216,7 @@ public class TARDISDisguise {
                                 EntityLlama llama = (EntityLlama) entity;
                                 org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(CARPET.values()[ThreadLocalRandom.current().nextInt(16)].getCarpet());
                                 ItemStack nmsItemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
-                                llama.inventoryChest.setItem(1, nmsItemStack);
+                                llama.cd.setItem(1, nmsItemStack); // cd = inventoryChest
                             default:
                                 break;
                         }

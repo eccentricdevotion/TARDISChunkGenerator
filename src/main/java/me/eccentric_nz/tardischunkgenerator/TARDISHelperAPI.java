@@ -17,7 +17,6 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,7 +24,10 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
 import java.util.UUID;
@@ -47,29 +49,6 @@ public interface TARDISHelperAPI {
      * @return true if the block is a furnace named 'TARDIS Artron Furnace'
      */
     boolean isArtronFurnace(Block block);
-
-    /**
-     * Gets a Villager's willingness to breed/trade.
-     *
-     * @param v the Villager
-     * @return whether the villager is willing
-     */
-    boolean getVillagerWilling(Villager v);
-
-    /**
-     * Set a Villager's willingness to breed/trade.
-     *
-     * @param v the Villager
-     * @param w whether the villager is willing
-     */
-    void setVillagerWilling(Villager v, boolean w);
-
-    /**
-     * Refresh a chunk.
-     *
-     * @param c the chunk to refresh
-     */
-    void refreshChunk(Chunk c);
 
     /**
      * Set the FallFlying NBT tag on an entity.
@@ -258,11 +237,6 @@ public interface TARDISHelperAPI {
      * Remove a TileEntity from the world
      */
     public void removeTileEntity(BlockState tile);
-
-    /**
-     * Reload commands for a player
-     */
-    public void reloadCommandsForPlayer(Player player);
 
     /**
      * Calls a powerable block's interact method

@@ -4,11 +4,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.server.v1_16_R3.NetworkManager;
-import net.minecraft.server.v1_16_R3.Packet;
-import net.minecraft.server.v1_16_R3.PacketPlayInUpdateSign;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -29,7 +29,7 @@ public class SignInputHandler {
 
     public static void injectNetty(Player player, TARDISHelper plugin) {
         try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
+            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().b.a); // b = playerConnection, a = networkManager
             if (channel != null) {
                 channel.pipeline().addAfter("decoder", "update_sign", new MessageToMessageDecoder<Packet>() {
 
@@ -51,7 +51,7 @@ public class SignInputHandler {
 
     public static void ejectNetty(Player player) {
         try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
+            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().b.a); // b = playerConnection, a = networkManager
             if (channel != null) {
                 if (channel.pipeline().get("update_sign") != null) {
                     channel.pipeline().remove("update_sign");

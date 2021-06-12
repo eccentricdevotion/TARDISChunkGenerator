@@ -16,10 +16,18 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.network.chat.ChatMessage;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
+import net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityInsentient;
+import net.minecraft.world.entity.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -64,7 +72,7 @@ public class TARDISDisguiser {
                         PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(p.getEntityId());
                         PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving((EntityLiving) mob);
                         PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
-                        PlayerConnection connection = ((CraftPlayer) to).getHandle().playerConnection;
+                        PlayerConnection connection = ((CraftPlayer) to).getHandle().b; // b = playerConnection
                         connection.sendPacket(packetPlayOutEntityDestroy);
                         connection.sendPacket(packetPlayOutSpawnEntityLiving);
                         connection.sendPacket(packetPlayOutEntityMetadata);
@@ -86,7 +94,7 @@ public class TARDISDisguiser {
             PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(mob.getId(), mob.getDataWatcher(), false);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p != player && player.getWorld() == p.getWorld()) {
-                    PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                    PlayerConnection connection = ((CraftPlayer) p).getHandle().b; // b = playerConnection
                     connection.sendPacket(packetPlayOutEntityDestroy);
                     connection.sendPacket(packetPlayOutSpawnEntityLiving);
                     connection.sendPacket(packetPlayOutEntityMetadata);
@@ -102,8 +110,8 @@ public class TARDISDisguiser {
             entity.setCustomName(new ChatMessage(player.getDisplayName()));
             entity.setCustomNameVisible(true);
         }
-        entity.yaw = fixYaw(location.getYaw());
-        entity.pitch = location.getPitch();
+        entity.setYRot(fixYaw(location.getYaw()));
+        entity.setXRot(location.getPitch());
         EntityInsentient insentient = (EntityInsentient) entity;
         insentient.setNoAI(true);
     }
@@ -133,7 +141,7 @@ public class TARDISDisguiser {
             PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(((CraftPlayer) player).getHandle());
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p != player && player.getWorld() == p.getWorld()) {
-                    PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                    PlayerConnection connection = ((CraftPlayer) p).getHandle().b; // b = playerConnection
                     connection.sendPacket(packetPlayOutEntityDestroy);
                     connection.sendPacket(packetPlayOutNamedEntitySpawn);
                 }
@@ -148,7 +156,7 @@ public class TARDISDisguiser {
         PacketPlayOutEntityMetadata packetPlayOutEntityMetadata = new PacketPlayOutEntityMetadata(entity.getId(), entity.getDataWatcher(), false);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p != player && player.getWorld() == p.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+                PlayerConnection connection = ((CraftPlayer) p).getHandle().b; // b = playerConnection
                 connection.sendPacket(packetPlayOutEntityDestroy);
                 connection.sendPacket(packetPlayOutSpawnEntityLiving);
                 connection.sendPacket(packetPlayOutEntityMetadata);

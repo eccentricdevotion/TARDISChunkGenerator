@@ -16,24 +16,41 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPacketMapChunk;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
 import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
-import net.minecraft.server.v1_16_R3.*;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.commands.CommandListenerWrapper;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.IRegistry;
+import net.minecraft.nbt.NBTCompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.chat.ChatComponentText;
+import net.minecraft.network.chat.ChatMessage;
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutChat;
+import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.block.BlockAttachable;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntityFurnace;
+import net.minecraft.world.level.block.entity.TileEntitySign;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.phys.MovingObjectPositionBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -41,17 +58,14 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,11 +74,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
@@ -137,36 +147,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public boolean getVillagerWilling(Villager v) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
-            willingField.setAccessible(true);
-            return willingField.getBoolean(villager);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to get villager willingness: " + ex.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public void setVillagerWilling(Villager v, boolean w) {
-        try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
-            willingField.setAccessible(true);
-            willingField.set(villager, w);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void refreshChunk(Chunk c) {
-        TARDISPacketMapChunk.refreshChunk(c);
-    }
-
-    @Override
     public void setFallFlyingTag(org.bukkit.entity.Entity e) {
         Entity nmsEntity = ((CraftEntity) e).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
@@ -182,11 +162,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         Location l = sign.getLocation();
         TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
         EntityPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
-        entityPlayer.playerConnection.sendPacket(t.getUpdatePacket());
-        t.isEditable = true;
+        entityPlayer.b.sendPacket(t.getUpdatePacket()); // b = playerConnection
+        t.f = true; // f = isEditable
         t.a(entityPlayer);
         PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(t.getPosition());
-        entityPlayer.playerConnection.sendPacket(packet);
+        entityPlayer.b.sendPacket(packet);
         SignInputHandler.injectNetty(player, this);
     }
 
@@ -422,24 +402,27 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void sendActionBarMessage(Player player, String message) {
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().b; // b = playerConnection
         if (connection == null) {
             return;
         }
         IChatBaseComponent component = new ChatComponentText(message);
-        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO, player.getUniqueId());
+        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.c, player.getUniqueId()); // c = GAME_INFO
         connection.sendPacket(packet);
     }
 
     @Override
     public Location searchBiome(World world, Biome biome, Player player) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
-        BiomeBase biomeBase = worldServer.r().b(IRegistry.ay).get(MinecraftKey.a(biome.getKey().getKey()));
         CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
-        BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
-        BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
-        if (blockPosition != null) {
-            return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+        Optional<BiomeBase> optional = commandListenerWrapper.getServer().getCustomRegistry().d(IRegistry.aO).getOptional(MinecraftKey.a(biome.getKey().getKey())); // aO = ResourceKey<IRegistry<BiomeBase>>
+        if (optional.isPresent()) {
+            BiomeBase biomeBase = optional.get();
+            BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
+            BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
+            if (blockPosition != null) {
+                return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+            }
         }
         return null;
     }
@@ -448,22 +431,22 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public String getBiomeKey(Location location) {
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
+        IRegistry<BiomeBase> registry = worldServer.t().d(IRegistry.aO);
         BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
-        IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
         MinecraftKey key = registry.getKey(base);
         if (key != null) {
             return key.toString();
         } else {
-//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location.toString());
+//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location);
             switch (world.getEnvironment()) {
                 case NETHER:
                     return "minecraft:nether_wastes";
                 case THE_END:
                     return "minecraft:the_end";
                 default:
-                    if (world.getName().equalsIgnoreCase("skaro")) {
+                    if (world.getName().contains("skaro")) {
                         return "tardis:skaro_lakes";
-                    } else if (world.getName().equalsIgnoreCase("gallifrey")) {
+                    } else if (world.getName().contains("gallifrey")) {
                         return "tardis:gallifrey_badlands";
                     } else {
                         return "minecraft:plains";
@@ -474,59 +457,18 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void removeTileEntity(BlockState tile) {
-        net.minecraft.server.v1_16_R3.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        net.minecraft.world.level.chunk.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
         BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
         chunk.removeTileEntity(position);
         tile.getBlock().setType(Material.AIR);
     }
 
     @Override
-    public void reloadCommandsForPlayer(Player player) {
-        ((CraftServer) Bukkit.getServer()).getHandle().getServer().getCommandDispatcher().a(((CraftPlayer) player).getHandle());
-    }
-
-    @Override
     public void setPowerableBlockInteract(Block block) {
         IBlockData data = ((CraftBlock) block).getNMS();
-        net.minecraft.server.v1_16_R3.World world = ((CraftWorld) block.getWorld()).getHandle();
+        net.minecraft.world.level.World world = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition position = ((CraftBlock) block).getPosition();
-        if (block.getType().equals(Material.LEVER)) {
-            Blocks.LEVER.interact(data, world, position, null, null, null);
-        } else {
-            // BUTTON
-            switch (block.getType()) {
-                case ACACIA_BUTTON:
-                    Blocks.ACACIA_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case BIRCH_BUTTON:
-                    Blocks.BIRCH_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case CRIMSON_BUTTON:
-                    Blocks.CRIMSON_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case DARK_OAK_BUTTON:
-                    Blocks.DARK_OAK_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case JUNGLE_BUTTON:
-                    Blocks.JUNGLE_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case OAK_BUTTON:
-                    Blocks.OAK_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case POLISHED_BLACKSTONE_BUTTON:
-                    Blocks.POLISHED_BLACKSTONE_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case SPRUCE_BUTTON:
-                    Blocks.SPRUCE_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case STONE_BUTTON:
-                    Blocks.STONE_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-                case WARPED_BUTTON:
-                    Blocks.WARPED_BUTTON.interact(data, world, position, null, null, null);
-                    break;
-            }
-        }
+        data.interact(world, null, null, MovingObjectPositionBlock.a(data.n(world, position), data.get(BlockAttachable.aE), position)); // aE = BlockStateDirection
     }
 
     /**
