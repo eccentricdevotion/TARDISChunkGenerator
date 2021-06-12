@@ -58,43 +58,126 @@ public class TARDISDisguise {
 
     public static net.minecraft.world.entity.Entity createMobDisguise(TARDISDisguise disguise, World w) {
         String str;
+        String packagePath = "net.minecraft.world.entity.";
+        boolean hasEntityStr = true;
         switch (disguise.getEntityType()) {
+            case AXOLOTL:
+                str = "Axolotl";
+                packagePath += "animal.axolotl.";
+                hasEntityStr = false;
+                break;
+            case BAT:
+                str = "Bat";
+                packagePath += "ambient.";
+                break;
+            case GOAT:
+                str = "Goat";
+                packagePath += "animal.goat.";
+                hasEntityStr = false;
+                break;
             case ZOMBIE_HORSE:
             case SKELETON_HORSE:
-            case ELDER_GUARDIAN:
-            case WITHER_SKELETON:
             case TRADER_LLAMA:
                 str = switchAndCapitalise(disguise.getEntityType().toString());
+                packagePath += "animal.horse.";
+                break;
+            case ELDER_GUARDIAN:
+            case WITHER_SKELETON:
+                str = switchAndCapitalise(disguise.getEntityType().toString());
+                packagePath += "monster.";
                 break;
             case WANDERING_TRADER:
                 str = "VillagerTrader";
+                packagePath += "npc.";
                 break;
             case HUSK:
                 str = "ZombieHusk";
+                packagePath += "monster.";
                 break;
             case STRAY:
                 str = "SkeletonStray";
+                packagePath += "monster.";
                 break;
             case PUFFERFISH:
                 str = "PufferFish";
+                packagePath += "animal.";
                 break;
             case ILLUSIONER:
                 str = "IllagerIllusioner";
+                packagePath += "monster.";
                 break;
             case GIANT:
                 str = "GiantZombie";
+                packagePath += "monster.";
+                break;
+            case HORSE:
+            case LLAMA:
+                str = capitalise(disguise.getEntityType().toString());
+                packagePath += "animal.horse.";
                 break;
             case DONKEY:
             case MULE:
                 str = "Horse" + capitalise(disguise.getEntityType().toString());
+                packagePath += "animal.horse.";
+                break;
+            case VILLAGER:
+                str = "Villager";
+                packagePath += "npc.";
+                break;
+            case ZOMBIFIED_PIGLIN:
+                str = "PigZombie";
+                packagePath += "monster.";
+                break;
+            case BLAZE:
+            case CAVE_SPIDER:
+            case CREEPER:
+            case DROWNED:
+            case ENDERMAN:
+            case ENDERMITE:
+            case EVOKER:
+            case GHAST:
+            case GUARDIAN:
+            case MAGMA_CUBE:
+            case PHANTOM:
+            case PILLAGER:
+            case RAVAGER:
+            case SHULKER:
+            case SILVERFISH:
+            case SKELETON:
+            case SLIME:
+            case SPIDER:
+            case STRIDER:
+            case VEX:
+            case VINDICATOR:
+            case WITCH:
+            case ZOGLIN:
+            case ZOMBIE:
+            case ZOMBIE_VILLAGER:
+                str = capitalise(disguise.getEntityType().toString());
+                packagePath += "monster.";
+                break;
+            case HOGLIN:
+                str = "Hoglin";
+                packagePath += "monster.hoglin.";
+                break;
+            case PIGLIN:
+            case PIGLIN_BRUTE:
+                str = capitalise(disguise.getEntityType().toString());
+                packagePath += "monster.piglin.";
+                break;
+            case GLOW_SQUID:
+                str = "GlowSquid";
+//                packagePath = "";
+                hasEntityStr = false;
                 break;
             default:
                 str = capitalise(disguise.getEntityType().toString());
+                packagePath += "animal.";
                 break;
         }
         try {
-            Class entityClass = Class.forName("net.minecraft.server.Entity" + str);
-
+            String entityPackage = packagePath + ((hasEntityStr) ? "Entity" : "") + str;
+            Class entityClass = Class.forName(entityPackage);
             Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.world.level.World.class);
             EntityTypes type = IRegistry.Y.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
             net.minecraft.world.level.World world = ((CraftWorld) w).getHandle();
@@ -116,6 +199,11 @@ public class TARDISDisguise {
                             default:
                                 break;
                         }
+                    }
+                    if (o instanceof Axolotl.Variant && disguise.getEntityType().equals(EntityType.AXOLOTL)) {
+                        net.minecraft.world.entity.animal.axolotl.Axolotl axolotl = (net.minecraft.world.entity.animal.axolotl.Axolotl) entity;
+                        net.minecraft.world.entity.animal.axolotl.Axolotl.Variant variant = net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.values()[((Axolotl.Variant) o).ordinal()];
+                        axolotl.setVariant(variant);
                     }
                     if (o instanceof Rabbit.Type && disguise.getEntityType().equals(EntityType.RABBIT)) {
                         EntityRabbit rabbit = (EntityRabbit) entity;
