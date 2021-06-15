@@ -108,8 +108,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (configuration.getBoolean("debug")) {
             // yes we should!
             filterLog(basePath + "filtered.log");
-            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Starting filtered logging for TARDIS plugins...");
-            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
+            getServer().getConsoleSender().sendMessage(messagePrefix + "Starting filtered logging for TARDIS plugins...");
+            getServer().getConsoleSender().sendMessage(messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
         }
     }
 
