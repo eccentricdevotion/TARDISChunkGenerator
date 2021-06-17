@@ -34,30 +34,30 @@ public class RequestSteamMachine implements Runnable {
     private final Queue<Runnable> REQUEST_QUEUE = new ConcurrentLinkedQueue<>();
     private final Map<ChunkLocation, ChunkUpdateInfo> chunksToUpdate = new HashMap<>();
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private boolean isStarted;
+    private boolean started;
     private int maxIterationsPerTick;
     // THREADS
-    private ScheduledFuture<?> sch;
+    private ScheduledFuture<?> scheduledFuture;
 
     public void start(int ticks, int maxIterationsPerTick) {
-        if (!isStarted) {
+        if (!started) {
             this.maxIterationsPerTick = maxIterationsPerTick;
-            sch = executor.scheduleWithFixedDelay(this, 0, 50L * ticks, TimeUnit.MILLISECONDS);
-            isStarted = true;
+            scheduledFuture = executor.scheduleWithFixedDelay(this, 0, 50L * ticks, TimeUnit.MILLISECONDS);
+            started = true;
         }
     }
 
     public void shutdown() {
-        if (isStarted) {
+        if (started) {
             REQUEST_QUEUE.clear();
             maxIterationsPerTick = 0;
-            sch.cancel(false);
-            isStarted = false;
+            scheduledFuture.cancel(false);
+            started = false;
         }
     }
 
     public boolean isStarted() {
-        return isStarted;
+        return started;
     }
 
     public boolean addToQueue(Runnable request) {
@@ -68,17 +68,17 @@ public class RequestSteamMachine implements Runnable {
         return false;
     }
 
-    public void addChunkToUpdate(ChunkInfo info, LightType lightType, Collection<? extends Player> receivers) {
-        int SectionY = info.getChunkY();
-        INMSHandler nmsHandler = new NMSHandler();
+    public void addChunkToUpdate(ChunkInfo chunkInfo, LightType lightType, Collection<? extends Player> receivers) {
+        int SectionY = chunkInfo.getChunkY();
+        InmsHandler nmsHandler = new NmsHandler();
         if (nmsHandler.isValidSectionY(SectionY)) {
-            ChunkLocation chunk = new ChunkLocation(info.getWorld(), info.getChunkX(), info.getChunkZ());
+            ChunkLocation chunkLocation = new ChunkLocation(chunkInfo.getWorld(), chunkInfo.getChunkX(), chunkInfo.getChunkZ());
             int sectionYMask = nmsHandler.asSectionMask(SectionY);
-            Collection<Player> players = new ArrayList<>(receivers != null ? receivers : info.getReceivers());
+            Collection<Player> players = new ArrayList<>(receivers != null ? receivers : chunkInfo.getReceivers());
             addToQueue(() -> {
-                ChunkUpdateInfo chunkUpdateInfo = chunksToUpdate.get(chunk);
+                ChunkUpdateInfo chunkUpdateInfo = chunksToUpdate.get(chunkLocation);
                 if (chunkUpdateInfo == null) {
-                    chunksToUpdate.put(chunk, chunkUpdateInfo = new ChunkUpdateInfo());
+                    chunksToUpdate.put(chunkLocation, chunkUpdateInfo = new ChunkUpdateInfo());
                 }
                 chunkUpdateInfo.add(lightType, sectionYMask, players);
             });
@@ -94,7 +94,7 @@ public class RequestSteamMachine implements Runnable {
                 request.run();
                 iterationsCount++;
             }
-            INMSHandler nmsHandler = new NMSHandler();
+            InmsHandler nmsHandler = new NmsHandler();
             for (Map.Entry<ChunkLocation, ChunkUpdateInfo> item : chunksToUpdate.entrySet()) {
                 ChunkLocation chunk = item.getKey();
                 ChunkUpdateInfo chunkUpdateInfo = item.getValue();

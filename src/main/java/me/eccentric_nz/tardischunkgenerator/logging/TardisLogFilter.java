@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2021 eccentric_nz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.eccentric_nz.tardischunkgenerator.logging;
 
 import org.apache.logging.log4j.Level;
@@ -14,13 +30,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TARDISLogFilter implements Filter {
+public class TardisLogFilter implements Filter {
 
     private final String path;
     private final List<String> filters = new ArrayList<>();
     private boolean clean = true;
 
-    public TARDISLogFilter(String path) {
+    public TardisLogFilter(String path) {
         this.path = path;
         filters.add("TARDIS");
         filters.add("tardis");
@@ -68,62 +84,62 @@ public class TARDISLogFilter implements Filter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object... objects) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object... objects) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4, Object o5) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4, Object object5) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4, Object object5, Object object6) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7, Object o8) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7, Object object8) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7, Object o8, Object o9) {
-        return checkMessage(s);
+    public Result filter(Logger logger, Level level, Marker marker, String string, Object object, Object object1, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7, Object object8, Object object9) {
+        return checkMessage(string);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object o, Throwable throwable) {
+    public Result filter(Logger logger, Level level, Marker marker, Object object, Throwable throwable) {
         return checkMessage(TextUtils.getStacktrace(throwable, true, "me.eccentric_nz."));
     }
 

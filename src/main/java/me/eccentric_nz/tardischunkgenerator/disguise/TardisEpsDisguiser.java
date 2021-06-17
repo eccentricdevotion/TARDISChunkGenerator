@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2020 eccentric_nz
+ * Copyright (C) 2021 eccentric_nz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (location your option) any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
@@ -30,22 +30,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TARDISEPSDisguiser {
+public class TardisEpsDisguiser {
 
     private final Player player;
     private final Location location;
     private EntityPlayer npc;
 
-    public TARDISEPSDisguiser(Player player, Location location) {
+    public TardisEpsDisguiser(Player player, Location location) {
         this.player = player;
         this.location = location;
         disguiseStand();
     }
 
     public static void disguiseToPlayer(Player player, World world) {
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-        for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
+        for (Map.Entry<Integer, UUID> map : TardisDisguiseTracker.DISGUISED_NPCS.entrySet()) {
             Entity stand = nmsWorld.entitiesById.get(map.getKey());
             if (stand != null) {
                 stand.getWorld();
@@ -67,11 +66,11 @@ public class TARDISEPSDisguiser {
     }
 
     public static void removeNPC(int id, World world) {
-        TARDISDisguiseTracker.DISGUISED_NPCS.remove(id);
+        TardisDisguiseTracker.DISGUISED_NPCS.remove(id);
         PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(id);
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (world == p.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (world == player.getWorld()) {
+                PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
                 connection.sendPacket(packetPlayOutEntityDestroy);
             }
         }
@@ -102,14 +101,14 @@ public class TARDISEPSDisguiser {
     }
 
     public int showToAll() {
-        TARDISDisguiseTracker.DISGUISED_NPCS.put(npc.getId(), player.getUniqueId());
+        TardisDisguiseTracker.DISGUISED_NPCS.put(npc.getId(), player.getUniqueId());
         PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc);
         PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
         PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.yaw);
         PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.yaw, (byte) npc.pitch, true);
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getWorld() == location.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld() == location.getWorld()) {
+                PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
                 connection.sendPacket(packetPlayOutPlayerInfo);
                 connection.sendPacket(packetPlayOutNamedEntitySpawn);
                 connection.sendPacket(packetPlayOutEntityHeadRotation);

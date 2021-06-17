@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class NmsHandlerBase implements INMSHandler {
+public abstract class NmsHandlerBase implements InmsHandler {
 
     protected int getViewDistance(Player player) {
         return Bukkit.getViewDistance();
@@ -65,8 +65,8 @@ public abstract class NmsHandlerBase implements INMSHandler {
                                     if (isValidSectionY(sectionY)) {
                                         int chunkX = blockX >> 4;
                                         int chunkZ = blockZ >> 4;
-                                        ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
-                                        list.add(cCoord);
+                                        ChunkInfo chunkCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
+                                        list.add(chunkCoord);
                                     }
                                 }
                             }

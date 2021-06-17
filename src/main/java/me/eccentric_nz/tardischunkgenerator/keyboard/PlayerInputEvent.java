@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2021 eccentric_nz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.eccentric_nz.tardischunkgenerator.keyboard;
 
 import net.minecraft.server.v1_16_R3.*;
@@ -15,10 +31,10 @@ public class PlayerInputEvent extends PlayerEvent {
 
     public static HandlerList handlerList = new HandlerList();
 
-    public PlayerInputEvent(PacketPlayInUpdateSign packet, Player p) {
-        super(p);
-        // This is were your code goes
-        updateSign(p, packet);
+    public PlayerInputEvent(PacketPlayInUpdateSign packet, Player player) {
+        super(player);
+        // This is where your code goes
+        updateSign(player, packet);
     }
 
     @Override
@@ -26,25 +42,25 @@ public class PlayerInputEvent extends PlayerEvent {
         return handlerList;
     }
 
-    public void updateSign(Player p, PacketPlayInUpdateSign packet) {
-        EntityPlayer player = ((CraftPlayer) Objects.requireNonNull(p.getPlayer())).getHandle();
-        player.resetIdleTimer();
-        WorldServer worldserver = player.getWorldServer();
-        BlockPosition blockposition = packet.b();
-        if (worldserver.isLoaded(blockposition)) {
-            IBlockData iblockdata = worldserver.getType(blockposition);
-            TileEntity tileentity = worldserver.getTileEntity(blockposition);
-            if (!(tileentity instanceof TileEntitySign tileentitysign)) {
+    public void updateSign(Player player, PacketPlayInUpdateSign packet) {
+        EntityPlayer entityPlayer = ((CraftPlayer) Objects.requireNonNull(player.getPlayer())).getHandle();
+        entityPlayer.resetIdleTimer();
+        WorldServer worldServer = entityPlayer.getWorldServer();
+        BlockPosition blockPosition = packet.b();
+        if (worldServer.isLoaded(blockPosition)) {
+            IBlockData iBlockData = worldServer.getType(blockPosition);
+            TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
+            if (!(tileEntity instanceof TileEntitySign tileEntitySign)) {
                 return;
             }
-            tileentitysign.isEditable = true;
+            tileEntitySign.isEditable = true;
             String[] lines = packet.c();
             for (int i = 0; i < lines.length; ++i) {
-                tileentitysign.a(i, new ChatComponentText(lines[i]));
+                tileEntitySign.a(i, new ChatComponentText(lines[i]));
             }
-            tileentitysign.update();
-            worldserver.notify(blockposition, iblockdata, iblockdata, 3);
-            SignChangeEvent event = new SignChangeEvent(p.getWorld().getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ()), p, lines);
+            tileEntitySign.update();
+            worldServer.notify(blockPosition, iBlockData, iBlockData, 3);
+            SignChangeEvent event = new SignChangeEvent(player.getWorld().getBlockAt(blockPosition.getX(), blockPosition.getY(), blockPosition.getZ()), player, lines);
             Bukkit.getPluginManager().callEvent(event);
         }
     }

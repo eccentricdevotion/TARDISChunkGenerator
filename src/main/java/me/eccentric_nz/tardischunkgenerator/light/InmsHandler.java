@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 
-public interface INMSHandler {
+public interface InmsHandler {
 
     // Lights...
     void createLight(World world, int x, int y, int z, LightType lightType, int light);

@@ -23,7 +23,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.light;
 
-import me.eccentric_nz.tardischunkgenerator.TARDISHelperPlugin;
+import me.eccentric_nz.tardischunkgenerator.TardisHelperPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -34,20 +34,20 @@ import java.util.List;
 public class Light {
 
     // To synchronize nms create/delete light methods to avoid conflicts in multi-threaded calls. Got a better idea?
-    private static final Object lock = new Object();
-    private static final NMSHandler nmsHandler = new NMSHandler();
+    private static final Object LOCK = new Object();
+    private static final NmsHandler NMS_HANDLER = new NmsHandler();
 
     public static boolean createLight(World world, int x, int y, int z, LightType lightType, int lightlevel, boolean async) {
         CreateLightEvent event = new CreateLightEvent(world, x, y, z, lightType, lightlevel, async);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             Runnable request = () -> {
-                synchronized (lock) {
-                    nmsHandler.createLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType(), event.getLightLevel());
+                synchronized (LOCK) {
+                    NMS_HANDLER.createLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType(), event.getLightLevel());
                 }
             };
             if (event.isAsync()) {
-                TARDISHelperPlugin.machine.addToQueue(request);
+                TardisHelperPlugin.MACHINE.addToQueue(request);
             } else {
                 request.run();
             }
@@ -60,9 +60,9 @@ public class Light {
         DeleteLightEvent event = new DeleteLightEvent(world, x, y, z, lightType, async);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            Runnable request = () -> nmsHandler.deleteLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType());
+            Runnable request = () -> NMS_HANDLER.deleteLight(event.getWorld(), event.getX(), event.getY(), event.getZ(), event.getLightType());
             if (event.isAsync()) {
-                TARDISHelperPlugin.machine.addToQueue(request);
+                TardisHelperPlugin.MACHINE.addToQueue(request);
             } else {
                 request.run();
             }
@@ -72,14 +72,14 @@ public class Light {
     }
 
     public static List<ChunkInfo> collectChunks(World world, int x, int y, int z, LightType lightType, int lightLevel) {
-        return nmsHandler.collectChunks(world, x, y, z, lightType, lightLevel);
+        return NMS_HANDLER.collectChunks(world, x, y, z, lightType, lightLevel);
     }
 
     public static boolean updateChunk(ChunkInfo info, LightType lightType, Collection<? extends Player> players) {
         UpdateChunkEvent event = new UpdateChunkEvent(info, lightType);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            TARDISHelperPlugin.machine.addChunkToUpdate(info, lightType, players);
+            TardisHelperPlugin.MACHINE.addChunkToUpdate(info, lightType, players);
             return true;
         }
         return false;

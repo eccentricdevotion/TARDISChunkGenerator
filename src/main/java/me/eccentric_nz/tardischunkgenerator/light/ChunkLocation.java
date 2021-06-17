@@ -48,14 +48,14 @@ public class ChunkLocation {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (obj == null) {
+        if (object == null) {
             return false;
         }
-        if (!(obj instanceof ChunkLocation other)) {
+        if (!(object instanceof ChunkLocation other)) {
             return false;
         }
         if (world != other.world) {

@@ -20,7 +20,7 @@ import java.io.*;
  */
 public class TextUtils {
 
-    private static final Logger logger = (Logger) LogManager.getRootLogger();
+    private static final Logger LOGGER = (Logger) LogManager.getRootLogger();
     private static final String STANDARD_STACKTRACE_PREFIX = "at ";
     private static final String SKIPPING_LINES_STRING = "\t...";
     private static final String CAUSE_STACKTRACE_PREFIX = "Caused by:";
@@ -108,8 +108,8 @@ public class TextUtils {
      * <br>
      * </p>
      *
-     * @param e               {@link Throwable} from which stacktrace should be retrieved
-     * @param cutTBS          boolean that specifies if stacktrace should be shortened. The stacktrace should be
+     * @param throwable               {@link Throwable} from which stacktrace should be retrieved
+     * @param cutTbs          boolean that specifies if stacktrace should be shortened. The stacktrace should be
      *                        shortened if this flag is set to {@code true}. Note that if this parameter set to {@code
      *                        false} the stacktrace will be printed in full and parameter <b>relevantPackage</b> becomes
      *                        irrelevant.
@@ -118,11 +118,11 @@ public class TextUtils {
      *                        example above it should be "com.plain.analytics.v2.utils.test.".
      * @return String with stacktrace value
      */
-    public static String getStacktrace(Throwable e, boolean cutTBS, String relevantPackage) {
+    public static String getStacktrace(Throwable throwable, boolean cutTbs, String relevantPackage) {
         // retrieve full stacktrace as byte array
         ByteArrayOutputStream stacktraceContent = new ByteArrayOutputStream();
-        e.printStackTrace(new PrintStream(stacktraceContent));
-        return extractStackTrace(cutTBS, relevantPackage, stacktraceContent);
+        throwable.printStackTrace(new PrintStream(stacktraceContent));
+        return extractStackTrace(cutTbs, relevantPackage, stacktraceContent);
     }
 
     /**
@@ -150,12 +150,12 @@ public class TextUtils {
      * </p></li>
      * </ul>
      *
-     * @param e {@link Throwable} from which stacktrace should be retrieved
+     * @param throwable {@link Throwable} from which stacktrace should be retrieved
      * @return String that contains the stacktrace
      * @see #getStacktrace(Throwable, boolean, String)
      */
-    public static String getStacktrace(Throwable e) {
-        return getStacktrace(e, true, null);
+    public static String getStacktrace(Throwable throwable) {
+        return getStacktrace(throwable, true, null);
     }
 
     /**
@@ -165,7 +165,7 @@ public class TextUtils {
      * log file or any other source. This method allows to work with stack traces extracted on the fly at runtime or
      * taken from some static sources (such as log files)
      *
-     * @param cutTBS            boolean that specifies if stacktrace should be shortened. The stacktrace should be
+     * @param cutTbs            boolean that specifies if stacktrace should be shortened. The stacktrace should be
      *                          shortened if this flag is set to {@code true}. Note that if this parameter set to {@code
      *                          false} the stacktrace will be printed in full and parameter <b>relevantPackage</b>
      *                          becomes irrelevant.
@@ -174,21 +174,21 @@ public class TextUtils {
      * @param stacktraceContent {@link ByteArrayOutputStream} that contains the stacktrace content
      * @return a string
      */
-    private static String extractStackTrace(boolean cutTBS, String relevantPackage, ByteArrayOutputStream stacktraceContent) {
+    private static String extractStackTrace(boolean cutTbs, String relevantPackage, ByteArrayOutputStream stacktraceContent) {
         StringBuilder result = new StringBuilder("\n");
         // Determine the value of relevant package prefix
-        String relPack = (relevantPackage != null && !relevantPackage.isEmpty()) ? relevantPackage : RELEVANT_PACKAGE;
+        String relevantPackagePrefix = (relevantPackage != null && !relevantPackage.isEmpty()) ? relevantPackage : RELEVANT_PACKAGE;
         /*
          * If the relevant package prefix was not set neither locally nor globally revert to retrieving full stacktrace even if shortening was
          * requested
          */
-        if (relPack == null || "".equals(relPack)) {
-            if (cutTBS) {
-                cutTBS = false;
-                logger.warn("Relevant package was not set for the method. Stacktrace can not be shortened. Returning full stacktrace");
+        if (relevantPackagePrefix == null || "".equals(relevantPackagePrefix)) {
+            if (cutTbs) {
+                cutTbs = false;
+                LOGGER.warn("Relevant package was not set for the method. Stacktrace can not be shortened. Returning full stacktrace");
             }
         }
-        if (cutTBS) {
+        if (cutTbs) {
             if (stacktraceContent.size() > 0) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(stacktraceContent.toByteArray())))) {
                     /*
@@ -201,13 +201,13 @@ public class TextUtils {
                         /*
                          * Process singular stack traces until all are processed.
                          */
-                        line = traverseSingularStacktrace(result, relPack, reader, line);
+                        line = traverseSingularStacktrace(result, relevantPackagePrefix, reader, line);
                     } while (line != null);
-                } catch (IOException ioe) {
+                } catch (IOException ioException) {
                     /*
                      * In the very unlikely event of any error just fall back on printing the full stacktrace
                      */
-                    error(ioe);
+                    error(ioException);
                     result.delete(0, result.length()).append(stacktraceContent);
                 }
             }
@@ -228,7 +228,7 @@ public class TextUtils {
      * method {@link #getStacktrace(Throwable, boolean, String)}
      *
      * @param result  {@link StringBuilder} to which the resultant stacktrace will be appended
-     * @param relPack {@link String} that contains relevant package prefix
+     * @param relevantPackage {@link String} that contains relevant package prefix
      * @param reader  {@link BufferedReader} that contains the source from where the stacktrace may be read line by
      *                line. Current position in the reader is assumed to be at the beginning of the second line of the
      *                current singular stacktrace, following the line with the name of the exception and error message
@@ -239,7 +239,7 @@ public class TextUtils {
      * @throws IOException if any error occurs.
      * @see #getStacktrace(Throwable, boolean, String)
      */
-    private static String traverseSingularStacktrace(StringBuilder result, String relPack, BufferedReader reader, String line) throws IOException {
+    private static String traverseSingularStacktrace(StringBuilder result, String relevantPackage, BufferedReader reader, String line) throws IOException {
         result.append(line).append("\n");
         // Flag that holds the status for the current line if it should be printed or not
         boolean toBePrinted = true;
@@ -257,7 +257,7 @@ public class TextUtils {
                  * This "if" branch deals with lines that are standard stacktrace lines starting with "at "
                  */
                 // Check if the current line starts with thge prefix (after the "at " part)
-                isCurLineRelevantPack = trimmedLine.substring(STANDARD_STACKTRACE_PREFIX.length()).startsWith(relPack);
+                isCurLineRelevantPack = trimmedLine.substring(STANDARD_STACKTRACE_PREFIX.length()).startsWith(relevantPackage);
                 if (!relevantPackageReached && isCurLineRelevantPack) {
                     /*
                      * If the current line starts with the prefix but previous line did not we change the printing status. This case deals with the
@@ -332,9 +332,9 @@ public class TextUtils {
 
     private static void error(Throwable t) {
         if (RELEVANT_PACKAGE != null && !RELEVANT_PACKAGE.isEmpty()) {
-            logger.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace" + getStacktrace(t));
+            LOGGER.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace" + getStacktrace(t));
         } else {
-            logger.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace", t);
+            LOGGER.error("Error occurred while reading and shortening stacktrace of an exception. Printing the original stacktrace", t);
         }
     }
 }

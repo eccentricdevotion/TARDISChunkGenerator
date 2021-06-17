@@ -1,32 +1,32 @@
 /*
- * Copyright (C) 2020 eccentric_nz
+ * Copyright (C) 2021 eccentric_nz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (location your option) any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPacketMapChunk;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
+import me.eccentric_nz.tardischunkgenerator.helpers.TardisFactions;
+import me.eccentric_nz.tardischunkgenerator.helpers.TardisMapUpdater;
+import me.eccentric_nz.tardischunkgenerator.helpers.TardisPacketMapChunk;
+import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
 import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
 import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
 import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
-import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
+import me.eccentric_nz.tardischunkgenerator.logging.TardisLogFilter;
 import net.minecraft.server.v1_16_R3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -64,20 +64,20 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
 
-public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
+public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
-    public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
-    public static final RequestSteamMachine machine = new RequestSteamMachine();
-    public static TARDISHelperPlugin tardisHelper;
+    public static final String MESSAGE_PREFIX = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
+    public static final RequestSteamMachine MACHINE = new RequestSteamMachine();
+    public static TardisHelperPlugin tardisHelper;
 
-    public static TARDISHelperPlugin getTardisHelper() {
+    public static TardisHelperPlugin getTardisHelper() {
         return tardisHelper;
     }
 
     @Override
     public void onDisable() {
-        if (machine.isStarted()) {
-            machine.shutdown();
+        if (MACHINE.isStarted()) {
+            MACHINE.shutdown();
         }
     }
 
@@ -85,9 +85,9 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
     public void onEnable() {
         tardisHelper = this;
         // register disguise listener
-        getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
+        getServer().getPluginManager().registerEvents(new TardisDisguiseListener(this), this);
         // start RequestStreamMachine
-        machine.start(2, 400);
+        MACHINE.start(2, 400);
         // should we filter the log?
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
         // get the TARDIS config
@@ -95,31 +95,31 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
         if (configuration.getBoolean("debug")) {
             // yes we should!
             filterLog(basePath + "filtered.log");
-            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Starting filtered logging for TARDIS plugins...");
-            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
+            Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Starting filtered logging for TARDIS plugins...");
+            Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Log file located at 'plugins/TARDIS/filtered.log'");
         }
     }
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
-        return new TARDISChunkGenerator();
+        return new TardisChunkGenerator();
     }
 
     public void nameFurnaceGUI(Block block, String name) {
-        WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tile = ws.getTileEntity(bp);
-        if (!(tile instanceof TileEntityFurnace furnace)) {
+        WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
+        if (!(tileEntity instanceof TileEntityFurnace furnace)) {
             return;
         }
         furnace.setCustomName(new ChatMessage(name));
     }
 
     public boolean isArtronFurnace(Block block) {
-        WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tile = ws.getTileEntity(bp);
-        if (!(tile instanceof TileEntityFurnace furnace)) {
+        WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
+        if (!(tileEntity instanceof TileEntityFurnace furnace)) {
             return false;
         }
         boolean is = false;
@@ -130,38 +130,38 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public boolean getVillagerWilling(Villager v) {
+    public boolean getVillagerWilling(Villager villager) {
         try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
+            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
             Field willingField = EntityVillager.class.getDeclaredField("bu");
             willingField.setAccessible(true);
-            return willingField.getBoolean(villager);
+            return willingField.getBoolean(entityVillager);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to get villager willingness: " + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to get villager willingness: " + ex.getMessage());
             return false;
         }
     }
 
     @Override
-    public void setVillagerWilling(Villager v, boolean w) {
+    public void setVillagerWilling(Villager villager, boolean willing) {
         try {
-            EntityVillager villager = ((CraftVillager) v).getHandle();
+            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
             Field willingField = EntityVillager.class.getDeclaredField("bu");
             willingField.setAccessible(true);
-            willingField.set(villager, w);
+            willingField.set(entityVillager, willing);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, messagePrefix + "Failed to set villager willingness: " + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to set villager willingness: " + ex.getMessage());
         }
     }
 
     @Override
-    public void refreshChunk(Chunk c) {
-        TARDISPacketMapChunk.refreshChunk(c);
+    public void refreshChunk(Chunk chunk) {
+        TardisPacketMapChunk.refreshChunk(chunk);
     }
 
     @Override
-    public void setFallFlyingTag(org.bukkit.entity.Entity e) {
-        Entity nmsEntity = ((CraftEntity) e).getHandle();
+    public void setFallFlyingTag(org.bukkit.entity.Entity entity) {
+        Entity nmsEntity = ((CraftEntity) entity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
         // writes the entity's NBT data to the `tag` object
         nmsEntity.save(tag);
@@ -172,14 +172,14 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void openSignGUI(Player player, Sign sign) {
-        Location l = sign.getLocation();
-        TileEntitySign t = (TileEntitySign) ((CraftWorld) Objects.requireNonNull(l.getWorld())).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
+        Location location = sign.getLocation();
+        TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle().getTileEntity(new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
         EntityPlayer entityPlayer = ((CraftPlayer) Objects.requireNonNull(player.getPlayer())).getHandle();
-        assert t != null;
-        entityPlayer.playerConnection.sendPacket(t.getUpdatePacket());
-        t.isEditable = true;
-        t.a(entityPlayer);
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(t.getPosition());
+        assert tileEntitySign != null;
+        entityPlayer.playerConnection.sendPacket(tileEntitySign.getUpdatePacket());
+        tileEntitySign.isEditable = true;
+        tileEntitySign.a(entityPlayer);
+        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(tileEntitySign.getPosition());
         entityPlayer.playerConnection.sendPacket(packet);
         SignInputHandler.injectNetty(player, this);
     }
@@ -194,19 +194,19 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
         File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
         if (file.exists()) {
             try {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileInputStream);
                 NBTTagCompound data = tagCompound.getCompound("Data");
-                fileinputstream.close();
+                fileInputStream.close();
                 long random = new Random().nextLong();
                 // set RandomSeed tag
                 data.setLong("RandomSeed", random);
                 tagCompound.set("Data", data);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
-                fileoutputstream.close();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileOutputStream);
+                fileOutputStream.close();
             } catch (IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + ex.getMessage());
             }
         }
     }
@@ -216,38 +216,38 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
         File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName + File.separator + "level.dat");
         if (file.exists()) {
             try {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileInputStream);
                 NBTTagCompound data = tagCompound.getCompound("Data");
-                fileinputstream.close();
+                fileInputStream.close();
                 // set LevelName tag
                 data.setString("LevelName", newName);
                 tagCompound.set("Data", data);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
-                fileoutputstream.close();
-                Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed level to " + newName);
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileOutputStream);
+                fileOutputStream.close();
+                Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Renamed level to " + newName);
                 // rename the directory
                 File directory = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName);
                 File folder = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + newName);
                 directory.renameTo(folder);
-                Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed directory to " + newName);
+                Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Renamed directory to " + newName);
             } catch (IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + ex.getMessage());
             }
         }
     }
 
     @Override
-    public void setWorldGameMode(String world, GameMode gm) {
+    public void setWorldGameMode(String world, GameMode gameMode) {
         File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
         if (file.exists()) {
             try {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileInputStream);
                 NBTTagCompound data = tagCompound.getCompound("Data");
-                fileinputstream.close();
-                int mode = switch (gm) {
+                fileInputStream.close();
+                int mode = switch (gameMode) {
                     case CREATIVE -> 1;
                     case ADVENTURE -> 2;
                     case SPECTATOR -> 3;
@@ -257,23 +257,23 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
                 // set GameType tag
                 data.setInt("GameType", mode);
                 tagCompound.set("Data", data);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
-                fileoutputstream.close();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                NBTCompressedStreamTools.a(tagCompound, fileOutputStream);
+                fileOutputStream.close();
             } catch (IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
+                Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + ex.getMessage());
             }
         }
     }
 
     @Override
-    public TARDISPlanetData getLevelData(String world) {
+    public TardisPlanetData getLevelData(String world) {
         File file = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "level.dat");
         if (file.exists()) {
             try {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
-                fileinputstream.close();
+                FileInputStream fileInputStream = new FileInputStream(file);
+                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileInputStream);
+                fileInputStream.close();
                 NBTTagCompound data = tagCompound.getCompound("Data");
                 // get GameType tag
                 GameMode gameMode;
@@ -286,8 +286,8 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
                 };
                 // get generatorName tag
                 WorldType worldType;
-                String wt = data.getString("generatorName");
-                worldType = switch (wt.toLowerCase(Locale.ENGLISH)) {
+                String generatorName = data.getString("generatorName");
+                worldType = switch (generatorName.toLowerCase(Locale.ENGLISH)) {
                     case "flat" -> WorldType.FLAT;
                     case "largeBiomes" -> WorldType.LARGE_BIOMES;
                     case "amplified" -> WorldType.AMPLIFIED;
@@ -303,72 +303,72 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
                 if (dimOne.exists() && !dimDashOne.exists()) {
                     environment = World.Environment.THE_END;
                 }
-                return new TARDISPlanetData(gameMode, environment, worldType);
+                return new TardisPlanetData(gameMode, environment, worldType);
             } catch (IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
-                return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
+                Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + ex.getMessage());
+                return new TardisPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
             }
         }
-        Bukkit.getLogger().log(Level.INFO, messagePrefix + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
-        return new TARDISPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
+        Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
+        return new TardisPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
     }
 
     @Override
     public void disguise(EntityType entityType, Player player) {
-        new TARDISDisguiser(entityType, player).disguiseToAll();
+        new TardisDisguiser(entityType, player).disguiseToAll();
     }
 
     @Override
     public void disguise(EntityType entityType, Player player, Object[] options) {
-        new TARDISDisguiser(entityType, player, options).disguiseToAll();
+        new TardisDisguiser(entityType, player, options).disguiseToAll();
     }
 
     @Override
     public void disguise(Player player, String name) {
-        new TARDISChameleonArchDisguiser(player).changeSkin(name);
+        new TardisChameleonArchDisguiser(player).changeSkin(name);
     }
 
     @Override
     public void disguise(Player player, UUID uuid) {
-        new TARDISPlayerDisguiser(player, uuid).disguiseToAll();
+        new TardisPlayerDisguiser(player, uuid).disguiseToAll();
     }
 
     @Override
     public void undisguise(Player player) {
-        new TARDISDisguiser(player).removeDisguise();
+        new TardisDisguiser(player).removeDisguise();
     }
 
     @Override
     public void reset(Player player) {
-        new TARDISChameleonArchDisguiser(player).resetSkin();
+        new TardisChameleonArchDisguiser(player).resetSkin();
     }
 
     @Override
     public int spawnEmergencyProgrammeOne(Player player, Location location) {
-        return new TARDISEPSDisguiser(player, location).showToAll();
+        return new TardisEpsDisguiser(player, location).showToAll();
     }
 
     @Override
     public void removeNPC(int id, World world) {
-        TARDISEPSDisguiser.removeNPC(id, world);
+        TardisEpsDisguiser.removeNPC(id, world);
     }
 
     @Override
-    public void disguiseArmourStand(ArmorStand stand, EntityType entityType, Object[] options) {
-        new TARDISArmourStandDisguiser(stand, entityType, options).disguiseToAll();
+    public void disguiseArmourStand(ArmorStand armorStand, EntityType entityType, Object[] options) {
+        new TardisArmorStandDisguiser(armorStand, entityType, options).disguiseToAll();
     }
 
     @Override
-    public void undisguiseArmourStand(ArmorStand stand) {
-        TARDISArmourStandDisguiser.removeDisguise(stand);
+    public void undisguiseArmourStand(ArmorStand armorStand) {
+        TardisArmorStandDisguiser.removeDisguise(armorStand);
     }
 
     @Override
     public void createLight(Location location) {
         Light.createLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15, true);
         Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
-        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(info, LightType.BLOCK, players);
+        for (ChunkInfo chunkInfo : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
+            Light.updateChunk(chunkInfo, LightType.BLOCK, players);
         }
     }
 
@@ -376,19 +376,19 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
     public void deleteLight(Location location) {
         Light.deleteLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, true);
         Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
-        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(info, LightType.BLOCK, players);
+        for (ChunkInfo chunkInfo : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
+            Light.updateChunk(chunkInfo, LightType.BLOCK, players);
         }
     }
 
     @Override
     public boolean isInFaction(Player player, Location location) {
-        return new TARDISFactions().isInFaction(player, location);
+        return new TardisFactions().isInFaction(player, location);
     }
 
     @Override
     public void updateMap(World world, MapView mapView) {
-        new TARDISMapUpdater(world, mapView.getCenterX(), mapView.getCenterZ()).update(mapView);
+        new TardisMapUpdater(world, mapView.getCenterX(), mapView.getCenterZ()).update(mapView);
     }
 
     @Override
@@ -426,7 +426,6 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
         if (key != null) {
             return key.toString();
         } else {
-            //            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location.toString());
             switch (world.getEnvironment()) {
                 case NETHER:
                     return "minecraft:nether_wastes";
@@ -487,6 +486,6 @@ public class TARDISHelperPlugin extends JavaPlugin implements TARDISHelperAPI {
      * @param path the file path for the filtered log file
      */
     public void filterLog(String path) {
-        ((Logger) LogManager.getRootLogger()).addFilter(new TARDISLogFilter(path));
+        ((Logger) LogManager.getRootLogger()).addFilter(new TardisLogFilter(path));
     }
 }

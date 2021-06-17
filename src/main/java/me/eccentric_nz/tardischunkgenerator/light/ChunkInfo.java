@@ -42,10 +42,10 @@ public class ChunkInfo {
         this(world, chunkX, 256, chunkZ, players);
     }
 
-    public ChunkInfo(World world, int chunkX, int chunk_y_height, int chunkZ, Collection<? extends Player> players) {
+    public ChunkInfo(World world, int chunkX, int chunkYHeight, int chunkZ, Collection<? extends Player> players) {
         this.world = world;
         x = chunkX;
-        y = chunk_y_height >> 4;
+        y = chunkYHeight >> 4;
         z = chunkZ;
         receivers = players;
     }
@@ -96,14 +96,14 @@ public class ChunkInfo {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (obj == null) {
+        if (object == null) {
             return false;
         }
-        if (!(obj instanceof ChunkInfo other)) {
+        if (!(object instanceof ChunkInfo other)) {
             return false;
         }
         if (world != other.world) {
