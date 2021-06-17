@@ -2,7 +2,8 @@ authors: [eccentric_nz]
 main: me.eccentric_nz.tardischunkgenerator.TardisHelperPlugin
 name: TARDISHelper
 description: Chunk generator for the TARDIS plugin
-version: 4.7.0
+version: maven-version-number
+build-number: maven-build-number
 api-version: 1.16
 website: http://tardisjenkins.duckdns.org:8080/job/TARDISChunkGenerator/
 dev-url: http://github.com/eccentricdevotion/TARDISChunkGenerator/
