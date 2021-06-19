@@ -220,11 +220,12 @@ public interface TARDISHelperAPI {
     /**
      * Search for a biome
      *
-     * @param world  the world to search in
-     * @param biome  the biome to search for
-     * @param player the player who is searching
+     * @param world     the world to search in
+     * @param biome     the biome to search for
+     * @param player    the player who is searching
+     * @param policeBox the location of the TARDIS exterior
      */
-    public Location searchBiome(World world, Biome biome, Player player);
+    public Location searchBiome(World world, Biome biome, Player player, Location policeBox);
 
     /**
      * Gets the Namespaced key from a biome

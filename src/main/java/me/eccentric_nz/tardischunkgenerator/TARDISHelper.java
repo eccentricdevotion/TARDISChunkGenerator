@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.entity.TileEntityFurnace;
 import net.minecraft.world.level.block.entity.TileEntitySign;
 import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
+import net.minecraft.world.phys.Vec3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.*;
@@ -412,13 +413,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public Location searchBiome(World world, Biome biome, Player player) {
+    public Location searchBiome(World world, Biome biome, Player player, Location policeBox) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
         CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
         Optional<BiomeBase> optional = commandListenerWrapper.getServer().getCustomRegistry().d(IRegistry.aO).getOptional(MinecraftKey.a(biome.getKey().getKey())); // aO = ResourceKey<IRegistry<BiomeBase>>
         if (optional.isPresent()) {
             BiomeBase biomeBase = optional.get();
-            BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
+            Vec3D vector = new Vec3D(policeBox.getX(), policeBox.getY(), policeBox.getZ());
+            BlockPosition playerBlockPosition = new BlockPosition(vector);
             BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
             if (blockPosition != null) {
                 return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
