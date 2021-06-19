@@ -420,10 +420,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (optional.isPresent()) {
             BiomeBase biomeBase = optional.get();
             Vec3D vector = new Vec3D(policeBox.getX(), policeBox.getY(), policeBox.getZ());
-            BlockPosition playerBlockPosition = new BlockPosition(vector);
-            BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
-            if (blockPosition != null) {
-                return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+            BlockPosition startPosition = new BlockPosition(vector);
+            BlockPosition biomePosition = worldServer.a(biomeBase, startPosition, 6400, 8);
+            if (biomePosition != null) {
+                return new Location(world, biomePosition.getX(), biomePosition.getY(), biomePosition.getZ());
             }
         }
         return null;
