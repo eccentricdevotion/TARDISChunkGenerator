@@ -234,21 +234,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
                 NBTTagCompound data = tagCompound.getCompound("Data");
                 fileinputstream.close();
-                int mode;
-                switch (gm) {
-                    case CREATIVE:
-                        mode = 1;
-                        break;
-                    case ADVENTURE:
-                        mode = 2;
-                        break;
-                    case SPECTATOR:
-                        mode = 3;
-                        break;
-                    default: // SURVIVAL
-                        mode = 0;
-                        break;
-                }
+                int mode = switch (gm) {
+                    case CREATIVE -> 1;
+                    case ADVENTURE -> 2;
+                    case SPECTATOR -> 3;
+                    default -> 0; // SURVIVAL
+                };
                 // set GameType tag
                 data.setInt("GameType", mode);
                 tagCompound.set("Data", data);
@@ -273,37 +264,21 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 // get GameType tag
                 GameMode gameMode;
                 int gm = data.getInt("GameType");
-                switch (gm) {
-                    case 1:
-                        gameMode = GameMode.CREATIVE;
-                        break;
-                    case 2:
-                        gameMode = GameMode.ADVENTURE;
-                        break;
-                    case 3:
-                        gameMode = GameMode.SPECTATOR;
-                        break;
-                    default:
-                        gameMode = GameMode.SURVIVAL;
-                        break;
-                }
+                gameMode = switch (gm) {
+                    case 1 -> GameMode.CREATIVE;
+                    case 2 -> GameMode.ADVENTURE;
+                    case 3 -> GameMode.SPECTATOR;
+                    default -> GameMode.SURVIVAL;
+                };
                 // get generatorName tag
                 WorldType worldType;
                 String wt = data.getString("generatorName");
-                switch (wt.toLowerCase(Locale.ENGLISH)) {
-                    case "flat":
-                        worldType = WorldType.FLAT;
-                        break;
-                    case "largeBiomes":
-                        worldType = WorldType.LARGE_BIOMES;
-                        break;
-                    case "amplified":
-                        worldType = WorldType.AMPLIFIED;
-                        break;
-                    default: // default or unknown
-                        worldType = WorldType.NORMAL;
-                        break;
-                }
+                worldType = switch (wt.toLowerCase(Locale.ENGLISH)) {
+                    case "flat" -> WorldType.FLAT;
+                    case "largeBiomes" -> WorldType.LARGE_BIOMES;
+                    case "amplified" -> WorldType.AMPLIFIED;
+                    default -> WorldType.NORMAL; // default or unknown
+                };
                 World.Environment environment = World.Environment.NORMAL;
                 File dimDashOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM-1");
                 File dimOne = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + world + File.separator + "DIM1");
@@ -441,11 +416,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         } else {
 //            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location);
             switch (world.getEnvironment()) {
-                case NETHER:
+                case NETHER -> {
                     return "minecraft:nether_wastes";
-                case THE_END:
+                }
+                case THE_END -> {
                     return "minecraft:the_end";
-                default:
+                }
+                default -> {
                     if (world.getName().contains("skaro")) {
                         return "tardis:skaro_lakes";
                     } else if (world.getName().contains("gallifrey")) {
@@ -453,6 +430,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                     } else {
                         return "minecraft:plains";
                     }
+                }
             }
         }
     }

@@ -24,6 +24,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.light;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -42,7 +43,7 @@ public class RequestSteamMachine implements Runnable {
     public void start(int ticks, int maxIterationsPerTick) {
         if (!isStarted) {
             this.maxIterationsPerTick = maxIterationsPerTick;
-            sch = executor.scheduleWithFixedDelay(this, 0, 50 * ticks, TimeUnit.MILLISECONDS);
+            sch = executor.scheduleWithFixedDelay(this, 0, 50L * ticks, TimeUnit.MILLISECONDS);
             isStarted = true;
         }
     }
@@ -60,18 +61,17 @@ public class RequestSteamMachine implements Runnable {
         return isStarted;
     }
 
-    public boolean addToQueue(Runnable request) {
+    public void addToQueue(Runnable request) {
         if (request != null) {
             REQUEST_QUEUE.add(request);
-            return true;
         }
-        return false;
     }
 
     public void addChunkToUpdate(ChunkInfo info, LightType lightType, Collection<? extends Player> receivers) {
         int SectionY = info.getChunkY();
+        World world = info.getWorld();
         INMSHandler nmsHandler = new NMSHandler();
-        if (nmsHandler.isValidSectionY(SectionY)) {
+        if (nmsHandler.isValidSectionY(world, SectionY)) {
             ChunkLocation chunk = new ChunkLocation(info.getWorld(), info.getChunkX(), info.getChunkZ());
             int sectionYMask = nmsHandler.asSectionMask(SectionY);
             Collection<Player> players = new ArrayList<>(receivers != null ? receivers : info.getReceivers());

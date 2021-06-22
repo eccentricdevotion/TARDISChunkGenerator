@@ -3,7 +3,8 @@
  *
  * Copyright (c) 2016-2017 The ImplexDevOne Project
  * Copyright (c) 2019 Vladimir Mikhailov <beykerykt@gmail.com>
- * Copyright (c) 2020 Qveshn
+ * Copyright (c) 2021 LOOHP <jamesloohp@gmail.com>
+ * Copyright (c) 2021 Qveshn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +59,7 @@ public class NMSHandler extends NmsHandlerBase {
     private final Method threadedMailbox_DoLoopStep_g;
     private final Field lightEngineLayer_d;
     private final Method lightEngineStorage_d;
-    private final Method lightEngineGraph_b;
+    private final Method lightEngineGraph_a;
 
     public NMSHandler() {
         try {
@@ -73,8 +74,8 @@ public class NMSHandler extends NmsHandlerBase {
             lightEngineLayer_d.setAccessible(true);
             lightEngineStorage_d = LightEngineStorage.class.getDeclaredMethod("d");
             lightEngineStorage_d.setAccessible(true);
-            lightEngineGraph_b = LightEngineGraph.class.getDeclaredMethod("b", long.class, long.class, int.class, boolean.class);
-            lightEngineGraph_b.setAccessible(true);
+            lightEngineGraph_a = LightEngineGraph.class.getDeclaredMethod("a", long.class, long.class, int.class, boolean.class);
+            lightEngineGraph_a.setAccessible(true);
         } catch (Exception e) {
             throw toRuntimeException(e);
         }
@@ -84,7 +85,7 @@ public class NMSHandler extends NmsHandlerBase {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
         }
-        Class cls = e.getClass();
+        Class<? extends Throwable> cls = e.getClass();
         return new RuntimeException(String.format("(%s) %s", RuntimeException.class.getPackage().equals(cls.getPackage()) ? cls.getSimpleName() : cls.getName(), e.getMessage()), e);
     }
 
@@ -122,7 +123,7 @@ public class NMSHandler extends NmsHandlerBase {
         BlockPosition position = new BlockPosition(blockX, blockY, blockZ);
         LightEngineThreaded lightEngine = worldServer.getChunkProvider().getLightEngine();
 
-        int finalLightLevel = lightlevel < 0 ? 0 : lightlevel > 15 ? 15 : lightlevel;
+        int finalLightLevel = lightlevel < 0 ? 0 : Math.min(lightlevel, 15);
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
                 LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.a); // a = SKY
@@ -180,7 +181,7 @@ public class NMSHandler extends NmsHandlerBase {
                     if (lightLevelZ > 0) {
                         if (lightLevelZ > getDeltaLight(blockY & 15, 1)) {
                             int sectionY = (blockY >> 4) + 1;
-                            if (isValidSectionY(sectionY)) {
+                            if (isValidSectionY(world, sectionY)) {
                                 int chunkX = blockX >> 4;
                                 int chunkZ = blockZ >> 4;
                                 ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
@@ -188,7 +189,7 @@ public class NMSHandler extends NmsHandlerBase {
                             }
                         }
                         for (int sectionY = blockY >> 4; sectionY >= -1; sectionY--) {
-                            if (isValidSectionY(sectionY)) {
+                            if (isValidSectionY(world, sectionY)) {
                                 int chunkX = blockX >> 4;
                                 int chunkZ = blockZ >> 4;
                                 ChunkInfo cCoord = new ChunkInfo(world, chunkX + dx, sectionY << 4, chunkZ + dz, players != null ? players : (players = world.getPlayers()));
@@ -200,11 +201,6 @@ public class NMSHandler extends NmsHandlerBase {
             }
         }
         return list;
-    }
-
-    @Override
-    public boolean isValidSectionY(int sectionY) {
-        return sectionY >= -1 && sectionY <= 16;
     }
 
     @Override
@@ -289,7 +285,7 @@ public class NMSHandler extends NmsHandlerBase {
         try {
             LightEngineStorage ls = (LightEngineStorage) lightEngineLayer_d.get(les);
             lightEngineStorage_d.invoke(ls);
-            lightEngineGraph_b.invoke(les, 9223372036854775807L, var0.asLong(), 15 - var1, true);
+            lightEngineGraph_a.invoke(les, 9223372036854775807L, var0.asLong(), 15 - var1, true);
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
         } catch (IllegalAccessException e) {
@@ -299,5 +295,15 @@ public class NMSHandler extends NmsHandlerBase {
 
     private int getDeltaLight(int x, int dx) {
         return (((x ^ ((-dx >> 4) & 15)) + 1) & (-(dx & 1)));
+    }
+
+    @Override
+    public int getMinLightHeight(World world) {
+        return world.getMinHeight() - 16;
+    }
+
+    @Override
+    public int getMaxLightHeight(World world) {
+        return world.getMaxHeight() + 16;
     }
 }
