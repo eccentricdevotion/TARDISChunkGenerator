@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
@@ -104,6 +105,21 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         machine.start(2, 400);
         // should we filter the log?
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+//        // get the TARDIS planets config
+//        String levelName = CustomBiome.getLevelName();
+//        FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
+//        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
+//            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Gallifrey...");
+//            CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
+//            CustomBiome.addCustomBiome(TARDISBiomeData.ERODED);
+//            CustomBiome.addCustomBiome(TARDISBiomeData.PLATEAU);
+//        }
+//        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
+//            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Skaro...");
+//            CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
+//            CustomBiome.addCustomBiome(TARDISBiomeData.HILLS);
+//            CustomBiome.addCustomBiome(TARDISBiomeData.LAKES);
+//        }
         // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
         if (configuration.getBoolean("debug")) {
@@ -402,6 +418,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             }
         }
         return null;
+    }
+
+    @Override
+    public void setCustomBiome(String biome, Chunk chunk) {
+        new BiomeHelper().setCustomBiome(biome, chunk);
     }
 
     @Override

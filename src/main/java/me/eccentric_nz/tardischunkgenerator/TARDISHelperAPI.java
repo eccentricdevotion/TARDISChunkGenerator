@@ -17,6 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -226,6 +227,14 @@ public interface TARDISHelperAPI {
      * @param policeBox the location of the TARDIS exterior
      */
     public Location searchBiome(World world, Biome biome, Player player, Location policeBox);
+
+    /**
+     * Set a chunk to a custom biome
+     *
+     * @param biome the key of the biome to set e.g. tardis:gallifrey_badlands
+     * @param chunk the chunk to set the biome for
+     */
+    public void setCustomBiome(String biome, Chunk chunk);
 
     /**
      * Gets the Namespaced key from a biome
