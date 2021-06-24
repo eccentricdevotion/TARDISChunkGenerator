@@ -16,16 +16,10 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPacketMapChunk;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
-import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
-import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
-import me.eccentric_nz.tardischunkgenerator.light.Light;
-import me.eccentric_nz.tardischunkgenerator.light.LightType;
-import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TardisLogFilter;
 import net.minecraft.server.v1_16_R3.*;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +31,6 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
@@ -47,8 +40,6 @@ import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
@@ -61,13 +52,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
     public static final String MESSAGE_PREFIX = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
-    public static final RequestSteamMachine MACHINE = new RequestSteamMachine();
     public static TardisHelperPlugin tardisHelper;
 
     public static TardisHelperPlugin getTardisHelper() {
@@ -76,18 +67,11 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
     @Override
     public void onDisable() {
-        if (MACHINE.isStarted()) {
-            MACHINE.shutdown();
-        }
     }
 
     @Override
     public void onEnable() {
         tardisHelper = this;
-        // register disguise listener
-        getServer().getPluginManager().registerEvents(new TardisDisguiseListener(this), this);
-        // start RequestStreamMachine
-        MACHINE.start(2, 400);
         // should we filter the log?
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
         // get the TARDIS config
@@ -105,7 +89,7 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         return new TardisChunkGenerator();
     }
 
-    public void nameFurnaceGUI(Block block, String name) {
+    public void nameFurnaceGui(Block block, String name) {
         WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
         TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
@@ -168,25 +152,6 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         tag.setBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
         nmsEntity.load(tag);
-    }
-
-    @Override
-    public void openSignGUI(Player player, Sign sign) {
-        Location location = sign.getLocation();
-        TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle().getTileEntity(new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
-        EntityPlayer entityPlayer = ((CraftPlayer) Objects.requireNonNull(player.getPlayer())).getHandle();
-        assert tileEntitySign != null;
-        entityPlayer.playerConnection.sendPacket(tileEntitySign.getUpdatePacket());
-        tileEntitySign.isEditable = true;
-        tileEntitySign.a(entityPlayer);
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(tileEntitySign.getPosition());
-        entityPlayer.playerConnection.sendPacket(packet);
-        SignInputHandler.injectNetty(player, this);
-    }
-
-    @Override
-    public void finishSignEditing(Player player) {
-        SignInputHandler.ejectNetty(player);
     }
 
     @Override
@@ -311,74 +276,6 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         }
         Bukkit.getLogger().log(Level.INFO, MESSAGE_PREFIX + "Defaulted to GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL");
         return new TardisPlanetData(GameMode.SURVIVAL, World.Environment.NORMAL, WorldType.NORMAL);
-    }
-
-    @Override
-    public void disguise(EntityType entityType, Player player) {
-        new TardisDisguiser(entityType, player).disguiseToAll();
-    }
-
-    @Override
-    public void disguise(EntityType entityType, Player player, Object[] options) {
-        new TardisDisguiser(entityType, player, options).disguiseToAll();
-    }
-
-    @Override
-    public void disguise(Player player, String name) {
-        new TardisChameleonArchDisguiser(player).changeSkin(name);
-    }
-
-    @Override
-    public void disguise(Player player, UUID uuid) {
-        new TardisPlayerDisguiser(player, uuid).disguiseToAll();
-    }
-
-    @Override
-    public void undisguise(Player player) {
-        new TardisDisguiser(player).removeDisguise();
-    }
-
-    @Override
-    public void reset(Player player) {
-        new TardisChameleonArchDisguiser(player).resetSkin();
-    }
-
-    @Override
-    public int spawnEmergencyProgrammeOne(Player player, Location location) {
-        return new TardisEpsDisguiser(player, location).showToAll();
-    }
-
-    @Override
-    public void removeNPC(int id, World world) {
-        TardisEpsDisguiser.removeNPC(id, world);
-    }
-
-    @Override
-    public void disguiseArmourStand(ArmorStand armorStand, EntityType entityType, Object[] options) {
-        new TardisArmorStandDisguiser(armorStand, entityType, options).disguiseToAll();
-    }
-
-    @Override
-    public void undisguiseArmourStand(ArmorStand armorStand) {
-        TardisArmorStandDisguiser.removeDisguise(armorStand);
-    }
-
-    @Override
-    public void createLight(Location location) {
-        Light.createLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15, true);
-        Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
-        for (ChunkInfo chunkInfo : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(chunkInfo, LightType.BLOCK, players);
-        }
-    }
-
-    @Override
-    public void deleteLight(Location location) {
-        Light.deleteLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, true);
-        Collection<Player> players = Objects.requireNonNull(location.getWorld()).getPlayers();
-        for (ChunkInfo chunkInfo : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(chunkInfo, LightType.BLOCK, players);
-        }
     }
 
     @Override

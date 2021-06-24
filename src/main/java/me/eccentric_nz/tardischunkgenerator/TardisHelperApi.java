@@ -24,7 +24,6 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.map.MapView;
 
@@ -63,19 +62,6 @@ public interface TardisHelperApi {
     void setFallFlyingTag(Entity entity);
 
     /**
-     * Open a sign editing GUI.
-     *
-     * @param player the player to open the GUI for
-     * @param sign   the sign block that is being edited
-     */
-    void openSignGUI(Player player, Sign sign);
-
-    /**
-     * Stop listening for sign updates
-     */
-    void finishSignEditing(Player player);
-
-    /**
      * Sets a random seed value for a world.
      *
      * @param world the world to set the seed for
@@ -105,98 +91,6 @@ public interface TardisHelperApi {
      * @return the GameMode, Environment and WorldType of a world
      */
     TardisPlanetData getLevelData(String world);
-
-    /**
-     * Disguises a player as another entity.
-     *
-     * @param entityType the entity type to disguise as
-     * @param player     the player to disguise
-     */
-    void disguise(EntityType entityType, Player player);
-
-    /**
-     * Disguises a player as another entity.
-     *
-     * @param entityType the entity type to disguise as
-     * @param player     the player to disguise
-     * @param options    an array of entity options
-     */
-    void disguise(EntityType entityType, Player player, Object[] options);
-
-    /**
-     * Disguises a player as a randomly named Chameleon Arch player.
-     *
-     * @param player the player to disguise
-     * @param name   the random name for the disguise
-     */
-    void disguise(Player player, String name);
-
-    /**
-     * Disguises a player as another player.
-     *
-     * @param player the player to disguise
-     * @param uuid   the UUID of the player to disguise as
-     */
-    void disguise(Player player, UUID uuid);
-
-    /**
-     * Undisguises a player.
-     *
-     * @param player the player to undisguise
-     */
-    void undisguise(Player player);
-
-    /**
-     * Undisguises a Chameleon arched player.
-     *
-     * @param player the player to undisguise
-     */
-    void reset(Player player);
-
-    /**
-     * Spawns Emergency Programme One.
-     *
-     * @param player   the player to disguise the EP1 NPC as
-     * @param location the location to spawn the NPC disguise
-     */
-    int spawnEmergencyProgrammeOne(Player player, Location location);
-
-    /**
-     * Removes an NPC.
-     *
-     * @param npcId the id of the NPC to undisguise
-     */
-    void removeNPC(int npcId, World world);
-
-    /**
-     * Disguises an armour stand as another entity.
-     *
-     * @param armorStand      the armour stand to disguise
-     * @param entityType the entity type to disguise as
-     * @param options    an array of entity options
-     */
-    void disguiseArmourStand(ArmorStand armorStand, EntityType entityType, Object[] options);
-
-    /**
-     * Undisguises an armour stand.
-     *
-     * @param armorStand the armour stand to undisguise
-     */
-    void undisguiseArmourStand(ArmorStand armorStand);
-
-    /**
-     * Create a light source
-     *
-     * @param location the location where the light will be created
-     */
-    void createLight(Location location);
-
-    /**
-     * Delete a light source
-     *
-     * @param location the location where the light will be removed
-     */
-    void deleteLight(Location location);
 
     /**
      * Check a Factions location is valid for TARDIS actions
