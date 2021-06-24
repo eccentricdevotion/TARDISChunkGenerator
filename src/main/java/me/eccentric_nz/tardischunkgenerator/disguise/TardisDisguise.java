@@ -83,36 +83,36 @@ public class TardisDisguise {
                         EntityRabbit rabbit = (EntityRabbit) entity;
                         rabbit.setRabbitType(((Rabbit.Type) object).ordinal());
                     }
-                    if (object instanceof GENE && disguise.getEntityType().equals(EntityType.PANDA)) {
+                    if (object instanceof Gene && disguise.getEntityType().equals(EntityType.PANDA)) {
                         EntityPanda panda = (EntityPanda) entity;
-                        EntityPanda.Gene gene = ((GENE) object).getNmsGene();
+                        EntityPanda.Gene gene = ((Gene) object).getNmsGene();
                         panda.setMainGene(gene);
                         panda.setHiddenGene(gene);
                     }
-                    if (object instanceof PROFESSION) {
+                    if (object instanceof Profession) {
                         if (disguise.getEntityType().equals(EntityType.VILLAGER)) {
                             EntityVillager villager = (EntityVillager) entity;
-                            villager.setVillagerData(villager.getVillagerData().withProfession(((PROFESSION) object).getNmsProfession()));
+                            villager.setVillagerData(villager.getVillagerData().withProfession(((Profession) object).getNmsProfession()));
                         } else if (disguise.getEntityType().equals(EntityType.ZOMBIE_VILLAGER)) {
                             EntityZombieVillager zombie = (EntityZombieVillager) entity;
-                            zombie.setVillagerData(zombie.getVillagerData().withProfession(((PROFESSION) object).getNmsProfession()));
+                            zombie.setVillagerData(zombie.getVillagerData().withProfession(((Profession) object).getNmsProfession()));
                         }
                     }
                     if (object instanceof Parrot.Variant && disguise.getEntityType().equals(EntityType.PARROT)) {
                         EntityParrot parrot = (EntityParrot) entity;
                         parrot.setVariant(((Parrot.Variant) object).ordinal());
                     }
-                    if (object instanceof MUSHROOM_COW && disguise.getEntityType().equals(EntityType.MUSHROOM_COW)) {
+                    if (object instanceof Mooshroom && disguise.getEntityType().equals(EntityType.MUSHROOM_COW)) {
                         EntityMushroomCow cow = (EntityMushroomCow) entity;
-                        cow.setVariant(((MUSHROOM_COW) object).getNmsType());
+                        cow.setVariant(((Mooshroom) object).getNmsType());
                     }
                     if (object instanceof Cat.Type && disguise.getEntityType().equals(EntityType.CAT)) {
                         EntityCat cat = (EntityCat) entity;
                         cat.setCatType(((Cat.Type) object).ordinal());
                     }
-                    if (object instanceof FOX && disguise.getEntityType().equals(EntityType.FOX)) {
+                    if (object instanceof Fox && disguise.getEntityType().equals(EntityType.FOX)) {
                         EntityFox fox = (EntityFox) entity;
-                        fox.setFoxType(((FOX) object).getNmsType());
+                        fox.setFoxType(((Fox) object).getNmsType());
                     }
                     if (object instanceof Horse.Color && disguise.getEntityType().equals(EntityType.HORSE)) {
                         EntityHorse horse = (EntityHorse) entity;
@@ -176,7 +176,7 @@ public class TardisDisguise {
                                 break;
                             case LLAMA:
                                 EntityLlama llama = (EntityLlama) entity;
-                                org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(CARPET.values()[ThreadLocalRandom.current().nextInt(16)].getCarpet());
+                                org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(Carpet.values()[ThreadLocalRandom.current().nextInt(16)].getCarpet());
                                 ItemStack nmsItemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
                                 llama.inventoryChest.setItem(1, nmsItemStack);
                             default:
@@ -210,10 +210,10 @@ public class TardisDisguise {
                         int var8 = ThreadLocalRandom.current().nextInt(15); // pattern colour
                         fish.setVariant(var5 | var6 << 8 | var7 << 16 | var8 << 24);
                     }
-                    if (object instanceof AGE && EntityAgeable.class.isAssignableFrom(entityClass)) {
+                    if (object instanceof Age && EntityAgeable.class.isAssignableFrom(entityClass)) {
                         // adult or baby
                         EntityAgeable ageable = (EntityAgeable) entity;
-                        ageable.setAgeRaw(((AGE) object).getAge());
+                        ageable.setAgeRaw(((Age) object).getAge());
                     }
                 }
             }

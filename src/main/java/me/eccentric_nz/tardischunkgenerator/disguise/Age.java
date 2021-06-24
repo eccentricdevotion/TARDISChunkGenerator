@@ -16,25 +16,22 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R3.EntityMushroomCow;
-import org.bukkit.entity.MushroomCow;
+public enum Age {
 
-public enum MUSHROOM_COW {
+    BABY(-24000),
+    ADULT(1);
 
-    BROWN(EntityMushroomCow.Type.BROWN),
-    RED(EntityMushroomCow.Type.RED);
+    private final int age;
 
-    private final EntityMushroomCow.Type nmsType;
-
-    MUSHROOM_COW(EntityMushroomCow.Type nmsType) {
-        this.nmsType = nmsType;
+    Age(int age) {
+        this.age = age;
     }
 
-    public static MUSHROOM_COW getFromMushroomCowType(MushroomCow.Variant variant) {
-        return MUSHROOM_COW.valueOf(variant.toString());
+    public static Age getFromBoolean(boolean b) {
+        return (b) ? BABY : ADULT;
     }
 
-    public EntityMushroomCow.Type getNmsType() {
-        return nmsType;
+    public int getAge() {
+        return age;
     }
 }

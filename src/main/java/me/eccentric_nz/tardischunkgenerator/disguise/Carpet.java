@@ -18,7 +18,7 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import org.bukkit.Material;
 
-public enum CARPET {
+public enum Carpet {
 
     WHITE(Material.WHITE_CARPET),
     ORANGE(Material.ORANGE_CARPET),
@@ -39,7 +39,7 @@ public enum CARPET {
 
     private final Material carpet;
 
-    CARPET(Material carpet) {
+    Carpet(Material carpet) {
         this.carpet = carpet;
     }
 

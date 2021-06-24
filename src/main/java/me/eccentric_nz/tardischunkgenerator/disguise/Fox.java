@@ -16,30 +16,24 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.server.v1_16_R3.EntityPanda;
-import org.bukkit.entity.Panda;
+import net.minecraft.server.v1_16_R3.EntityFox;
 
-public enum GENE {
+public enum Fox {
 
-    NORMAL(EntityPanda.Gene.NORMAL),
-    LAZY(EntityPanda.Gene.LAZY),
-    WORRIED(EntityPanda.Gene.WORRIED),
-    PLAYFUL(EntityPanda.Gene.PLAYFUL),
-    BROWN(EntityPanda.Gene.BROWN),
-    WEAK(EntityPanda.Gene.WEAK),
-    AGGRESSIVE(EntityPanda.Gene.AGGRESSIVE);
+    RED(EntityFox.Type.RED),
+    SNOW(EntityFox.Type.SNOW);
 
-    private final EntityPanda.Gene nmsGene;
+    private final EntityFox.Type nmsType;
 
-    GENE(EntityPanda.Gene nmsGene) {
-        this.nmsGene = nmsGene;
+    Fox(EntityFox.Type nmsType) {
+        this.nmsType = nmsType;
     }
 
-    public static GENE getFromPandaGene(Panda.Gene gene) {
-        return GENE.valueOf(gene.toString());
+    public static Fox getFromFoxType(org.bukkit.entity.Fox.Type type) {
+        return Fox.valueOf(type.toString());
     }
 
-    public EntityPanda.Gene getNmsGene() {
-        return nmsGene;
+    public EntityFox.Type getNmsType() {
+        return nmsType;
     }
 }
