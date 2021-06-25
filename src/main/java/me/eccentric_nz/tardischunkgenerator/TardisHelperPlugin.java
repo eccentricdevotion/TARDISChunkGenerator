@@ -18,13 +18,11 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisMapUpdater;
-import me.eccentric_nz.tardischunkgenerator.helpers.TardisPacketMapChunk;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TardisLogFilter;
 import net.minecraft.server.v1_16_R3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.*;
@@ -136,11 +134,6 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to set villager willingness: " + ex.getMessage());
         }
-    }
-
-    @Override
-    public void refreshChunk(Chunk chunk) {
-        TardisPacketMapChunk.refreshChunk(chunk);
     }
 
     @Override

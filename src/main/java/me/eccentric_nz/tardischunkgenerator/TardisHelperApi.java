@@ -17,17 +17,16 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.map.MapView;
-
-import java.util.UUID;
 
 public interface TardisHelperApi {
 
@@ -46,13 +45,6 @@ public interface TardisHelperApi {
      * @param willing  whether the villager is willing
      */
     void setVillagerWilling(Villager villager, boolean willing);
-
-    /**
-     * Refresh a chunk.
-     *
-     * @param chunk the chunk to refresh
-     */
-    void refreshChunk(Chunk chunk);
 
     /**
      * Set the FallFlying NBT tag on an entity.
