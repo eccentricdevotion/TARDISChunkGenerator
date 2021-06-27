@@ -25,26 +25,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.map.MapView;
 
 public interface TardisHelperApi {
-
-    /**
-     * Gets a Villager's willingness to breed/trade.
-     *
-     * @param villager the Villager
-     * @return whether the villager is willing
-     */
-    boolean getVillagerWilling(Villager villager);
-
-    /**
-     * Set a Villager's willingness to breed/trade.
-     *
-     * @param villager the Villager
-     * @param willing  whether the villager is willing
-     */
-    void setVillagerWilling(Villager villager, boolean willing);
 
     /**
      * Set the FallFlying NBT tag on an entity.

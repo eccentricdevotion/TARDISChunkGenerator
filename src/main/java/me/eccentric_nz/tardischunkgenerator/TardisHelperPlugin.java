@@ -20,26 +20,38 @@ import me.eccentric_nz.tardischunkgenerator.helpers.TardisFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TardisLogFilter;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.commands.CommandListenerWrapper;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.IRegistry;
+import net.minecraft.nbt.NBTCompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.chat.*;
+import net.minecraft.network.protocol.game.PacketPlayOutChat;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.util.FormattedString;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntityFurnace;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,8 +61,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -87,64 +100,69 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         return new TardisChunkGenerator();
     }
 
-    public void nameFurnaceGui(Block block, String name) {
+    public void nameFurnaceGui(Block block) {
         WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
-        if (!(tileEntity instanceof TileEntityFurnace furnace)) {
+        TileEntity tileEntity = worldServer.getTileEntity(blockPosition, true);
+        if (!(tileEntity instanceof TileEntityFurnace furnaceBlockEntity)) {
             return;
         }
-        furnace.setCustomName(new ChatMessage(name));
+        furnaceBlockEntity.setCustomName(new IChatBaseComponent() {
+            @Override
+            public ChatModifier getChatModifier() {
+                return null;
+            }
+
+            @Override
+            public String getText() {
+                return null;
+            }
+
+            @Override
+            public List<IChatBaseComponent> getSiblings() {
+                return null;
+            }
+
+            @Override
+            public IChatMutableComponent g() {
+                return null;
+            }
+
+            @Override
+            public IChatMutableComponent mutableCopy() {
+                return null;
+            }
+
+            @Override
+            public FormattedString f() {
+                return null;
+            }
+        });
     }
 
     public boolean isArtronFurnace(Block block) {
         WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tileEntity = worldServer.getTileEntity(blockPosition);
-        if (!(tileEntity instanceof TileEntityFurnace furnace)) {
+        TileEntity tileEntity = worldServer.getTileEntity(blockPosition, true);
+        if (!(tileEntity instanceof TileEntityFurnace tileEntityFurnace)) {
             return false;
         }
         boolean is = false;
-        if (furnace.getCustomName() != null) {
-            is = furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
+        if (tileEntityFurnace.getCustomName() != null) {
+            is = tileEntityFurnace.getCustomName().getString().equals("TARDIS Artron Furnace");
         }
         return is;
     }
 
     @Override
-    public boolean getVillagerWilling(Villager villager) {
-        try {
-            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
-            willingField.setAccessible(true);
-            return willingField.getBoolean(entityVillager);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to get villager willingness: " + ex.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public void setVillagerWilling(Villager villager, boolean willing) {
-        try {
-            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
-            Field willingField = EntityVillager.class.getDeclaredField("bu");
-            willingField.setAccessible(true);
-            willingField.set(entityVillager, willing);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to set villager willingness: " + ex.getMessage());
-        }
-    }
-
-    @Override
     public void setFallFlyingTag(org.bukkit.entity.Entity entity) {
         Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
         // writes the entity's NBT data to the `tag` object
-        nmsEntity.save(tag);
-        tag.setBoolean("FallFlying", true);
+        nmsEntity.save(nbtTagCompound);
+        nbtTagCompound.setBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
-        nmsEntity.load(tag);
+        nmsEntity.load(nbtTagCompound);
     }
 
     @Override
@@ -283,24 +301,27 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
     @Override
     public void sendActionBarMessage(Player player, String message) {
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().b; // b = playerConnection;
         if (connection == null) {
             return;
         }
         IChatBaseComponent component = new ChatComponentText(message);
-        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.GAME_INFO, player.getUniqueId());
+        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.c, player.getUniqueId()); // c = GAME_INFO
         connection.sendPacket(packet);
     }
 
     @Override
     public Location searchBiome(World world, Biome biome, Player player) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
-        BiomeBase biomeBase = worldServer.r().b(IRegistry.ay).get(MinecraftKey.a(biome.getKey().getKey()));
         CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
-        BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
-        BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
-        if (blockPosition != null) {
-            return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+        Optional<BiomeBase> optional = commandListenerWrapper.getServer().getCustomRegistry().d(IRegistry.aO).getOptional(MinecraftKey.a(biome.getKey().getKey())); // aO = ResourceKey<IRegistry<BiomeBase>>
+        if (optional.isPresent()) {
+            BiomeBase biomeBase = optional.get();
+            BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
+            BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
+            if (blockPosition != null) {
+                return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+            }
         }
         return null;
     }
@@ -311,7 +332,7 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         assert world != null;
         WorldServer worldServer = world.getHandle();
         BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
-        IRegistry<BiomeBase> registry = world.getHandle().r().b(IRegistry.ay);
+        IRegistry<BiomeBase> registry = worldServer.t().d(IRegistry.aO);
         MinecraftKey key = registry.getKey(base);
         if (key != null) {
             return key.toString();
@@ -335,7 +356,7 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
     @Override
     public void removeTileEntity(BlockState tile) {
-        net.minecraft.server.v1_16_R3.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        net.minecraft.world.level.chunk.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
         BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
         chunk.removeTileEntity(position);
         tile.getBlock().setType(Material.AIR);
@@ -349,23 +370,23 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
     @Override
     public void setPowerableBlockInteract(Block block) {
         IBlockData data = ((CraftBlock) block).getNMS();
-        net.minecraft.server.v1_16_R3.World world = ((CraftWorld) block.getWorld()).getHandle();
+        net.minecraft.world.level.World world = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition position = ((CraftBlock) block).getPosition();
         if (block.getType().equals(Material.LEVER)) {
-            Blocks.LEVER.interact(data, world, position, null, null, null);
+            Blocks.cw.interact(data, world, position, null, null, null);
         } else {
             // BUTTON
             switch (block.getType()) {
-                case ACACIA_BUTTON -> Blocks.ACACIA_BUTTON.interact(data, world, position, null, null, null);
-                case BIRCH_BUTTON -> Blocks.BIRCH_BUTTON.interact(data, world, position, null, null, null);
-                case CRIMSON_BUTTON -> Blocks.CRIMSON_BUTTON.interact(data, world, position, null, null, null);
-                case DARK_OAK_BUTTON -> Blocks.DARK_OAK_BUTTON.interact(data, world, position, null, null, null);
-                case JUNGLE_BUTTON -> Blocks.JUNGLE_BUTTON.interact(data, world, position, null, null, null);
-                case OAK_BUTTON -> Blocks.OAK_BUTTON.interact(data, world, position, null, null, null);
-                case POLISHED_BLACKSTONE_BUTTON -> Blocks.POLISHED_BLACKSTONE_BUTTON.interact(data, world, position, null, null, null);
-                case SPRUCE_BUTTON -> Blocks.SPRUCE_BUTTON.interact(data, world, position, null, null, null);
-                case STONE_BUTTON -> Blocks.STONE_BUTTON.interact(data, world, position, null, null, null);
-                case WARPED_BUTTON -> Blocks.WARPED_BUTTON.interact(data, world, position, null, null, null);
+                case ACACIA_BUTTON -> Blocks.fn.interact(data, world, position, null, null, null);
+                case BIRCH_BUTTON -> Blocks.fl.interact(data, world, position, null, null, null);
+                case CRIMSON_BUTTON -> Blocks.ne.interact(data, world, position, null, null, null);
+                case DARK_OAK_BUTTON -> Blocks.fo.interact(data, world, position, null, null, null);
+                case JUNGLE_BUTTON -> Blocks.fm.interact(data, world, position, null, null, null);
+                case OAK_BUTTON -> Blocks.fj.interact(data, world, position, null, null, null);
+                case POLISHED_BLACKSTONE_BUTTON -> Blocks.nS.interact(data, world, position, null, null, null);
+                case SPRUCE_BUTTON -> Blocks.fk.interact(data, world, position, null, null, null);
+                case STONE_BUTTON -> Blocks.cJ.interact(data, world, position, null, null, null);
+                case WARPED_BUTTON -> Blocks.nf.interact(data, world, position, null, null, null);
             }
         }
     }

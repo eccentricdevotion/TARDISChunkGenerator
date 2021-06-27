@@ -1,6 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator.custombiome;
 
-public class TARDISBiomeData {
+public class TardisBiomeData {
 
     public static final CustomBiomeData BADLANDS = new CustomBiomeData(
             "badlands",
