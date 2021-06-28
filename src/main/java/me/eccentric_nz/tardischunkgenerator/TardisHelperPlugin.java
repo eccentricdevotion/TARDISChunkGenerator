@@ -100,7 +100,7 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         return new TardisChunkGenerator();
     }
 
-    public void nameFurnaceGui(Block block) {
+    public void nameFurnaceGui(Block block, String name) {
         WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
         TileEntity tileEntity = worldServer.getTileEntity(blockPosition, true);
