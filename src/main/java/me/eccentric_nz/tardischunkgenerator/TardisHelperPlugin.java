@@ -73,12 +73,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 
-public class TARDISHelper extends JavaPlugin implements TardisHelperApi {
+public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
 
     public static final String MESSAGE_PREFIX = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
-    public static TARDISHelper tardisHelper;
+    public static TardisHelperPlugin tardisHelper;
 
-    public static TARDISHelper getTardisHelper() {
+    public static TardisHelperPlugin getTardisHelper() {
         return tardisHelper;
     }
 
