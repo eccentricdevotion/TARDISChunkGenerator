@@ -108,7 +108,7 @@ public class TextUtils {
      * <br>
      * </p>
      *
-     * @param throwable               {@link Throwable} from which stacktrace should be retrieved
+     * @param throwable       {@link Throwable} from which stacktrace should be retrieved
      * @param cutTbs          boolean that specifies if stacktrace should be shortened. The stacktrace should be
      *                        shortened if this flag is set to {@code true}. Note that if this parameter set to {@code
      *                        false} the stacktrace will be printed in full and parameter <b>relevantPackage</b> becomes
@@ -227,13 +227,13 @@ public class TextUtils {
      * section for the purposes of this utility is called "Singular stacktrace". For more detailed explanation see
      * method {@link #getStacktrace(Throwable, boolean, String)}
      *
-     * @param result  {@link StringBuilder} to which the resultant stacktrace will be appended
+     * @param result          {@link StringBuilder} to which the resultant stacktrace will be appended
      * @param relevantPackage {@link String} that contains relevant package prefix
-     * @param reader  {@link BufferedReader} that contains the source from where the stacktrace may be read line by
-     *                line. Current position in the reader is assumed to be at the beginning of the second line of the
-     *                current singular stacktrace, following the line with the name of the exception and error message
-     * @param line    {@link String} that contains the first line of the current singular stacktrace i.e. the line with
-     *                the name of the exception and error message
+     * @param reader          {@link BufferedReader} that contains the source from where the stacktrace may be read line by
+     *                        line. Current position in the reader is assumed to be at the beginning of the second line of the
+     *                        current singular stacktrace, following the line with the name of the exception and error message
+     * @param line            {@link String} that contains the first line of the current singular stacktrace i.e. the line with
+     *                        the name of the exception and error message
      * @return The first string of the next singular stacktrace or null if current singular stacktrace is the last one
      * in the stacktrace
      * @throws IOException if any error occurs.
