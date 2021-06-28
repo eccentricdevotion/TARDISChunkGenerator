@@ -32,6 +32,7 @@ import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.util.FormattedString;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.EntityVillager;
 import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.TileEntity;
@@ -51,7 +52,9 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftVillager;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,6 +64,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -152,6 +156,31 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
             is = tileEntityFurnace.getCustomName().getString().equals("TARDIS Artron Furnace");
         }
         return is;
+    }
+
+    @Override
+    public boolean getVillagerWilling(Villager villager) {
+        try {
+            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
+            Field willingField = EntityVillager.class.getDeclaredField("bu");
+            willingField.setAccessible(true);
+            return willingField.getBoolean(entityVillager);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to get villager willingness: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public void setVillagerWilling(Villager villager, boolean willing) {
+        try {
+            EntityVillager entityVillager = ((CraftVillager) villager).getHandle();
+            Field willingField = EntityVillager.class.getDeclaredField("bu");
+            willingField.setAccessible(true);
+            willingField.set(entityVillager, willing);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, MESSAGE_PREFIX + "Failed to set villager willingness: " + ex.getMessage());
+        }
     }
 
     @Override
