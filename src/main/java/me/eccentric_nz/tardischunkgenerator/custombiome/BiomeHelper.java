@@ -19,6 +19,8 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class BiomeHelper {
 
     DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
@@ -80,7 +82,7 @@ public class BiomeHelper {
                 return false;
             }
         }
-        setCustomBiome(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((CraftWorld) location.getWorld()).getHandle(), base);
+        setCustomBiome(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle(), base);
         refreshChunksForAll(location.getChunk());
         return true;
     }
