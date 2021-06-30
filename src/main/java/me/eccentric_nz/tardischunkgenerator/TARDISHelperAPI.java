@@ -244,6 +244,13 @@ public interface TARDISHelperAPI {
     public String getBiomeKey(Location location);
 
     /**
+     * Gets the Namespaced key from a biome
+     *
+     * @param chunk the chunk to get the biome for
+     */
+    public String getBiomeKey(Chunk chunk);
+
+    /**
      * Remove a TileEntity from the world
      */
     public void removeTileEntity(BlockState tile);

@@ -13,11 +13,7 @@ import net.minecraft.world.level.biome.BiomeSettingsMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Properties;
 import java.util.logging.Level;
 
 public class CustomBiome {
@@ -59,18 +55,6 @@ public class CustomBiome {
             dedicatedServer.getCustomRegistry().b(IRegistry.aO).a(customKey, newBiome.a(), Lifecycle.stable());
         } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
             Bukkit.getLogger().log(Level.WARNING, "Exception adding custom biome to registry: %s", e.getMessage());
-        }
-    }
-
-    public static String getLevelName() {
-        try {
-            BufferedReader is = new BufferedReader(new FileReader("server.properties"));
-            Properties props = new Properties();
-            props.load(is);
-            is.close();
-            return props.getProperty("level-name");
-        } catch (IOException e) {
-            return "world"; // minecraft / spigot default
         }
     }
 }

@@ -17,8 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomBiome;
-import me.eccentric_nz.tardischunkgenerator.custombiome.TARDISBiomeData;
+import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
@@ -29,9 +28,7 @@ import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
-import net.minecraft.commands.CommandListenerWrapper;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.core.IRegistry;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.chat.ChatComponentText;
@@ -40,19 +37,16 @@ import net.minecraft.network.chat.ChatMessageType;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutChat;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
-import net.minecraft.resources.MinecraftKey;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.BlockAttachable;
 import net.minecraft.world.level.block.entity.TileEntity;
 import net.minecraft.world.level.block.entity.TileEntityFurnace;
 import net.minecraft.world.level.block.entity.TileEntitySign;
 import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
-import net.minecraft.world.phys.Vec3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.*;
@@ -78,7 +72,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
@@ -105,25 +102,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
         // start RequestStreamMachine
         machine.start(2, 400);
-        // should we filter the log?
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
-        // get the TARDIS planets config
-        String levelName = CustomBiome.getLevelName();
-        FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
-        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
-            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Gallifrey...");
-            CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
-            CustomBiome.addCustomBiome(TARDISBiomeData.ERODED);
-            CustomBiome.addCustomBiome(TARDISBiomeData.PLATEAU);
-        }
-        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
-            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Skaro...");
-            CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
-            CustomBiome.addCustomBiome(TARDISBiomeData.HILLS);
-            CustomBiome.addCustomBiome(TARDISBiomeData.LAKES);
-        }
+        // Add custom biomes
+        BiomeUtilities.addBiomes(basePath, messagePrefix);
         // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
+        // should we filter the log?
         if (configuration.getBoolean("debug")) {
             // yes we should!
             filterLog(basePath + "filtered.log");
@@ -407,19 +391,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public Location searchBiome(World world, Biome biome, Player player, Location policeBox) {
-        WorldServer worldServer = ((CraftWorld) world).getHandle();
-        CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
-        Optional<BiomeBase> optional = commandListenerWrapper.getServer().getCustomRegistry().d(IRegistry.aO).getOptional(MinecraftKey.a(biome.getKey().getKey())); // aO = ResourceKey<IRegistry<BiomeBase>>
-        if (optional.isPresent()) {
-            BiomeBase biomeBase = optional.get();
-            Vec3D vector = new Vec3D(policeBox.getX(), policeBox.getY(), policeBox.getZ());
-            BlockPosition startPosition = new BlockPosition(vector);
-            BlockPosition biomePosition = worldServer.a(biomeBase, startPosition, 6400, 8);
-            if (biomePosition != null) {
-                return new Location(world, biomePosition.getX(), biomePosition.getY(), biomePosition.getZ());
-            }
-        }
-        return null;
+        return BiomeUtilities.searchBiome(world, biome, player, policeBox);
     }
 
     @Override
@@ -429,33 +401,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public String getBiomeKey(Location location) {
-        CraftWorld world = (CraftWorld) location.getWorld();
-        WorldServer worldServer = world.getHandle();
-        IRegistry<BiomeBase> registry = worldServer.t().d(IRegistry.aO);
-        BiomeBase base = worldServer.getBiome(location.getBlockX() >> 2, location.getBlockY() >> 2, location.getBlockZ() >> 2);
-        MinecraftKey key = registry.getKey(base);
-        if (key != null) {
-            return key.toString();
-        } else {
-//            Bukkit.getLogger().log(Level.INFO, messagePrefix + "Biome key was null for " + location);
-            switch (world.getEnvironment()) {
-                case NETHER -> {
-                    return "minecraft:nether_wastes";
-                }
-                case THE_END -> {
-                    return "minecraft:the_end";
-                }
-                default -> {
-                    if (world.getName().contains("skaro")) {
-                        return "tardis:skaro_lakes";
-                    } else if (world.getName().contains("gallifrey")) {
-                        return "tardis:gallifrey_badlands";
-                    } else {
-                        return "minecraft:plains";
-                    }
-                }
-            }
-        }
+        return BiomeUtilities.getBiomeKey(location);
+    }
+
+    @Override
+    public String getBiomeKey(Chunk chunk) {
+        return BiomeUtilities.getBiomeKey(chunk);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class TARDISBiomeData {
             16771522,
             4184548,
             340786,
-            16763002,
+            16763001,
             16309733,
             16714324,
             false
@@ -44,7 +44,7 @@ public class TARDISBiomeData {
             16771522,
             4184548,
             340786,
-            16763002,
+            16763000,
             16309733,
             16714324,
             false
@@ -60,7 +60,7 @@ public class TARDISBiomeData {
             13615871,
             4187262,
             340757,
-            10648063,
+            10648061,
             0,
             0,
             false
@@ -76,7 +76,7 @@ public class TARDISBiomeData {
             13615871,
             4187262,
             340757,
-            10648063,
+            10648062,
             0,
             0,
             false
