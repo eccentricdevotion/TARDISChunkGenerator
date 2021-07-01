@@ -14,7 +14,7 @@ import java.io.*;
  * class while retaining important parts of the stacktrace relating to user's packages. Also the same utility (starting
  * from version 1.5.0.3) allows to filter and shorten stacktrace as a string the same way as the stacktrace extracted
  * from exception. So, essentially stack traces could be filtered "on the fly" at run time or later on from any text
- * source such as log.</p>
+ * source such as log.
  *
  * @author Michael Gantman
  */
