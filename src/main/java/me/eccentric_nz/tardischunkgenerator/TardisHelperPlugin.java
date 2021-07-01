@@ -16,13 +16,12 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomBiome;
-import me.eccentric_nz.tardischunkgenerator.custombiome.TardisBiomeData;
+import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
+import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TardisPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TardisLogFilter;
-import net.minecraft.commands.CommandListenerWrapper;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.core.IRegistry;
 import net.minecraft.nbt.NBTCompressedStreamTools;
@@ -65,7 +64,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -85,25 +83,12 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
     @Override
     public void onEnable() {
         tardisHelper = this;
-        // should we filter the log?
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
-        // get the TARDIS planets config
-        String levelName = CustomBiome.getLevelName();
-        FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
-        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
-            getServer().getConsoleSender().sendMessage(MESSAGE_PREFIX + "Adding custom biomes for planet Gallifrey...");
-            CustomBiome.addCustomBiome(TardisBiomeData.BADLANDS);
-            CustomBiome.addCustomBiome(TardisBiomeData.ERODED);
-            CustomBiome.addCustomBiome(TardisBiomeData.PLATEAU);
-        }
-        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
-            getServer().getConsoleSender().sendMessage(MESSAGE_PREFIX + "Adding custom biomes for planet Skaro...");
-            CustomBiome.addCustomBiome(TardisBiomeData.DESERT);
-            CustomBiome.addCustomBiome(TardisBiomeData.HILLS);
-            CustomBiome.addCustomBiome(TardisBiomeData.LAKES);
-        }
+        // Add custom biomes
+        BiomeUtilities.addBiomes(basePath, MESSAGE_PREFIX);
         // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
+        // should we filter the log?
         if (configuration.getBoolean("debug")) {
             // yes we should!
             filterLog(basePath + "filtered.log");
@@ -117,7 +102,7 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
         return new TardisChunkGenerator();
     }
 
-    public void nameFurnaceGui(Block block, String name) {
+    public void nameFurnaceGui(Block block) {
         WorldServer worldServer = ((CraftWorld) block.getWorld()).getHandle();
         BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
         TileEntity tileEntity = worldServer.getTileEntity(blockPosition, true);
@@ -328,19 +313,13 @@ public class TardisHelperPlugin extends JavaPlugin implements TardisHelperApi {
     }
 
     @Override
-    public Location searchBiome(World world, Biome biome, Player player) {
-        WorldServer worldServer = ((CraftWorld) world).getHandle();
-        CommandListenerWrapper commandListenerWrapper = ((CraftPlayer) player).getHandle().getCommandListener();
-        Optional<BiomeBase> optional = commandListenerWrapper.getServer().getCustomRegistry().d(IRegistry.aO).getOptional(MinecraftKey.a(biome.getKey().getKey())); // aO = ResourceKey<IRegistry<BiomeBase>>
-        if (optional.isPresent()) {
-            BiomeBase biomeBase = optional.get();
-            BlockPosition playerBlockPosition = new BlockPosition(commandListenerWrapper.getPosition());
-            BlockPosition blockPosition = worldServer.a(biomeBase, playerBlockPosition, 6400, 8);
-            if (blockPosition != null) {
-                return new Location(world, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
-            }
-        }
-        return null;
+    public Location searchBiome(World world, Biome biome, Player player, Location policeBox) {
+        return BiomeUtilities.searchBiome(world, biome, player, policeBox);
+    }
+
+    @Override
+    public void setCustomBiome(String biome, Chunk chunk) {
+        new BiomeHelper().setCustomBiome(biome, chunk);
     }
 
     @Override
