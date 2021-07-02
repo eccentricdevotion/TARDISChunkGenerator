@@ -103,10 +103,9 @@ public class ChunkInfo {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ChunkInfo)) {
+        if (!(obj instanceof ChunkInfo other)) {
             return false;
         }
-        ChunkInfo other = (ChunkInfo) obj;
         if (world != other.world) {
             return false;
         }

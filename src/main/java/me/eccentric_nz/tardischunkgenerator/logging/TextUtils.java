@@ -208,14 +208,14 @@ public class TextUtils {
                      * In the very unlikely event of any error just fall back on printing the full stacktrace
                      */
                     error(ioe);
-                    result.delete(0, result.length()).append(new String(stacktraceContent.toByteArray()));
+                    result.delete(0, result.length()).append(stacktraceContent);
                 }
             }
         } else {
             /*
              * This is the branch that prints full stacktrace
              */
-            result.append(new String(stacktraceContent.toByteArray()));
+            result.append(stacktraceContent.toString());
         }
         return result.toString();
     }

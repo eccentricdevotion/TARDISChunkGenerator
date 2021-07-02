@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class TARDISMapUpdater extends EntityHuman {
@@ -34,7 +35,7 @@ public final class TARDISMapUpdater extends EntityHuman {
     }
 
     public void update(MapView mapView) {
-        if (((CraftWorld) mapView.getWorld()).getHandle() != t) { // t = world
+        if (((CraftWorld) Objects.requireNonNull(mapView.getWorld())).getHandle() != t) { // t = world
             throw new IllegalArgumentException("world of mapView cannot be different");
         }
         try {

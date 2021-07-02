@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -82,6 +83,7 @@ public class BiomeUtilities {
 
     public static String getBiomeKey(Location location) {
         CraftWorld world = (CraftWorld) location.getWorld();
+        assert world != null;
         WorldServer worldServer = world.getHandle();
         IRegistry<BiomeBase> registry = worldServer.t().d(IRegistry.aO);
         net.minecraft.world.level.chunk.Chunk chunk = ((CraftChunk) location.getChunk()).getHandle();
@@ -153,7 +155,7 @@ public class BiomeUtilities {
                 Bukkit.getLogger().log(Level.INFO, "Biome key was not found for chunk skyColour");
                 DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
                 IRegistry<BiomeBase> registry = dedicatedServer.getCustomRegistry().d(IRegistry.aO);
-                return registry.getKey(base).toString();
+                return Objects.requireNonNull(registry.getKey(base)).toString();
             }
         }
         return "minecraft:plains";

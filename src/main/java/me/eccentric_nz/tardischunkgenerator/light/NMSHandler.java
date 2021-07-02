@@ -127,10 +127,9 @@ public class NMSHandler extends NmsHandlerBase {
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
                 LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.a); // a = SKY
-                if (!(layer instanceof LightEngineSky)) {
+                if (!(layer instanceof LightEngineSky les)) {
                     return;
                 }
-                LightEngineSky les = (LightEngineSky) layer;
                 if (finalLightLevel == 0) {
                     les.a(position);
                 } else if (les.a(SectionPosition.a(position)) != null) {
@@ -143,10 +142,9 @@ public class NMSHandler extends NmsHandlerBase {
                 }
             } else {
                 LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.b); // b = BLOCK
-                if (!(layer instanceof LightEngineBlock)) {
+                if (!(layer instanceof LightEngineBlock leb)) {
                     return;
                 }
-                LightEngineBlock leb = (LightEngineBlock) layer;
                 if (finalLightLevel == 0) {
                     leb.a(position);
                 } else if (leb.a(SectionPosition.a(position)) != null) {

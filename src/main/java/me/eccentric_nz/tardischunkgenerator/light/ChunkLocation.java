@@ -55,10 +55,9 @@ public class ChunkLocation {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ChunkLocation)) {
+        if (!(obj instanceof ChunkLocation other)) {
             return false;
         }
-        ChunkLocation other = (ChunkLocation) obj;
         if (world != other.world) {
             return false;
         }

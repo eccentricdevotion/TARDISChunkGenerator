@@ -87,15 +87,9 @@ public class TARDISDisguiseListener implements Listener {
         if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
             UUID uuid = event.getPlayer().getUniqueId();
             // stop tracking the disguise
-            if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
-                TARDISDisguiseTracker.DISGUISED_AS_MOB.remove(uuid);
-            }
-            if (TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(uuid)) {
-                TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(uuid);
-            }
-            if (TARDISDisguiseTracker.ARCHED.containsKey(uuid)) {
-                TARDISDisguiseTracker.ARCHED.remove(uuid);
-            }
+            TARDISDisguiseTracker.DISGUISED_AS_MOB.remove(uuid);
+            TARDISDisguiseTracker.DISGUISED_AS_PLAYER.remove(uuid);
+            TARDISDisguiseTracker.ARCHED.remove(uuid);
             TARDISPacketListener.removePlayer(event.getPlayer());
         }
     }

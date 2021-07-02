@@ -29,6 +29,7 @@ public class CustomBiome {
         try {
             Field biomeSettingMobsField = BiomeBase.class.getDeclaredField("m");
             biomeSettingMobsField.setAccessible(true);
+            assert minecraftbiome != null;
             newBiome.a(minecraftbiome.t());
             newBiome.a(minecraftbiome.c());
             BiomeSettingsMobs biomeSettingMobs = (BiomeSettingsMobs) biomeSettingMobsField.get(minecraftbiome);

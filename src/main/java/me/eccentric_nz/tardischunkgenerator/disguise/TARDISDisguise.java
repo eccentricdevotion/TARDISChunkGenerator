@@ -141,7 +141,7 @@ public class TARDISDisguise {
             }
             case GLOW_SQUID -> {
                 str = "GlowSquid";
-//                packagePath = "";
+                //                packagePath = "";
                 hasEntityStr = false;
             }
             default -> {
@@ -151,9 +151,9 @@ public class TARDISDisguise {
         }
         try {
             String entityPackage = packagePath + ((hasEntityStr) ? "Entity" : "") + str;
-            Class entityClass = Class.forName(entityPackage);
-            Constructor constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.world.level.World.class);
-            EntityTypes type = IRegistry.Y.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
+            Class<?> entityClass = Class.forName(entityPackage);
+            Constructor<?> constructor = entityClass.getConstructor(EntityTypes.class, net.minecraft.world.level.World.class);
+            EntityTypes<?> type = IRegistry.Y.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
             net.minecraft.world.level.World world = ((CraftWorld) w).getHandle();
             net.minecraft.world.entity.Entity entity = (net.minecraft.world.entity.Entity) constructor.newInstance(type, world);
             if (disguise.getOptions() != null) {

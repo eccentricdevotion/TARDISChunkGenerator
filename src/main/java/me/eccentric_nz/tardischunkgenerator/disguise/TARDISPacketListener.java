@@ -49,19 +49,17 @@ public class TARDISPacketListener {
 
             @Override
             public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
-                if (packet instanceof PacketPlayOutNamedEntitySpawn) {
-                    PacketPlayOutNamedEntitySpawn namedEntitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
+                if (packet instanceof PacketPlayOutNamedEntitySpawn namedEntitySpawn) {
                     try {
                         Field f = namedEntitySpawn.getClass().getDeclaredField("b"); // NoSuchFieldException, b = UUID
                         f.setAccessible(true);
                         UUID uuid = (UUID) f.get(namedEntitySpawn);
                         if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
                             Entity entity = Bukkit.getEntity(uuid);
+                            assert entity != null;
                             if (entity.getType().equals(EntityType.PLAYER)) {
                                 Player player = (Player) entity;
-                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(TARDISHelper.getTardisHelper(), () -> {
-                                    TARDISDisguiser.redisguise(player, entity.getWorld());
-                                }, 5L);
+                                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(TARDISHelper.getTardisHelper(), () -> TARDISDisguiser.redisguise(player, entity.getWorld()), 5L);
                             }
                             f.setAccessible(false);
                         }

@@ -34,6 +34,7 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TARDISEPSDisguiser {
@@ -53,7 +54,7 @@ public class TARDISEPSDisguiser {
         WorldServer nmsWorld = ((CraftWorld) world).getHandle();
         for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
             Entity stand = nmsWorld.getEntity(map.getKey());
-            if (stand != null && stand.getWorld() == world) {
+            if (stand != null && stand.getWorld().getWorld() == world) {
                 EntityPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
                 EntityPlayer npc = new EntityPlayer(server, nmsWorld, entityPlayer.getProfile());
                 // set location
@@ -100,7 +101,7 @@ public class TARDISEPSDisguiser {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         // set skin
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+        WorldServer world = ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle();
         npc = new EntityPlayer(server, world, entityPlayer.getProfile());
         // set location
         setEntityLocation(npc, location);
