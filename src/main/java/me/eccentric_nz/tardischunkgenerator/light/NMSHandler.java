@@ -279,9 +279,9 @@ public class NMSHandler extends NmsHandlerBase {
         }
     }
 
-    private void lightEngineLayer_a(LightEngineLayer les, BlockPosition var0, int var1) {
+    private void lightEngineLayer_a(LightEngineLayer<?, ?> les, BlockPosition var0, int var1) {
         try {
-            LightEngineStorage ls = (LightEngineStorage) lightEngineLayer_d.get(les);
+            LightEngineStorage<?> ls = (LightEngineStorage<?>) lightEngineLayer_d.get(les);
             lightEngineStorage_d.invoke(ls);
             lightEngineGraph_a.invoke(les, 9223372036854775807L, var0.asLong(), 15 - var1, true);
         } catch (InvocationTargetException e) {
