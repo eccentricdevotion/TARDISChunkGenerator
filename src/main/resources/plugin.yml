@@ -1,10 +1,10 @@
-authors: [eccentric_nz]
-main: me.eccentric_nz.tardischunkgenerator.TardisHelperPlugin
+authors: [ eccentric_nz ]
+main: me.eccentric_nz.tardischunkgenerator.TARDISHelper
 name: TARDISChunkGenerator
 description: Chunk generator for the TARDIS plugin
 version: ${project.version}
 api-version: 1.17
-website: http://tardisjenkins.duckdns.org:8080/job/TARDISChunkGenerator/
-dev-url: http://github.com/eccentricdevotion/TARDISChunkGenerator/
-url: http://eccentricdevotion.github.io/TARDIS/
 load: STARTUP
+website: http://tardisjenkins.duckdns.org:8080/job/TARDISChunkGenerator/
+dev-url: https://github.com/eccentricdevotion/TARDISChunkGenerator/
+url: http://eccentricdevotion.github.io/TARDIS/
