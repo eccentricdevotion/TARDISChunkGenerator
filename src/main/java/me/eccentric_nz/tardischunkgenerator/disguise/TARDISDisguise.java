@@ -275,7 +275,7 @@ public class TARDISDisguise {
                                 EntityLlama llama = (EntityLlama) entity;
                                 org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(CARPET.values()[ThreadLocalRandom.current().nextInt(16)].getCarpet());
                                 ItemStack nmsItemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
-                                llama.cd.setItem(1, nmsItemStack); // cd = inventoryChest
+                                llama.ce.setItem(1, nmsItemStack); // ce = inventoryChest
                             }
                             default -> {
                             }
