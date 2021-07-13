@@ -63,7 +63,7 @@ public class NMSHandler extends NmsHandlerBase {
 
     public NMSHandler() {
         try {
-            threadedMailbox_DoLoopStep_g = ThreadedMailbox.class.getDeclaredMethod("g");
+            threadedMailbox_DoLoopStep_g = ThreadedMailbox.class.getDeclaredMethod("h");
             threadedMailbox_DoLoopStep_g.setAccessible(true);
             threadedMailbox_State_d = ThreadedMailbox.class.getDeclaredField("d");
             threadedMailbox_State_d.setAccessible(true);
