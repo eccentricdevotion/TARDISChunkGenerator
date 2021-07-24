@@ -141,7 +141,6 @@ public class TARDISDisguise {
             }
             case GLOW_SQUID -> {
                 str = "GlowSquid";
-//                packagePath = "";
                 hasEntityStr = false;
             }
             default -> {
@@ -174,68 +173,68 @@ public class TARDISDisguise {
                             }
                         }
                     }
-                    if (o instanceof Axolotl.Variant && disguise.getEntityType().equals(EntityType.AXOLOTL)) {
+                    if (disguise.getEntityType().equals(EntityType.AXOLOTL) && o instanceof Axolotl.Variant av) {
                         net.minecraft.world.entity.animal.axolotl.Axolotl axolotl = (net.minecraft.world.entity.animal.axolotl.Axolotl) entity;
-                        net.minecraft.world.entity.animal.axolotl.Axolotl.Variant variant = net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.values()[((Axolotl.Variant) o).ordinal()];
+                        net.minecraft.world.entity.animal.axolotl.Axolotl.Variant variant = net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.values()[av.ordinal()];
                         axolotl.setVariant(variant);
                     }
-                    if (o instanceof Rabbit.Type && disguise.getEntityType().equals(EntityType.RABBIT)) {
+                    if (disguise.getEntityType().equals(EntityType.RABBIT) && o instanceof Rabbit.Type rt) {
                         EntityRabbit rabbit = (EntityRabbit) entity;
-                        rabbit.setRabbitType(((Rabbit.Type) o).ordinal());
+                        rabbit.setRabbitType(rt.ordinal());
                     }
-                    if (o instanceof GENE && disguise.getEntityType().equals(EntityType.PANDA)) {
+                    if (disguise.getEntityType().equals(EntityType.PANDA) && o instanceof GENE g) {
                         EntityPanda panda = (EntityPanda) entity;
-                        EntityPanda.Gene gene = ((GENE) o).getNmsGene();
+                        EntityPanda.Gene gene = g.getNmsGene();
                         panda.setMainGene(gene);
                         panda.setHiddenGene(gene);
                     }
-                    if (o instanceof PROFESSION) {
+                    if (o instanceof PROFESSION profession) {
                         if (disguise.getEntityType().equals(EntityType.VILLAGER)) {
                             EntityVillager villager = (EntityVillager) entity;
-                            villager.setVillagerData(villager.getVillagerData().withProfession(((PROFESSION) o).getNmsProfession()));
+                            villager.setVillagerData(villager.getVillagerData().withProfession(profession.getNmsProfession()));
                         } else if (disguise.getEntityType().equals(EntityType.ZOMBIE_VILLAGER)) {
                             EntityZombieVillager zombie = (EntityZombieVillager) entity;
-                            zombie.setVillagerData(zombie.getVillagerData().withProfession(((PROFESSION) o).getNmsProfession()));
+                            zombie.setVillagerData(zombie.getVillagerData().withProfession(profession.getNmsProfession()));
                         }
                     }
-                    if (o instanceof Parrot.Variant && disguise.getEntityType().equals(EntityType.PARROT)) {
+                    if (disguise.getEntityType().equals(EntityType.PARROT) && o instanceof Parrot.Variant pv) {
                         EntityParrot parrot = (EntityParrot) entity;
-                        parrot.setVariant(((Parrot.Variant) o).ordinal());
+                        parrot.setVariant(pv.ordinal());
                     }
-                    if (o instanceof MUSHROOM_COW && disguise.getEntityType().equals(EntityType.MUSHROOM_COW)) {
+                    if (disguise.getEntityType().equals(EntityType.MUSHROOM_COW) && o instanceof MUSHROOM_COW mc) {
                         EntityMushroomCow cow = (EntityMushroomCow) entity;
-                        cow.setVariant(((MUSHROOM_COW) o).getNmsType());
+                        cow.setVariant(mc.getNmsType());
                     }
-                    if (o instanceof Cat.Type && disguise.getEntityType().equals(EntityType.CAT)) {
+                    if (disguise.getEntityType().equals(EntityType.CAT) && o instanceof Cat.Type c) {
                         EntityCat cat = (EntityCat) entity;
-                        cat.setCatType(((Cat.Type) o).ordinal());
+                        cat.setCatType(c.ordinal());
                     }
-                    if (o instanceof FOX && disguise.getEntityType().equals(EntityType.FOX)) {
+                    if (disguise.getEntityType().equals(EntityType.FOX) && o instanceof FOX f) {
                         EntityFox fox = (EntityFox) entity;
-                        fox.setFoxType(((FOX) o).getNmsType());
+                        fox.setFoxType(f.getNmsType());
                     }
-                    if (o instanceof Horse.Color && disguise.getEntityType().equals(EntityType.HORSE)) {
+                    if (disguise.getEntityType().equals(EntityType.HORSE) && o instanceof Horse.Color) {
                         EntityHorse horse = (EntityHorse) entity;
                         horse.setVariant(((HorseColor) o), HorseStyle.values()[new Random().nextInt(HorseStyle.values().length)]);
                     }
-                    if (o instanceof Llama.Color && disguise.getEntityType().equals(EntityType.LLAMA)) {
+                    if (disguise.getEntityType().equals(EntityType.LLAMA) && o instanceof Llama.Color) {
                         EntityLlama llama = (EntityLlama) entity;
                         llama.setVariant(((Llama.Color) o).ordinal());
                     }
-                    if (o instanceof Boolean) {
+                    if (o instanceof Boolean bool) {
                         // tamed fox, wolf, cat / decorated llama, chest carrying mule or donkey / trusting ocelot
                         // rainbow sheep / saddled pig / block carrying enderman / powered creeper / hanging bat / blazing blaze
                         switch (disguise.getEntityType()) {
                             case FOX, WOLF, CAT -> {
                                 EntityTameableAnimal tameable = (EntityTameableAnimal) entity;
-                                tameable.setTamed((Boolean) o);
+                                tameable.setTamed(bool);
                             }
                             case DONKEY, MULE -> {
                                 EntityHorseChestedAbstract chesty = (EntityHorseChestedAbstract) entity;
-                                chesty.setCarryingChest((Boolean) o);
+                                chesty.setCarryingChest(bool);
                             }
                             case SHEEP -> {
-                                if ((Boolean) o) {
+                                if (bool) {
                                     entity.setCustomName(new ChatMessage("jeb_"));
                                     entity.setCustomNameVisible(true);
                                 }
@@ -245,7 +244,7 @@ public class TARDISDisguise {
                                 pig.saddle(null);
                             }
                             case ENDERMAN -> {
-                                if ((Boolean) o) {
+                                if (bool) {
                                     EntityEnderman enderman = (EntityEnderman) entity;
                                     IBlockData block = Blocks.iN.getBlockData(); // iN = PURPUR_BLOCK
                                     enderman.setCarried(block);
@@ -253,18 +252,18 @@ public class TARDISDisguise {
                             }
                             case CREEPER -> {
                                 EntityCreeper creeper = (EntityCreeper) entity;
-                                creeper.setPowered((Boolean) o);
+                                creeper.setPowered(bool);
                             }
                             case BAT -> {
                                 EntityBat bat = (EntityBat) entity;
-                                bat.setAsleep((Boolean) o);
+                                bat.setAsleep(bool);
                             }
                             case SNOWMAN -> {
                                 EntitySnowman snowman = (EntitySnowman) entity;
-                                snowman.setHasPumpkin(!(Boolean) o);
+                                snowman.setHasPumpkin(!bool);
                             }
                             case PILLAGER -> {
-                                if ((Boolean) o) {
+                                if (bool) {
                                     EntityPillager pillager = (EntityPillager) entity;
                                     ItemStack crossbow = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(org.bukkit.Material.CROSSBOW));
                                     pillager.setSlot(EnumItemSlot.a, crossbow); // a = MAINHAND
@@ -281,37 +280,37 @@ public class TARDISDisguise {
                             }
                         }
                     }
-                    if (o instanceof Integer) {
+                    if (o instanceof Integer i) {
                         // magma cube and slime size / pufferfish state
                         switch (disguise.getEntityType()) {
                             case MAGMA_CUBE -> {
                                 EntityMagmaCube magma = (EntityMagmaCube) entity;
-                                magma.setSize((Integer) o, false);
+                                magma.setSize(i, false);
                             }
                             case SLIME -> {
                                 EntitySlime slime = (EntitySlime) entity;
-                                slime.setSize((Integer) o, false);
+                                slime.setSize(i, false);
                             }
                             case PUFFERFISH -> {
                                 EntityPufferFish puffer = (EntityPufferFish) entity;
-                                puffer.setPuffState((Integer) o);
+                                puffer.setPuffState(i);
                             }
                             default -> {
                             }
                         }
                     }
-                    if (o instanceof TropicalFish.Pattern && disguise.getEntityType().equals(EntityType.TROPICAL_FISH)) {
+                    if (disguise.getEntityType().equals(EntityType.TROPICAL_FISH) && o instanceof TropicalFish.Pattern pattern) {
                         EntityTropicalFish fish = (EntityTropicalFish) entity;
                         int var5 = ThreadLocalRandom.current().nextInt(2); // shape
-                        int var6 = ((TropicalFish.Pattern) o).ordinal(); // pattern
+                        int var6 = pattern.ordinal(); // pattern
                         int var7 = ThreadLocalRandom.current().nextInt(15); // base colour
                         int var8 = ThreadLocalRandom.current().nextInt(15); // pattern colour
                         fish.setVariant(var5 | var6 << 8 | var7 << 16 | var8 << 24);
                     }
-                    if (o instanceof AGE && EntityAgeable.class.isAssignableFrom(entityClass)) {
+                    if (o instanceof AGE age && EntityAgeable.class.isAssignableFrom(entityClass)) {
                         // adult or baby
                         EntityAgeable ageable = (EntityAgeable) entity;
-                        ageable.setAgeRaw(((AGE) o).getAge());
+                        ageable.setAgeRaw(age.getAge());
                     }
                 }
             }

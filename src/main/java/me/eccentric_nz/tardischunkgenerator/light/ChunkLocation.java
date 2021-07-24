@@ -55,14 +55,13 @@ public class ChunkLocation {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ChunkLocation)) {
-            return false;
+        if (obj instanceof ChunkLocation other) {
+            if (world != other.world) {
+                return false;
+            }
+            return x == other.x && z == other.z;
         }
-        ChunkLocation other = (ChunkLocation) obj;
-        if (world != other.world) {
-            return false;
-        }
-        return x == other.x && z == other.z;
+        return false;
     }
 
     @Override

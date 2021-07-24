@@ -123,30 +123,27 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void nameFurnaceGUI(Block block, String name) {
-        WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tile = ws.getTileEntity(bp);
-        if (tile == null || !(tile instanceof TileEntityFurnace)) {
-            return;
+        if (block != null) {
+            WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
+            BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+            TileEntity tile = ws.getTileEntity(bp);
+            if (tile instanceof TileEntityFurnace furnace) {
+                furnace.setCustomName(new ChatMessage(name));
+            }
         }
-        TileEntityFurnace furnace = (TileEntityFurnace) tile;
-        furnace.setCustomName(new ChatMessage(name));
     }
 
     @Override
     public boolean isArtronFurnace(Block block) {
-        WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity tile = ws.getTileEntity(bp);
-        if (tile == null || !(tile instanceof TileEntityFurnace)) {
-            return false;
+        if (block != null) {
+            WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
+            BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+            TileEntity tile = ws.getTileEntity(bp);
+            if (tile instanceof TileEntityFurnace furnace && furnace.getCustomName() != null) {
+                return furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
+            }
         }
-        TileEntityFurnace furnace = (TileEntityFurnace) tile;
-        boolean is = false;
-        if (furnace.getCustomName() != null) {
-            is = furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
-        }
-        return is;
+        return false;
     }
 
     @Override
@@ -275,7 +272,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 // get generatorName tag
                 WorldType worldType;
                 String wt = data.getString("generatorName");
-                worldType = switch (wt.toLowerCase(Locale.ENGLISH)) {
+                worldType = switch (wt.toLowerCase(Locale.ROOT)) {
                     case "flat" -> WorldType.FLAT;
                     case "largeBiomes" -> WorldType.LARGE_BIOMES;
                     case "amplified" -> WorldType.AMPLIFIED;

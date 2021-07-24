@@ -103,14 +103,13 @@ public class ChunkInfo {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ChunkInfo)) {
-            return false;
+        if (obj instanceof ChunkInfo other) {
+            if (world != other.world) {
+                return false;
+            }
+            return x == other.x && z == other.z && y == other.y;
         }
-        ChunkInfo other = (ChunkInfo) obj;
-        if (world != other.world) {
-            return false;
-        }
-        return x == other.x && z == other.z && y == other.y;
+        return false;
     }
 
     @Override

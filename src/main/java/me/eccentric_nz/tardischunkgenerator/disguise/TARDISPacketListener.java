@@ -49,8 +49,7 @@ public class TARDISPacketListener {
 
             @Override
             public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
-                if (packet instanceof PacketPlayOutNamedEntitySpawn) {
-                    PacketPlayOutNamedEntitySpawn namedEntitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
+                if (packet instanceof PacketPlayOutNamedEntitySpawn namedEntitySpawn) {
                     try {
                         Field f = namedEntitySpawn.getClass().getDeclaredField("b"); // NoSuchFieldException, b = UUID
                         f.setAccessible(true);

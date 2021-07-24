@@ -82,8 +82,8 @@ public class NMSHandler extends NmsHandlerBase {
     }
 
     private static RuntimeException toRuntimeException(Throwable e) {
-        if (e instanceof RuntimeException) {
-            return (RuntimeException) e;
+        if (e instanceof RuntimeException ex) {
+            return ex;
         }
         Class<? extends Throwable> cls = e.getClass();
         return new RuntimeException(String.format("(%s) %s", RuntimeException.class.getPackage().equals(cls.getPackage()) ? cls.getSimpleName() : cls.getName(), e.getMessage()), e);
@@ -127,34 +127,30 @@ public class NMSHandler extends NmsHandlerBase {
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
                 LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.a); // a = SKY
-                if (!(layer instanceof LightEngineSky)) {
-                    return;
-                }
-                LightEngineSky les = (LightEngineSky) layer;
-                if (finalLightLevel == 0) {
-                    les.a(position);
-                } else if (les.a(SectionPosition.a(position)) != null) {
-                    try {
-                        lightEngineLayer_a(les, position, finalLightLevel);
-                    } catch (NullPointerException ignore) {
-                        // To prevent problems with the absence of the NibbleArray, even
-                        // if les.a(SectionPosition.a(position)) returns non-null value (corrupted data)
+                if (layer instanceof LightEngineSky les) {
+                    if (finalLightLevel == 0) {
+                        les.a(position);
+                    } else if (les.a(SectionPosition.a(position)) != null) {
+                        try {
+                            lightEngineLayer_a(les, position, finalLightLevel);
+                        } catch (NullPointerException ignore) {
+                            // To prevent problems with the absence of the NibbleArray, even
+                            // if les.a(SectionPosition.a(position)) returns non-null value (corrupted data)
+                        }
                     }
                 }
             } else {
                 LightEngineLayerEventListener layer = lightEngine.a(EnumSkyBlock.b); // b = BLOCK
-                if (!(layer instanceof LightEngineBlock)) {
-                    return;
-                }
-                LightEngineBlock leb = (LightEngineBlock) layer;
-                if (finalLightLevel == 0) {
-                    leb.a(position);
-                } else if (leb.a(SectionPosition.a(position)) != null) {
-                    try {
-                        leb.a(position, finalLightLevel);
-                    } catch (NullPointerException ignore) {
-                        // To prevent problems with the absence of the NibbleArray, even
-                        // if leb.a(SectionPosition.a(position)) returns non-null value (corrupted data)
+                if (layer instanceof LightEngineBlock leb) {
+                    if (finalLightLevel == 0) {
+                        leb.a(position);
+                    } else if (leb.a(SectionPosition.a(position)) != null) {
+                        try {
+                            leb.a(position, finalLightLevel);
+                        } catch (NullPointerException ignore) {
+                            // To prevent problems with the absence of the NibbleArray, even
+                            // if leb.a(SectionPosition.a(position)) returns non-null value (corrupted data)
+                        }
                     }
                 }
             }
