@@ -19,8 +19,8 @@ package me.eccentric_nz.tardischunkgenerator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 
 import java.util.Random;
 
@@ -32,25 +32,50 @@ public class TARDISChunkGenerator extends ChunkGenerator {
     /**
      * Generates an empty world!
      *
-     * @param world  the world to generate chunks in
-     * @param random a pseudorandom number generator
-     * @param cx     the chunk's x coordinate
-     * @param cz     the chunk's z coordinate
-     * @return the ChunkData to be generated
+     * @param worldInfo the world to generate chunks in
+     * @param random    a pseudorandom number generator
+     * @param x         the chunk's x coordinate
+     * @param z         the chunk's z coordinate
+     * @param chunkData the ChunkData being generated
      */
     @Override
-    public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biome) {
+    public void generateNoise(WorldInfo worldInfo, Random random, int x, int z, ChunkData chunkData) {
+        chunkData.setRegion(0, 0, 0, 16, chunkData.getMaxHeight(), 16, Material.VOID_AIR);
+    }
 
-        ChunkData result = createChunkData(world);
-        result.setRegion(0, 0, 0, 16, world.getMaxHeight(), 16, Material.VOID_AIR);
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                for (int y = 0; y < world.getMaxHeight(); y++) {
-                    biome.setBiome(x, y, z, Biome.THE_VOID);
-                }
-            }
-        }
-        return result;
+    @Override
+    public boolean shouldGenerateNoise() {
+        return true;
+    }
+
+    @Override
+    public boolean shouldGenerateSurface() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldGenerateBedrock() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldGenerateCaves() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldGenerateDecorations() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldGenerateMobs() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldGenerateStructures() {
+        return false;
     }
 
     /**

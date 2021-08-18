@@ -64,6 +64,7 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -119,6 +120,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new TARDISChunkGenerator();
+    }
+
+    @Override
+    public BiomeProvider getDefaultBiomeProvider(String worldName, String id) {
+        return new TARDISVoidBiomeProvider();
     }
 
     @Override
