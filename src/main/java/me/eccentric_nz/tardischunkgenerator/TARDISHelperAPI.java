@@ -29,11 +29,19 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.map.MapView;
 
 import java.util.UUID;
 
 public interface TARDISHelperAPI {
+
+    /**
+     * Gets the TARDISChunkGenerator Biome Provider
+     *
+     * @return the TARDISVoidBiomeProvider
+     */
+    BiomeProvider getBiomeProvider();
 
     /**
      * Names a furnace GUI

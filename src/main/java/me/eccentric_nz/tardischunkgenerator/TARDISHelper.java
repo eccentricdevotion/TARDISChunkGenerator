@@ -84,6 +84,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
     public static final RequestSteamMachine machine = new RequestSteamMachine();
     public static TARDISHelper tardisHelper;
+    private BiomeProvider biomeProvider;
 
     public static TARDISHelper getTardisHelper() {
         return tardisHelper;
@@ -115,6 +116,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Starting filtered logging for TARDIS plugins...");
             getServer().getConsoleSender().sendMessage(messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
         }
+        biomeProvider = new TARDISVoidBiomeProvider();
     }
 
     @Override
@@ -124,7 +126,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public BiomeProvider getDefaultBiomeProvider(String worldName, String id) {
-        return new TARDISVoidBiomeProvider();
+        return biomeProvider;
+    }
+
+    @Override
+    public BiomeProvider getBiomeProvider() {
+        return biomeProvider;
     }
 
     @Override
