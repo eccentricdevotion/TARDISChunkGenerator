@@ -63,18 +63,18 @@ public class NMSHandler extends NmsHandlerBase {
 
     public NMSHandler() {
         try {
-            threadedMailbox_DoLoopStep_g = ProcessorMailbox.class.getDeclaredMethod("registerForExecution");
+            threadedMailbox_DoLoopStep_g = ProcessorMailbox.class.getDeclaredMethod("h"); // registerForExecution
             threadedMailbox_DoLoopStep_g.setAccessible(true);
-            threadedMailbox_State_d = ProcessorMailbox.class.getDeclaredField("setAsIdle");
+            threadedMailbox_State_d = ProcessorMailbox.class.getDeclaredField("d"); // status
             threadedMailbox_State_d.setAccessible(true);
-            lightEngine_ThreadedMailbox_e = ThreadedLevelLightEngine.class.getDeclaredField("runUpdate");
+            lightEngine_ThreadedMailbox_e = ThreadedLevelLightEngine.class.getDeclaredField("e"); // taskMailbox
             lightEngine_ThreadedMailbox_e.setAccessible(true);
 
-            lightEngineLayer_d = LayerLightEngine.class.getDeclaredField("clearCache");
+            lightEngineLayer_d = LayerLightEngine.class.getDeclaredField("d"); // storage
             lightEngineLayer_d.setAccessible(true);
-            lightEngineStorage_d = LayerLightSectionStorage.class.getDeclaredMethod("runAllUpdates");
+            lightEngineStorage_d = LayerLightSectionStorage.class.getDeclaredMethod("d"); // runAllUpdates
             lightEngineStorage_d.setAccessible(true);
-            lightEngineGraph_a = DynamicGraphMinFixedPoint.class.getDeclaredMethod("checkEdge", long.class, long.class, int.class, boolean.class);
+            lightEngineGraph_a = DynamicGraphMinFixedPoint.class.getDeclaredMethod("a", long.class, long.class, int.class, boolean.class); // checkEdge
             lightEngineGraph_a.setAccessible(true);
         } catch (Exception e) {
             throw toRuntimeException(e);
