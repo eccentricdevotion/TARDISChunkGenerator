@@ -16,30 +16,29 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.world.entity.animal.EntityPanda;
-import org.bukkit.entity.Panda;
+import net.minecraft.world.entity.animal.Panda;
 
 public enum GENE {
 
-    NORMAL(EntityPanda.Gene.a), // NORMAL
-    LAZY(EntityPanda.Gene.b), // LAZY
-    WORRIED(EntityPanda.Gene.c), // WORRIED
-    PLAYFUL(EntityPanda.Gene.d), // PLAYFUL
-    BROWN(EntityPanda.Gene.e), // BROWN
-    WEAK(EntityPanda.Gene.f), // WEAK
-    AGGRESSIVE(EntityPanda.Gene.g); // AGGRESSIVE
+    NORMAL(Panda.Gene.NORMAL), // NORMAL
+    LAZY(Panda.Gene.LAZY), // LAZY
+    WORRIED(Panda.Gene.WORRIED), // WORRIED
+    PLAYFUL(Panda.Gene.PLAYFUL), // PLAYFUL
+    BROWN(Panda.Gene.BROWN), // BROWN
+    WEAK(Panda.Gene.WEAK), // WEAK
+    AGGRESSIVE(Panda.Gene.AGGRESSIVE); // AGGRESSIVE
 
-    private final EntityPanda.Gene nmsGene;
+    private final Panda.Gene nmsGene;
 
-    GENE(EntityPanda.Gene nmsGene) {
+    GENE(Panda.Gene nmsGene) {
         this.nmsGene = nmsGene;
     }
 
-    public static GENE getFromPandaGene(Panda.Gene gene) {
+    public static GENE getFromPandaGene(org.bukkit.entity.Panda.Gene gene) {
         return GENE.valueOf(gene.toString());
     }
 
-    public EntityPanda.Gene getNmsGene() {
+    public Panda.Gene getNmsGene() {
         return nmsGene;
     }
 }

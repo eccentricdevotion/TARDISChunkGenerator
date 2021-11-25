@@ -24,9 +24,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -54,9 +54,9 @@ public class TARDISPlayerDisguiser {
     }
 
     public void disguisePlayer() {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         // set skin
-        if (setSkin(entityPlayer.getProfile(), uuid) && !TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
+        if (setSkin(entityPlayer.getGameProfile(), uuid) && !TARDISDisguiseTracker.DISGUISED_AS_PLAYER.contains(player.getUniqueId())) {
             TARDISDisguiseTracker.DISGUISED_AS_PLAYER.add(player.getUniqueId());
         }
     }

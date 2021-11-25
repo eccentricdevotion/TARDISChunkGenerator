@@ -21,21 +21,21 @@ import org.bukkit.entity.Villager;
 
 public enum PROFESSION {
 
-    NONE(VillagerProfession.a), // NONE
-    ARMORER(VillagerProfession.b), // ARMORER
-    BUTCHER(VillagerProfession.c), // BUTCHER
-    CARTOGRAPHER(VillagerProfession.d), // CARTOGRAPHER
-    CLERIC(VillagerProfession.e), // CLERIC
-    FARMER(VillagerProfession.f), // FARMER
-    FISHERMAN(VillagerProfession.g), // FISHERMAN
-    FLETCHER(VillagerProfession.h), // FLETCHER
-    LEATHERWORKER(VillagerProfession.i), // LEATHERWORKER
-    LIBRARIAN(VillagerProfession.j), // LIBRARIAN
-    MASON(VillagerProfession.k), // MASON
-    NITWIT(VillagerProfession.l), // NITWIT
-    SHEPHERD(VillagerProfession.m), // SHEPHERD
-    TOOLSMITH(VillagerProfession.n), // TOOLSMITH
-    WEAPONSMITH(VillagerProfession.o); // WEAPONSMITH
+    NONE(VillagerProfession.NONE), // NONE
+    ARMORER(VillagerProfession.ARMORER), // ARMORER
+    BUTCHER(VillagerProfession.BUTCHER), // BUTCHER
+    CARTOGRAPHER(VillagerProfession.CARTOGRAPHER), // CARTOGRAPHER
+    CLERIC(VillagerProfession.CLERIC), // CLERIC
+    FARMER(VillagerProfession.FARMER), // FARMER
+    FISHERMAN(VillagerProfession.FISHERMAN), // FISHERMAN
+    FLETCHER(VillagerProfession.FLETCHER), // FLETCHER
+    LEATHERWORKER(VillagerProfession.LEATHERWORKER), // LEATHERWORKER
+    LIBRARIAN(VillagerProfession.LIBRARIAN), // LIBRARIAN
+    MASON(VillagerProfession.MASON), // MASON
+    NITWIT(VillagerProfession.NITWIT), // NITWIT
+    SHEPHERD(VillagerProfession.SHEPHERD), // SHEPHERD
+    TOOLSMITH(VillagerProfession.TOOLSMITH), // TOOLSMITH
+    WEAPONSMITH(VillagerProfession.WEAPONSMITH); // WEAPONSMITH
 
     private final VillagerProfession nms;
 

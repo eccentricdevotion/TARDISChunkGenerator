@@ -18,10 +18,10 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import io.netty.channel.*;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class TARDISPacketListener {
 
     public static void removePlayer(Player player) {
-        Channel channel = ((CraftPlayer) player).getHandle().b.a.k; // b = playerConnection, a = networkManager, k = channel
+        Channel channel = ((CraftPlayer) player).getHandle().connection.getConnection().channel; // b = playerConnection, a = networkManager, k = channel
         channel.eventLoop().submit(() -> {
             channel.pipeline().remove(player.getName());
             return null;
@@ -49,11 +49,8 @@ public class TARDISPacketListener {
 
             @Override
             public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
-                if (packet instanceof PacketPlayOutNamedEntitySpawn namedEntitySpawn) {
-                    try {
-                        Field f = namedEntitySpawn.getClass().getDeclaredField("b"); // NoSuchFieldException, b = UUID
-                        f.setAccessible(true);
-                        UUID uuid = (UUID) f.get(namedEntitySpawn);
+                if (packet instanceof ClientboundAddEntityPacket namedEntitySpawn) {
+                        UUID uuid = namedEntitySpawn.getUUID();
                         if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
                             Entity entity = Bukkit.getEntity(uuid);
                             if (entity.getType().equals(EntityType.PLAYER)) {
@@ -62,17 +59,13 @@ public class TARDISPacketListener {
                                     TARDISDisguiser.redisguise(player, entity.getWorld());
                                 }, 5L);
                             }
-                            f.setAccessible(false);
                         }
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(TARDISHelper.messagePrefix + ChatColor.RED + " Could not get UUID from PacketPlayOutNamedEntitySpawn " + ChatColor.RESET + e.getMessage());
-                    }
                 }
                 super.write(channelHandlerContext, packet, channelPromise);
             }
         };
 
-        ChannelPipeline pipeline = ((CraftPlayer) player).getHandle().b.a.k.pipeline(); // b = playerConnection, a = networkManager, k = channel
+        ChannelPipeline pipeline = ((CraftPlayer) player).getHandle().connection.getConnection().channel.pipeline(); // b = playerConnection, a = networkManager, k = channel
         pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
     }
 }

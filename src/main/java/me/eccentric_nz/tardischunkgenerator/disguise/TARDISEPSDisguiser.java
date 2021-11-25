@@ -16,21 +16,22 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -40,7 +41,7 @@ public class TARDISEPSDisguiser {
 
     private final Player player;
     private final Location location;
-    private EntityPlayer npc;
+    private ServerPlayer npc;
 
     public TARDISEPSDisguiser(Player player, Location location) {
         this.player = player;
@@ -50,24 +51,25 @@ public class TARDISEPSDisguiser {
 
     public static void disguiseToPlayer(Player player, World world) {
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer nmsWorld = ((CraftWorld) world).getHandle();
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
         for (Map.Entry<Integer, UUID> map : TARDISDisguiseTracker.DISGUISED_NPCS.entrySet()) {
             Entity stand = nmsWorld.getEntity(map.getKey());
-            if (stand != null && stand.getWorld() == world) {
-                EntityPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
-                EntityPlayer npc = new EntityPlayer(server, nmsWorld, entityPlayer.getProfile());
+            if (stand != null && stand.getLevel().getWorld() == world) {
+                ServerPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
+                ServerPlayer npc = new ServerPlayer(server, nmsWorld, entityPlayer.getGameProfile());
                 // set location
-                setEntityLocation(npc, new Location(world, stand.locX(), stand.locY(), stand.locZ()));
+                setEntityLocation(npc, new Location(world, stand.getX(), stand.getY(), stand.getZ()));
                 // send packets
-                PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc); // a = ADD_PLAYER
-                PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
-                PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.getYRot());
-                PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
-                PlayerConnection connection = ((CraftPlayer) player).getHandle().b; // b = playerConnection
-                connection.sendPacket(packetPlayOutPlayerInfo);
-                connection.sendPacket(packetPlayOutNamedEntitySpawn);
-                connection.sendPacket(packetPlayOutEntityHeadRotation);
-                connection.sendPacket(packetPlayOutEntityLook);
+                ClientboundPlayerInfoPacket packetPlayOutPlayerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, npc); // a = ADD_PLAYER
+                ClientboundAddEntityPacket packetPlayOutNamedEntitySpawn = new ClientboundAddEntityPacket(npc);
+                ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
+//                ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
+                ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
+                Connection connection = ((CraftPlayer) player).getHandle().connection.getConnection(); // b = playerConnection
+                connection.send(packetPlayOutPlayerInfo);
+                connection.send(packetPlayOutNamedEntitySpawn);
+                connection.send(packetPlayOutEntityHeadRotation);
+                connection.send(packetPlayOutEntityLook);
             }
         }
     }
@@ -77,31 +79,31 @@ public class TARDISEPSDisguiser {
     }
 
     private static void setEntityLocation(Entity entity, Location location) {
-        entity.setPosition(location.getX(), location.getY(), location.getZ());
+        entity.setPos(location.getX(), location.getY(), location.getZ());
         float fixed = fixYaw(location.getYaw());
-        entity.setHeadRotation(fixed);
-        entity.h(fixed);
+        entity.setYHeadRot(fixed);
+        entity.setYBodyRot(fixed);
         entity.setYRot(fixed);
         entity.setXRot(location.getPitch());
     }
 
     public static void removeNPC(int id, World world) {
         TARDISDisguiseTracker.DISGUISED_NPCS.remove(id);
-        PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(id);
+        ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(id);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (world == p.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().b; // b = playerConnection
-                connection.sendPacket(packetPlayOutEntityDestroy);
+                Connection connection = ((CraftPlayer) p).getHandle().connection.getConnection(); // b = playerConnection
+                connection.send(packetPlayOutEntityDestroy);
             }
         }
     }
 
     public void disguiseStand() {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         // set skin
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        npc = new EntityPlayer(server, world, entityPlayer.getProfile());
+        ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
+        npc = new ServerPlayer(server, world, entityPlayer.getGameProfile());
         // set location
         setEntityLocation(npc, location);
         // get Player equipment
@@ -112,27 +114,28 @@ public class TARDISEPSDisguiser {
         ItemStack mainHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand());
         ItemStack offHand = CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand());
         // set NPC equipment
-        npc.setSlot(EnumItemSlot.c, feet);
-        npc.setSlot(EnumItemSlot.d, legs);
-        npc.setSlot(EnumItemSlot.e, chest);
-        npc.setSlot(EnumItemSlot.f, head);
-        npc.setSlot(EnumItemSlot.a, mainHand);
-        npc.setSlot(EnumItemSlot.b, offHand);
+        npc.setItemSlot(EquipmentSlot.FEET, feet);
+        npc.setItemSlot(EquipmentSlot.LEGS, legs);
+        npc.setItemSlot(EquipmentSlot.CHEST, chest);
+        npc.setItemSlot(EquipmentSlot.HEAD, head);
+        npc.setItemSlot(EquipmentSlot.MAINHAND, mainHand);
+        npc.setItemSlot(EquipmentSlot.OFFHAND, offHand);
     }
 
     public int showToAll() {
         TARDISDisguiseTracker.DISGUISED_NPCS.put(npc.getId(), player.getUniqueId());
-        PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc); // a = ADD_PLAYER
-        PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(npc);
-        PacketPlayOutEntityHeadRotation packetPlayOutEntityHeadRotation = new PacketPlayOutEntityHeadRotation(npc, (byte) npc.getYRot());
-        PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
+        ClientboundPlayerInfoPacket packetPlayOutPlayerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, npc); // a = ADD_PLAYER
+        ClientboundAddEntityPacket packetPlayOutNamedEntitySpawn = new ClientboundAddEntityPacket(npc);
+        ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
+//        PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
+        ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld() == location.getWorld()) {
-                PlayerConnection connection = ((CraftPlayer) p).getHandle().b; // b = playerConnection
-                connection.sendPacket(packetPlayOutPlayerInfo);
-                connection.sendPacket(packetPlayOutNamedEntitySpawn);
-                connection.sendPacket(packetPlayOutEntityHeadRotation);
-                connection.sendPacket(packetPlayOutEntityLook);
+                Connection connection = ((CraftPlayer) p).getHandle().connection.getConnection(); // b = playerConnection
+                connection.send(packetPlayOutPlayerInfo);
+                connection.send(packetPlayOutNamedEntitySpawn);
+                connection.send(packetPlayOutEntityHeadRotation);
+                connection.send(packetPlayOutEntityLook);
             }
         }
         return npc.getId();
