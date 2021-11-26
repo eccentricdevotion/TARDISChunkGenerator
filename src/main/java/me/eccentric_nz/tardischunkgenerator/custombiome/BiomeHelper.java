@@ -1,22 +1,23 @@
 package me.eccentric_nz.tardischunkgenerator.custombiome;
 
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.IRegistry;
-import net.minecraft.core.IRegistryWritable;
-import net.minecraft.network.protocol.game.PacketPlayOutMapChunk;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.biome.BiomeBase;
-import net.minecraft.world.level.chunk.BiomeStorage;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class BiomeHelper {
@@ -31,13 +32,13 @@ public class BiomeHelper {
      * @return true if the biome was set
      */
     public boolean setCustomBiome(String newBiomeName, Chunk chunk) {
-        IRegistryWritable<BiomeBase> registryWritable = dedicatedServer.getCustomRegistry().b(IRegistry.aO);
-        ResourceKey<BiomeBase> key = ResourceKey.a(IRegistry.aO, new MinecraftKey(newBiomeName.toLowerCase()));
-        BiomeBase base = registryWritable.a(key);
+        WritableRegistry<Biome> registryWritable = dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
+        ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.toLowerCase()));
+        Biome base = registryWritable.get(key);
         if (base == null) {
             if (newBiomeName.contains(":")) {
-                ResourceKey<BiomeBase> newKey = ResourceKey.a(IRegistry.aO, new MinecraftKey(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
-                base = registryWritable.a(newKey);
+                ResourceKey<Biome> newKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
+                base = registryWritable.get(newKey);
                 if (base == null) {
                     return false;
                 }
@@ -45,7 +46,7 @@ public class BiomeHelper {
                 return false;
             }
         }
-        World w = ((CraftWorld) chunk.getWorld()).getHandle();
+        Level w = ((CraftWorld) chunk.getWorld()).getHandle();
         for (int x = 0; x <= 15; x++) {
             for (int z = 0; z <= 15; z++) {
                 for (int y = 0; y <= chunk.getWorld().getMaxHeight(); y++) {
@@ -65,14 +66,14 @@ public class BiomeHelper {
      * @return true if the biome was set
      */
     public boolean setCustomBiome(String newBiomeName, Location location) {
-        BiomeBase base;
-        IRegistryWritable<BiomeBase> registrywritable = dedicatedServer.getCustomRegistry().b(IRegistry.aO);
-        ResourceKey<BiomeBase> key = ResourceKey.a(IRegistry.aO, new MinecraftKey(newBiomeName.toLowerCase()));
-        base = registrywritable.a(key);
+        Biome base;
+        WritableRegistry<Biome> registrywritable = dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
+        ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.toLowerCase()));
+        base = registrywritable.get(key);
         if (base == null) {
             if (newBiomeName.contains(":")) {
-                ResourceKey<BiomeBase> newKey = ResourceKey.a(IRegistry.aO, new MinecraftKey(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
-                base = registrywritable.a(newKey);
+                ResourceKey<Biome> newKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
+                base = registrywritable.get(newKey);
                 if (base == null) {
                     return false;
                 }
@@ -85,16 +86,16 @@ public class BiomeHelper {
         return true;
     }
 
-    private void setCustomBiome(int x, int y, int z, World w, BiomeBase bb) {
-        BlockPosition pos = new BlockPosition(x, 0, z);
+    private void setCustomBiome(int x, int y, int z, Level w, Biome bb) {
+        BlockPos pos = new BlockPos(x, 0, z);
         if (w.isLoaded(pos)) {
-            net.minecraft.world.level.chunk.Chunk chunk = w.getChunkAtWorldCoords(pos);
+            ChunkAccess chunk = w.getChunk(pos);
             if (chunk != null) {
-                BiomeStorage biomeStorage = chunk.getBiomeIndex();
-                if (biomeStorage != null) {
-                    biomeStorage.setBiome(x >> 2, y >> 2, z >> 2, bb);
-                    chunk.markDirty();
-                }
+//                BiomeStorage biomeStorage = chunk.getBiomeIndex();
+//                if (biomeStorage != null) {
+                chunk.setBiome(x >> 2, y >> 2, z >> 2, bb);
+//                    chunk.markDirty();
+//                }
             }
         }
     }
@@ -105,12 +106,12 @@ public class BiomeHelper {
      * @param chunk the chunk to refresh
      */
     private void refreshChunksForAll(Chunk chunk) {
-        net.minecraft.world.level.chunk.Chunk c = ((CraftChunk) chunk).getHandle();
+        LevelChunk c = ((CraftChunk) chunk).getHandle();
         int viewDistance = Bukkit.getServer().getViewDistance() * 16;
         int viewDistanceSquared = viewDistance * viewDistance;
         for (Player player : chunk.getWorld().getPlayers()) {
             if (player.isOnline() && player.getLocation().distanceSquared(chunk.getBlock(0, 0, 0).getLocation()) < viewDistanceSquared) {
-                ((CraftPlayer) player).getHandle().b.sendPacket(new PacketPlayOutMapChunk(c));
+                ((CraftPlayer) player).getHandle().connection.getConnection().send(new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true));
             }
         }
     }

@@ -16,25 +16,24 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.world.entity.animal.EntityMushroomCow;
-import org.bukkit.entity.MushroomCow;
+import net.minecraft.world.entity.animal.MushroomCow;
 
 public enum MUSHROOM_COW {
 
-    BROWN(EntityMushroomCow.Type.b), // BROWN
-    RED(EntityMushroomCow.Type.a); // RED
+    BROWN(MushroomCow.MushroomType.BROWN), // BROWN
+    RED(MushroomCow.MushroomType.RED); // RED
 
-    private final EntityMushroomCow.Type nmsType;
+    private final MushroomCow.MushroomType nmsType;
 
-    MUSHROOM_COW(EntityMushroomCow.Type nmsType) {
+    MUSHROOM_COW(MushroomCow.MushroomType nmsType) {
         this.nmsType = nmsType;
     }
 
-    public static MUSHROOM_COW getFromMushroomCowType(MushroomCow.Variant variant) {
+    public static MUSHROOM_COW getFromMushroomCowType(org.bukkit.entity.MushroomCow.Variant variant) {
         return MUSHROOM_COW.valueOf(variant.toString());
     }
 
-    public EntityMushroomCow.Type getNmsType() {
+    public MushroomCow.MushroomType getNmsType() {
         return nmsType;
     }
 }

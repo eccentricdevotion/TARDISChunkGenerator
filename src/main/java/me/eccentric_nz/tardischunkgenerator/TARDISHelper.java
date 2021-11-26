@@ -28,39 +28,37 @@ import me.eccentric_nz.tardischunkgenerator.light.Light;
 import me.eccentric_nz.tardischunkgenerator.light.LightType;
 import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.nbt.NBTCompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.chat.ChatComponentText;
-import net.minecraft.network.chat.ChatMessage;
-import net.minecraft.network.chat.ChatMessageType;
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.game.PacketPlayOutChat;
-import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.BlockAttachable;
-import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.entity.TileEntityFurnace;
-import net.minecraft.world.level.block.entity.TileEntitySign;
-import net.minecraft.world.level.block.state.IBlockData;
-import net.minecraft.world.phys.MovingObjectPositionBlock;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -137,11 +135,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void nameFurnaceGUI(Block block, String name) {
         if (block != null) {
-            WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-            BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-            TileEntity tile = ws.getTileEntity(bp);
-            if (tile instanceof TileEntityFurnace furnace) {
-                furnace.setCustomName(new ChatMessage(name));
+            ServerLevel ws = ((CraftWorld) block.getWorld()).getHandle();
+            BlockPos bp = new BlockPos(block.getX(), block.getY(), block.getZ());
+            BlockEntity tile = ws.getBlockEntity(bp);
+            if (tile instanceof FurnaceBlockEntity furnace) {
+                furnace.setCustomName(new TextComponent(name));
             }
         }
     }
@@ -149,10 +147,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public boolean isArtronFurnace(Block block) {
         if (block != null) {
-            WorldServer ws = ((CraftWorld) block.getWorld()).getHandle();
-            BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-            TileEntity tile = ws.getTileEntity(bp);
-            if (tile instanceof TileEntityFurnace furnace && furnace.getCustomName() != null) {
+            ServerLevel ws = ((CraftWorld) block.getWorld()).getHandle();
+            BlockPos bp = new BlockPos(block.getX(), block.getY(), block.getZ());
+            BlockEntity tile = ws.getBlockEntity(bp);
+            if (tile instanceof FurnaceBlockEntity furnace && furnace.getCustomName() != null) {
                 return furnace.getCustomName().getString().equals("TARDIS Artron Furnace");
             }
         }
@@ -162,10 +160,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void setFallFlyingTag(org.bukkit.entity.Entity e) {
         Entity nmsEntity = ((CraftEntity) e).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
+        CompoundTag tag = new CompoundTag();
         // writes the entity's NBT data to the `tag` object
         nmsEntity.save(tag);
-        tag.setBoolean("FallFlying", true);
+        tag.putBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
         nmsEntity.load(tag);
     }
@@ -173,13 +171,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void openSignGUI(Player player, Sign sign) {
         Location l = sign.getLocation();
-        TileEntitySign t = (TileEntitySign) ((CraftWorld) l.getWorld()).getHandle().getTileEntity(new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
-        EntityPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
-        entityPlayer.b.sendPacket(t.getUpdatePacket()); // b = playerConnection
-        t.f = true; // f = isEditable
-        t.a(entityPlayer);
-        PacketPlayOutOpenSignEditor packet = new PacketPlayOutOpenSignEditor(t.getPosition());
-        entityPlayer.b.sendPacket(packet);
+        SignBlockEntity t = (SignBlockEntity) ((CraftWorld) l.getWorld()).getHandle().getBlockEntity(new BlockPos(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
+        ServerPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
+        entityPlayer.connection.getConnection().send(t.getUpdatePacket()); // b = playerConnection
+        t.setEditable(true); // f = isEditable
+        t.executeClickCommands(entityPlayer);
+        ClientboundOpenSignEditorPacket packet = new ClientboundOpenSignEditorPacket(t.getBlockPos());
+        entityPlayer.connection.getConnection().send(packet);
         SignInputHandler.injectNetty(player, this);
     }
 
@@ -194,15 +192,15 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (file.exists()) {
             try {
                 FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
-                NBTTagCompound data = tagCompound.getCompound("Data");
+                CompoundTag tagCompound = NbtIo.readCompressed(fileinputstream);
+                CompoundTag data = tagCompound.getCompound("Data");
                 fileinputstream.close();
                 long random = new Random().nextLong();
                 // set RandomSeed tag
-                data.setLong("RandomSeed", random);
-                tagCompound.set("Data", data);
+                data.putLong("RandomSeed", random);
+                tagCompound.put("Data", data);
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                NbtIo.writeCompressed(tagCompound, fileoutputstream);
                 fileoutputstream.close();
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
@@ -216,14 +214,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (file.exists()) {
             try {
                 FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
-                NBTTagCompound data = tagCompound.getCompound("Data");
+                CompoundTag tagCompound = NbtIo.readCompressed(fileinputstream);
+                CompoundTag data = tagCompound.getCompound("Data");
                 fileinputstream.close();
                 // set LevelName tag
-                data.setString("LevelName", newName);
-                tagCompound.set("Data", data);
+                data.putString("LevelName", newName);
+                tagCompound.put("Data", data);
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                NbtIo.writeCompressed(tagCompound, fileoutputstream);
                 fileoutputstream.close();
                 Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed level to " + newName);
                 // rename the directory
@@ -243,8 +241,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (file.exists()) {
             try {
                 FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
-                NBTTagCompound data = tagCompound.getCompound("Data");
+                CompoundTag tagCompound = NbtIo.readCompressed(fileinputstream);
+                CompoundTag data = tagCompound.getCompound("Data");
                 fileinputstream.close();
                 int mode = switch (gm) {
                     case CREATIVE -> 1;
@@ -253,10 +251,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                     default -> 0; // SURVIVAL
                 };
                 // set GameType tag
-                data.setInt("GameType", mode);
-                tagCompound.set("Data", data);
+                data.putInt("GameType", mode);
+                tagCompound.put("Data", data);
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTCompressedStreamTools.a(tagCompound, fileoutputstream);
+                NbtIo.writeCompressed(tagCompound, fileoutputstream);
                 fileoutputstream.close();
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
@@ -270,9 +268,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         if (file.exists()) {
             try {
                 FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound tagCompound = NBTCompressedStreamTools.a(fileinputstream);
+                CompoundTag tagCompound = NbtIo.readCompressed(fileinputstream);
                 fileinputstream.close();
-                NBTTagCompound data = tagCompound.getCompound("Data");
+                CompoundTag data = tagCompound.getCompound("Data");
                 // get GameType tag
                 GameMode gameMode;
                 int gm = data.getInt("GameType");
@@ -390,13 +388,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void sendActionBarMessage(Player player, String message) {
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().b; // b = playerConnection
+        Connection connection = ((CraftPlayer) player).getHandle().connection.connection; // b = playerConnection
         if (connection == null) {
             return;
         }
-        IChatBaseComponent component = new ChatComponentText(message);
-        PacketPlayOutChat packet = new PacketPlayOutChat(component, ChatMessageType.c, player.getUniqueId()); // c = GAME_INFO
-        connection.sendPacket(packet);
+        BaseComponent component = new TextComponent(message);
+        ClientboundChatPacket packet = new ClientboundChatPacket(component, ChatType.GAME_INFO, player.getUniqueId()); // c = GAME_INFO
+        connection.send(packet);
     }
 
     @Override
@@ -420,19 +418,19 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void removeTileEntity(BlockState tile) {
-        net.minecraft.world.level.chunk.Chunk chunk = ((CraftChunk) tile.getChunk()).getHandle();
-        BlockPosition position = new BlockPosition(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
-        chunk.removeTileEntity(position);
+    public void removeTileEntity(org.bukkit.block.BlockState tile) {
+        net.minecraft.world.level.chunk.ChunkAccess chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        BlockPos position = new BlockPos(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
+        chunk.removeBlockEntity(position);
         tile.getBlock().setType(Material.AIR);
     }
 
     @Override
     public void setPowerableBlockInteract(Block block) {
-        IBlockData data = ((CraftBlock) block).getNMS();
-        net.minecraft.world.level.World world = ((CraftWorld) block.getWorld()).getHandle();
-        BlockPosition position = ((CraftBlock) block).getPosition();
-        data.interact(world, null, null, MovingObjectPositionBlock.a(data.n(world, position), data.get(BlockAttachable.aE), position)); // aE = BlockStateDirection
+        BlockState data = ((CraftBlock) block).getNMS();
+        net.minecraft.world.level.Level world = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPos position = ((CraftBlock) block).getPosition();
+        data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), data.getValue(DirectionalBlock.FACING), position)); // aE = BlockStateDirection
     }
 
     /**

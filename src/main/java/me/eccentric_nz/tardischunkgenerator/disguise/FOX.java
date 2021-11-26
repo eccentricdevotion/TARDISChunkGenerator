@@ -16,25 +16,24 @@
  */
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
-import net.minecraft.world.entity.animal.EntityFox;
-import org.bukkit.entity.Fox;
+import net.minecraft.world.entity.animal.Fox;
 
 public enum FOX {
 
-    RED(EntityFox.Type.a), // RED
-    SNOW(EntityFox.Type.b); // SNOW
+    RED(Fox.Type.RED), // RED
+    SNOW(Fox.Type.SNOW); // SNOW
 
-    private final EntityFox.Type nmsType;
+    private final Fox.Type nmsType;
 
-    FOX(EntityFox.Type nmsType) {
+    FOX(Fox.Type nmsType) {
         this.nmsType = nmsType;
     }
 
-    public static FOX getFromFoxType(Fox.Type type) {
+    public static FOX getFromFoxType(org.bukkit.entity.Fox.Type type) {
         return FOX.valueOf(type.toString());
     }
 
-    public EntityFox.Type getNmsType() {
+    public Fox.Type getNmsType() {
         return nmsType;
     }
 }

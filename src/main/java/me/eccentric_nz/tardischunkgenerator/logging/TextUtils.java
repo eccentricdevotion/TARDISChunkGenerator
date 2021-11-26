@@ -2,7 +2,6 @@ package me.eccentric_nz.tardischunkgenerator.logging;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 
@@ -38,12 +37,33 @@ public class TextUtils {
 
     private static void initRelevantPackageFromSystemProperty() {
         String relevantPackage = System.getProperty(RELEVANT_PACKAGE_SYSTEM_PROPERTY);
-        if (StringUtils.isBlank(relevantPackage)) {
+        if (isBlank(relevantPackage)) {
             relevantPackage = System.getenv(RELEVANT_PACKAGE_SYSTEM_ENVIRONMENT_VARIABLE);
         }
-        if (StringUtils.isNotBlank(relevantPackage)) {
+        if (isNotBlank(relevantPackage)) {
             setRelevantPackage(relevantPackage);
         }
+    }
+
+    public static boolean isBlank(CharSequence cs) {
+        int strLen = length(cs);
+        if (strLen == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNotBlank(CharSequence cs) {
+        return !isBlank(cs);
+    }
+
+    public static int length(CharSequence cs) {
+        return cs == null ? 0 : cs.length();
     }
 
     /**
