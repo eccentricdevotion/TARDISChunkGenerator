@@ -29,7 +29,7 @@ public class SignInputHandler {
 
     public static void injectNetty(Player player, TARDISHelper plugin) {
         try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().connection.connection); // b = playerConnection, a = networkManager
+            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().connection.connection);
             if (channel != null) {
                 channel.pipeline().addAfter("decoder", "update_sign", new MessageToMessageDecoder<Packet>() {
 
@@ -49,7 +49,7 @@ public class SignInputHandler {
 
     public static void ejectNetty(Player player) {
         try {
-            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().connection.connection); // b = playerConnection, a = networkManager
+            Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().connection.connection);
             if (channel != null) {
                 if (channel.pipeline().get("update_sign") != null) {
                     channel.pipeline().remove("update_sign");

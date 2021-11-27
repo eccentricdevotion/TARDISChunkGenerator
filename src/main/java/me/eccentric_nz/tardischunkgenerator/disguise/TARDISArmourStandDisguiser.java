@@ -66,7 +66,7 @@ public class TARDISArmourStandDisguiser {
                     ClientboundAddEntityPacket packetPlayOutSpawnEntityLiving = new ClientboundAddEntityPacket((LivingEntity) mob);
                     ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData(), false);
                     ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, mob.blockPosition().getX(), mob.blockPosition().getY(), mob.blockPosition().getZ());
-                    ServerPlayerConnection connection = ((CraftPlayer) to).getHandle().connection; // b = ServerPlayerConnection
+                    ServerPlayerConnection connection = ((CraftPlayer) to).getHandle().connection;
                     connection.send(packetPlayOutEntityDestroy);
                     connection.send(packetPlayOutSpawnEntityLiving);
                     connection.send(packetPlayOutEntityMetadata);
@@ -89,7 +89,7 @@ public class TARDISArmourStandDisguiser {
             ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, mob.blockPosition().getX(), mob.blockPosition().getY(), mob.blockPosition().getZ());
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (stand.getWorld() == p.getWorld()) {
-                    ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection; // b = ServerPlayerConnection
+                    ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
                     connection.send(packetPlayOutEntityDestroy);
                     connection.send(packetPlayOutSpawnEntityLiving);
                     connection.send(packetPlayOutEntityMetadata);
@@ -120,7 +120,7 @@ public class TARDISArmourStandDisguiser {
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(stand.getEntityId());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (stand.getWorld() == p.getWorld()) {
-                ((CraftPlayer) p).getHandle().connection.send(packetPlayOutEntityDestroy); // b = ServerPlayerConnection
+                ((CraftPlayer) p).getHandle().connection.send(packetPlayOutEntityDestroy);
             }
         }
     }
@@ -144,7 +144,7 @@ public class TARDISArmourStandDisguiser {
         ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (stand.getWorld() == p.getWorld()) {
-                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection; // b = ServerPlayerConnection
+                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
                 connection.send(packetPlayOutEntityDestroy);
                 connection.send(packetPlayOutSpawnEntityLiving);
                 connection.send(packetPlayOutEntityMetadata);

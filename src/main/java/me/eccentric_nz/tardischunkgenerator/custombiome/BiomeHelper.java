@@ -111,7 +111,7 @@ public class BiomeHelper {
         int viewDistanceSquared = viewDistance * viewDistance;
         for (Player player : chunk.getWorld().getPlayers()) {
             if (player.isOnline() && player.getLocation().distanceSquared(chunk.getBlock(0, 0, 0).getLocation()) < viewDistanceSquared) {
-                ((CraftPlayer) player).getHandle().connection.getConnection().send(new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true));
+                ((CraftPlayer) player).getHandle().connection.connection.send(new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true));
             }
         }
     }

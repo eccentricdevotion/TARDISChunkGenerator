@@ -115,7 +115,7 @@ public class NMSHandler extends NmsHandlerBase {
         BitSet sky = new BitSet(sectionsMaskSky);
         BitSet block = new BitSet(sectionsMaskBlock);
         ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), let, sky, block, true);
-        ((CraftPlayer) player).getHandle().connection.getConnection().send(packet); // b = playerConnection
+        ((CraftPlayer) player).getHandle().connection.connection.send(packet);
     }
 
     private void setRawLightLevel(World world, LightType type, int blockX, int blockY, int blockZ, int lightlevel) {
@@ -126,7 +126,7 @@ public class NMSHandler extends NmsHandlerBase {
         int finalLightLevel = lightlevel < 0 ? 0 : Math.min(lightlevel, 15);
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
-                LayerLightEventListener layer = lightEngine.getLayerListener(LightLayer.SKY); // a = SKY
+                LayerLightEventListener layer = lightEngine.getLayerListener(LightLayer.SKY);
                 if (layer instanceof SkyLightEngine les) {
                     if (finalLightLevel == 0) {
                         les.checkBlock(position);
@@ -216,10 +216,10 @@ public class NMSHandler extends NmsHandlerBase {
 
         executeSync(lightEngine, () -> {
             if (type == LightType.SKY) {
-                SkyLightEngine les = (SkyLightEngine) lightEngine.getLayerListener(LightLayer.SKY); // a = SKY
+                SkyLightEngine les = (SkyLightEngine) lightEngine.getLayerListener(LightLayer.SKY);
                 les.runUpdates(Integer.MAX_VALUE, true, true);
             } else {
-                BlockLightEngine leb = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK); // b = BLOCK
+                BlockLightEngine leb = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK);
                 leb.runUpdates(Integer.MAX_VALUE, true, true);
             }
         });

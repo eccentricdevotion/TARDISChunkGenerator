@@ -47,7 +47,7 @@ public class TARDISChameleonArchDisguiser {
         for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
             ServerPlayer ep = ((CraftPlayer) p).getHandle();
             if (ep != entityPlayer && p.getWorld() == player.getWorld() && p.canSee(player)) {
-                ep.connection.getConnection().send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityPlayer)); // b = playerConnection, e = REMOVE_PLAYER
+                ep.connection.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityPlayer));
             }
         }
         TARDISDisguiseTracker.ARCHED.put(player.getUniqueId(), new TARDISDisguiseTracker.ProfileData(entityPlayer.getGameProfile().getProperties(), player.getName()));
@@ -69,9 +69,9 @@ public class TARDISChameleonArchDisguiser {
         for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
             ServerPlayer ep = ((CraftPlayer) p).getHandle();
             if (ep != entityPlayer && p.getWorld() == player.getWorld() && p.canSee(player)) {
-                ep.connection.getConnection().send(packetPlayOutPlayerInfo);
-                ep.connection.getConnection().send(packetPlayOutEntityDestroy);
-                ep.connection.getConnection().send(packetPlayOutNamedEntitySpawn); // b = playerConnection
+                ep.connection.connection.send(packetPlayOutPlayerInfo);
+                ep.connection.connection.send(packetPlayOutEntityDestroy);
+                ep.connection.connection.send(packetPlayOutNamedEntitySpawn);
             }
         }
     }
@@ -82,7 +82,7 @@ public class TARDISChameleonArchDisguiser {
         for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
             ServerPlayer ep = ((CraftPlayer) p).getHandle();
             if (ep != entityPlayer && p.getWorld() == player.getWorld() && p.canSee(player)) {
-                ep.connection.getConnection().send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityPlayer)); // b = playerConnection, e = REMOVE_PLAYER
+                ep.connection.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityPlayer));
             }
         }
         TARDISDisguiseTracker.ProfileData map = TARDISDisguiseTracker.ARCHED.get(player.getUniqueId());
@@ -108,15 +108,15 @@ public class TARDISChameleonArchDisguiser {
             TARDISDisguiseTracker.ARCHED.remove(player.getUniqueId());
             return;
         }
-        ClientboundPlayerInfoPacket packetPlayOutPlayerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer); // a = ADD_PLAYER
+        ClientboundPlayerInfoPacket packetPlayOutPlayerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer);
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(player.getEntityId());
         ClientboundAddEntityPacket packetPlayOutNamedEntitySpawn = new ClientboundAddEntityPacket(entityPlayer);
         for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
             ServerPlayer ep = ((CraftPlayer) p).getHandle();
             if (ep != entityPlayer && p.getWorld() == player.getWorld() && p.canSee(player)) {
-                ep.connection.getConnection().send(packetPlayOutPlayerInfo);
-                ep.connection.getConnection().send(packetPlayOutEntityDestroy);
-                ep.connection.getConnection().send(packetPlayOutNamedEntitySpawn); // b = playerConnection
+                ep.connection.connection.send(packetPlayOutPlayerInfo);
+                ep.connection.connection.send(packetPlayOutEntityDestroy);
+                ep.connection.connection.send(packetPlayOutNamedEntitySpawn);
             }
         }
         TARDISDisguiseTracker.ARCHED.remove(player.getUniqueId());

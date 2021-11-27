@@ -173,11 +173,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         Location l = sign.getLocation();
         SignBlockEntity t = (SignBlockEntity) ((CraftWorld) l.getWorld()).getHandle().getBlockEntity(new BlockPos(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
         ServerPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
-        entityPlayer.connection.getConnection().send(t.getUpdatePacket()); // b = playerConnection
-        t.setEditable(true); // f = isEditable
+        entityPlayer.connection.connection.send(t.getUpdatePacket());
+        t.setEditable(true);
         t.executeClickCommands(entityPlayer);
         ClientboundOpenSignEditorPacket packet = new ClientboundOpenSignEditorPacket(t.getBlockPos());
-        entityPlayer.connection.getConnection().send(packet);
+        entityPlayer.connection.connection.send(packet);
         SignInputHandler.injectNetty(player, this);
     }
 
@@ -388,12 +388,12 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void sendActionBarMessage(Player player, String message) {
-        Connection connection = ((CraftPlayer) player).getHandle().connection.connection; // b = playerConnection
+        Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
         if (connection == null) {
             return;
         }
         BaseComponent component = new TextComponent(message);
-        ClientboundChatPacket packet = new ClientboundChatPacket(component, ChatType.GAME_INFO, player.getUniqueId()); // c = GAME_INFO
+        ClientboundChatPacket packet = new ClientboundChatPacket(component, ChatType.GAME_INFO, player.getUniqueId());
         connection.send(packet);
     }
 
@@ -430,7 +430,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         BlockState data = ((CraftBlock) block).getNMS();
         net.minecraft.world.level.Level world = ((CraftWorld) block.getWorld()).getHandle();
         BlockPos position = ((CraftBlock) block).getPosition();
-        data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), data.getValue(DirectionalBlock.FACING), position)); // aE = BlockStateDirection
+        data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), data.getValue(DirectionalBlock.FACING), position));
     }
 
     /**

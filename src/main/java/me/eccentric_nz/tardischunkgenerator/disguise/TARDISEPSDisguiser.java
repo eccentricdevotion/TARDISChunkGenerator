@@ -65,7 +65,7 @@ public class TARDISEPSDisguiser {
                 ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
 //                ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
                 ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
-                Connection connection = ((CraftPlayer) player).getHandle().connection.getConnection(); // b = playerConnection
+                Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);
@@ -92,7 +92,7 @@ public class TARDISEPSDisguiser {
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(id);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (world == p.getWorld()) {
-                Connection connection = ((CraftPlayer) p).getHandle().connection.getConnection(); // b = playerConnection
+                Connection connection = ((CraftPlayer) p).getHandle().connection.connection;
                 connection.send(packetPlayOutEntityDestroy);
             }
         }
@@ -131,7 +131,7 @@ public class TARDISEPSDisguiser {
         ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld() == location.getWorld()) {
-                Connection connection = ((CraftPlayer) p).getHandle().connection.getConnection(); // b = playerConnection
+                Connection connection = ((CraftPlayer) p).getHandle().connection.connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);
