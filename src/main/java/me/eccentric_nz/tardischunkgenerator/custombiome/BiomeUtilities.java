@@ -108,7 +108,6 @@ public class BiomeUtilities {
             if (key != null) {
                 return key.toString();
             } else {
-                System.out.println("Biome key was null for " + location);
                 switch (world.getEnvironment()) {
                     case NETHER -> {
                         return "minecraft:nether_wastes";
