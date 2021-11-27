@@ -267,4 +267,9 @@ public interface TARDISHelperAPI {
      * Calls a powerable block's interact method
      */
     public void setPowerableBlockInteract(Block block);
+
+    /**
+     * Grows a TARDIS tree
+     */
+    public void growTree(String tree, Location location);
 }

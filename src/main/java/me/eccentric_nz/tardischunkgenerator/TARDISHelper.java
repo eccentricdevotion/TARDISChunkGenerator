@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
+import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
@@ -103,8 +104,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         // start RequestStreamMachine
         machine.start(2, 400);
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
-        // Add custom biomes
-        BiomeUtilities.addBiomes(basePath, messagePrefix);
         // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
         // should we filter the log?
@@ -431,6 +430,11 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         net.minecraft.world.level.Level world = ((CraftWorld) block.getWorld()).getHandle();
         BlockPos position = ((CraftBlock) block).getPosition();
         data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), data.getValue(DirectionalBlock.FACING), position));
+    }
+
+    @Override
+    public void growTree(String tree, Location location) {
+        CustomTree.grow(CustomTree.TARDISTree.valueOf(tree.toUpperCase(Locale.ROOT)), location);
     }
 
     /**
