@@ -88,7 +88,7 @@ public abstract class NmsHandlerBase implements INMSHandler {
     public int getMinLightHeight(World world) {
         // Always 0 for 1.8 - 1.13.2 (v1_8_R1 - v1_13_R2) (same as world min height)
         // Should be overridden for other versions
-        return 0;
+        return world.getMinHeight();
     }
 
     public int getMaxLightHeight(World world) {
