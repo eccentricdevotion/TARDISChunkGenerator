@@ -20,6 +20,7 @@ import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
 import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISDatapackUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
@@ -103,8 +104,13 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
         // start RequestStreamMachine
         machine.start(2, 400);
-        String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+        // update datapacks!
+        TARDISDatapackUpdater updater = new TARDISDatapackUpdater(this);
+        updater.updateDimension("gallifrey");
+        updater.updateDimension("siluria");
+        updater.updateDimension("skaro");
         // get the TARDIS config
+        String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
         // should we filter the log?
         if (configuration.getBoolean("debug")) {
