@@ -17,10 +17,8 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.generator.WorldInfo;
 
 import java.util.Random;
 
@@ -31,21 +29,10 @@ public class TARDISChunkGenerator extends ChunkGenerator {
 
     /**
      * Generates an empty world!
-     *
-     * @param worldInfo the world to generate chunks in
-     * @param random    a pseudorandom number generator
-     * @param x         the chunk's x coordinate
-     * @param z         the chunk's z coordinate
-     * @param chunkData the ChunkData being generated
      */
     @Override
-    public void generateNoise(WorldInfo worldInfo, Random random, int x, int z, ChunkData chunkData) {
-        chunkData.setRegion(0, 0, 0, 16, chunkData.getMaxHeight(), 16, Material.VOID_AIR);
-    }
-
-    @Override
     public boolean shouldGenerateNoise() {
-        return true;
+        return false;
     }
 
     @Override
