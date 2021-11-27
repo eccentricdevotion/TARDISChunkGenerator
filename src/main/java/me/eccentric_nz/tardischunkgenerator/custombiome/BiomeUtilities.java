@@ -67,7 +67,7 @@ public class BiomeUtilities {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
         CommandSourceStack commandListenerWrapper = ((CraftPlayer) player).getHandle().createCommandSourceStack();
         Optional<Biome> optional = commandListenerWrapper.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(new ResourceLocation
-        (biome.getKey().getKey())); // aO = ResourceKey<Registry<Biome>>
+                (biome.getKey().getKey()));
         if (optional.isPresent()) {
             Biome biomeBase = optional.get();
             Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
@@ -106,7 +106,6 @@ public class BiomeUtilities {
         if (key != null) {
             return key.toString();
         } else {
-            System.out.println("Biome key was null for " + location);
             switch (world.getEnvironment()) {
                 case NETHER -> {
                     return "minecraft:nether_wastes";
@@ -129,25 +128,25 @@ public class BiomeUtilities {
 
     public static String getBiomeKey(Chunk c) {
         LevelChunk chunk = ((CraftChunk) c).getHandle();
-            Biome base = chunk.getNoiseBiome(8, 64, 8);
-            BiomeSpecialEffects fog = base.getSpecialEffects();
-            if (fog.getSkyColor() == TARDISBiomeData.LAKES.getSkyColour()) {
-                return "tardis:skaro_lakes";
-            } else if (fog.getSkyColor() == TARDISBiomeData.HILLS.getSkyColour()) {
-                return "tardis:skaro_hills";
-            } else if (fog.getSkyColor() == TARDISBiomeData.DESERT.getSkyColour()) {
-                return "tardis:skaro_desert";
-            } else if (fog.getSkyColor() == TARDISBiomeData.BADLANDS.getSkyColour()) {
-                return "tardis:gallifrey_badlands";
-            } else if (fog.getSkyColor() == TARDISBiomeData.ERODED.getSkyColour()) {
-                return "tardis:gallifrey_eroded";
-            } else if (fog.getSkyColor() == TARDISBiomeData.PLATEAU.getSkyColour()) {
-                return "tardis:gallifrey_plateau";
-            } else {
-                Bukkit.getLogger().log(Level.INFO, "Biome key was not found for chunk skyColour");
-                DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
-                Registry<Biome> registry = dedicatedServer.registryAccess().registry(Registry.BIOME_REGISTRY).get();
-                return registry.getKey(base).toString();
-            }
+        Biome base = chunk.getNoiseBiome(8, 64, 8);
+        BiomeSpecialEffects fog = base.getSpecialEffects();
+        if (fog.getSkyColor() == TARDISBiomeData.LAKES.getSkyColour()) {
+            return "tardis:skaro_lakes";
+        } else if (fog.getSkyColor() == TARDISBiomeData.HILLS.getSkyColour()) {
+            return "tardis:skaro_hills";
+        } else if (fog.getSkyColor() == TARDISBiomeData.DESERT.getSkyColour()) {
+            return "tardis:skaro_desert";
+        } else if (fog.getSkyColor() == TARDISBiomeData.BADLANDS.getSkyColour()) {
+            return "tardis:gallifrey_badlands";
+        } else if (fog.getSkyColor() == TARDISBiomeData.ERODED.getSkyColour()) {
+            return "tardis:gallifrey_eroded";
+        } else if (fog.getSkyColor() == TARDISBiomeData.PLATEAU.getSkyColour()) {
+            return "tardis:gallifrey_plateau";
+        } else {
+            Bukkit.getLogger().log(Level.INFO, "Biome key was not found for chunk skyColour");
+            DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
+            Registry<Biome> registry = dedicatedServer.registryAccess().registry(Registry.BIOME_REGISTRY).get();
+            return registry.getKey(base).toString();
+        }
     }
 }
