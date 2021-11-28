@@ -17,10 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -32,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.map.MapView;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface TARDISHelperAPI {
@@ -270,6 +268,25 @@ public interface TARDISHelperAPI {
 
     /**
      * Grows a TARDIS tree
+     *
+     * @param tree     the name of the planet the tree will be grown on - must be "gallifrey" or "skaro"
+     * @param location the location to grow the tree
      */
     public void growTree(String tree, Location location);
+
+    /**
+     * Grow a custom tree based on a huge fungus tree. All materials specified should be cubic blocks.
+     *
+     * @param location the location to grow the tree
+     * @param base     the material that the tree should grow on e.g. DIRT
+     * @param stem     the material for the tree's stem / trunk e.g. OAK_LOG
+     * @param hat      the material for the tree's hat / leaves e.g. OAK_LEAVES
+     * @param decor    the material for the tree's decoration e.g. PURPLE_GLAZED_TERRACOTTA
+     */
+    public void growTree(Location location, Material base, Material stem, Material hat, Material decor);
+
+    /**
+     * Gets a list of valid tree materials
+     */
+    public List<Material> getTreeMatrials();
 }

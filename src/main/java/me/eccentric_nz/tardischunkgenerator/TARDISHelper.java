@@ -18,6 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
 import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
+import me.eccentric_nz.tardischunkgenerator.custombiome.CubicMaterial;
 import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISDatapackUpdater;
@@ -73,10 +74,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
@@ -440,7 +438,22 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void growTree(String tree, Location location) {
-        CustomTree.grow(CustomTree.TARDISTree.valueOf(tree.toUpperCase(Locale.ROOT)), location);
+        try {
+            CustomTree.TARDISTree type = CustomTree.TARDISTree.valueOf(tree.toUpperCase(Locale.ROOT));
+            CustomTree.grow(type, location);
+        } catch (IllegalArgumentException e) {
+            Bukkit.getLogger().log(Level.WARNING, messagePrefix + "Invalid TARDISTree type specified!");
+        }
+    }
+
+    @Override
+    public void growTree(Location location, Material base, Material hat, Material stem, Material decor) {
+        CustomTree.grow(location, base, hat, stem, decor);
+    }
+
+    @Override
+    public List<Material> getTreeMatrials() {
+        return CubicMaterial.cubes;
     }
 
     /**
