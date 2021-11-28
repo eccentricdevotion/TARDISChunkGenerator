@@ -18,7 +18,9 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 
 import java.util.Random;
 
@@ -63,6 +65,17 @@ public class TARDISChunkGenerator extends ChunkGenerator {
     @Override
     public boolean shouldGenerateStructures() {
         return false;
+    }
+
+    /**
+     * Sets the entire world to the VOID biome
+     *
+     * @param worldInfo
+     * @return
+     */
+    @Override
+    public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
+        return new TARDISVoidBiomeProvider();
     }
 
     /**
