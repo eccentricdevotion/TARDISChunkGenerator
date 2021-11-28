@@ -1,6 +1,7 @@
 package me.eccentric_nz.tardischunkgenerator.helpers;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
 
 import java.io.*;
 import java.nio.file.FileVisitResult;
@@ -8,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Properties;
 import java.util.logging.Level;
 
 public class TARDISDatapackUpdater {
@@ -22,7 +22,7 @@ public class TARDISDatapackUpdater {
     public void updateDimension(String dimension) {
         File container = plugin.getServer().getWorldContainer();
         // read server-properties
-        String dataPacksRoot = container.getAbsolutePath() + File.separator + getServerLevelName() + File.separator + "datapacks" + File.separator;
+        String dataPacksRoot = container.getAbsolutePath() + File.separator + BiomeUtilities.getLevelName() + File.separator + "datapacks" + File.separator;
         // check if directories exist
         String dimensionRoot = dataPacksRoot + dimension + File.separator + "data" + File.separator + "tardis" + File.separator;
         File worldGenDir = new File(dimensionRoot + "worldgen");
@@ -94,38 +94,6 @@ public class TARDISDatapackUpdater {
                 } catch (IOException e) {
                     plugin.getLogger().log(Level.WARNING, "[TARDISChunkGenerator] Checker: Could not close the input stream.");
                 }
-            }
-        }
-    }
-
-    /**
-     * Gets the server default world name. Will use the Minecraft default 'world' if the method fails'.
-     *
-     * @return The server specified level name.
-     */
-    private String getServerLevelName() {
-        String link = "world";
-        FileInputStream in = null;
-        try {
-            Properties properties = new Properties();
-            String path = "server.properties";
-            in = new FileInputStream(path);
-            properties.load(in);
-            String levelName = properties.getProperty("level-name");
-            return (levelName != null && levelName.isEmpty()) ? link : levelName;
-        } catch (FileNotFoundException ex) {
-            plugin.getLogger().log(Level.WARNING, "Could not find server.properties!");
-            return link;
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.WARNING, "Could not read server.properties!");
-            return link;
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.WARNING, "Could not close server.properties!");
             }
         }
     }
