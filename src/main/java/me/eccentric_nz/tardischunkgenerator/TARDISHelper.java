@@ -26,10 +26,6 @@ import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
-import me.eccentric_nz.tardischunkgenerator.light.ChunkInfo;
-import me.eccentric_nz.tardischunkgenerator.light.Light;
-import me.eccentric_nz.tardischunkgenerator.light.LightType;
-import me.eccentric_nz.tardischunkgenerator.light.RequestSteamMachine;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -73,13 +69,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
-    public static final RequestSteamMachine machine = new RequestSteamMachine();
     public static TARDISHelper tardisHelper;
 
     public static TARDISHelper getTardisHelper() {
@@ -88,9 +86,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void onDisable() {
-        if (machine.isStarted()) {
-            machine.shutdown();
-        }
     }
 
     @Override
@@ -98,8 +93,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         tardisHelper = this;
         // register disguise listener
         getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
-        // start RequestStreamMachine
-        machine.start(2, 400);
         // update datapacks!
         TARDISDatapackUpdater updater = new TARDISDatapackUpdater(this);
         updater.updateDimension("gallifrey");
@@ -349,24 +342,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public void createLight(Location location) {
-        Light.createLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15, true);
-        Collection<Player> players = location.getWorld().getPlayers();
-        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(info, LightType.BLOCK, players);
-        }
-    }
-
-    @Override
-    public void deleteLight(Location location) {
-        Light.deleteLight(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, true);
-        Collection<Player> players = location.getWorld().getPlayers();
-        for (ChunkInfo info : Light.collectChunks(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), LightType.BLOCK, 15)) {
-            Light.updateChunk(info, LightType.BLOCK, players);
-        }
-    }
-
-    @Override
     public boolean isInFaction(Player player, Location location) {
         return new TARDISFactions().isInFaction(player, location);
     }
@@ -395,16 +370,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void setCustomBiome(String biome, Chunk chunk) {
         new BiomeHelper().setCustomBiome(biome, chunk);
-    }
-
-    @Override
-    public String getBiomeKey(Location location) {
-        return BiomeUtilities.getBiomeKey(location);
-    }
-
-    @Override
-    public String getBiomeKey(Chunk chunk) {
-        return BiomeUtilities.getBiomeKey(chunk);
     }
 
     @Override

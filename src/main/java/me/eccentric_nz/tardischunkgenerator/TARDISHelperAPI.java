@@ -179,20 +179,6 @@ public interface TARDISHelperAPI {
     void undisguiseArmourStand(ArmorStand stand);
 
     /**
-     * Create a light source
-     *
-     * @param location the location where the light will be created
-     */
-    void createLight(Location location);
-
-    /**
-     * Delete a light source
-     *
-     * @param location the location where the light will be removed
-     */
-    void deleteLight(Location location);
-
-    /**
      * Check a Factions location is valid for TARDIS actions
      *
      * @param player   the player who is performing the TARDIS action
@@ -233,20 +219,6 @@ public interface TARDISHelperAPI {
      * @param chunk the chunk to set the biome for
      */
     void setCustomBiome(String biome, Chunk chunk);
-
-    /**
-     * Gets the Namespaced key from a biome
-     *
-     * @param location the location to get the biome for
-     */
-    String getBiomeKey(Location location);
-
-    /**
-     * Gets the Namespaced key from a biome
-     *
-     * @param chunk the chunk to get the biome for
-     */
-    String getBiomeKey(Chunk chunk);
 
     /**
      * Remove a TileEntity from the world
