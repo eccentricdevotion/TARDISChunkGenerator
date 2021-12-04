@@ -16,16 +16,12 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
-import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeHelper;
-import me.eccentric_nz.tardischunkgenerator.custombiome.BiomeUtilities;
-import me.eccentric_nz.tardischunkgenerator.custombiome.CubicMaterial;
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.custombiome.*;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISDatapackUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
-import me.eccentric_nz.tardischunkgenerator.keyboard.SignInputHandler;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -35,14 +31,11 @@ import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
-import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +43,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
@@ -69,15 +61,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
+    public static final HashMap<String, net.minecraft.world.level.biome.Biome> biomeMap = new HashMap<>();
     public static TARDISHelper tardisHelper;
 
     public static TARDISHelper getTardisHelper() {
@@ -98,8 +88,21 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         updater.updateDimension("gallifrey");
         updater.updateDimension("siluria");
         updater.updateDimension("skaro");
-        // get the TARDIS config
+        // get TARDIS plugin directory
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+        // get server default world name
+        String levelName = BiomeUtilities.getLevelName();
+        // load custom biomes if they are enabled
+        FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
+        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
+            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Gallifrey...");
+            CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
+        }
+        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
+            getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Skaro...");
+            CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
+        }
+        // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
         // should we filter the log?
         if (configuration.getBoolean("debug")) {
@@ -149,24 +152,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         tag.putBoolean("FallFlying", true);
         // sets the entity's tag to the altered `tag`
         nmsEntity.load(tag);
-    }
-
-    @Override
-    public void openSignGUI(Player player, Sign sign) {
-        Location l = sign.getLocation();
-        SignBlockEntity t = (SignBlockEntity) ((CraftWorld) l.getWorld()).getHandle().getBlockEntity(new BlockPos(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
-        ServerPlayer entityPlayer = ((CraftPlayer) player.getPlayer()).getHandle();
-        entityPlayer.connection.connection.send(t.getUpdatePacket());
-        t.setEditable(true);
-        t.executeClickCommands(entityPlayer);
-        ClientboundOpenSignEditorPacket packet = new ClientboundOpenSignEditorPacket(t.getBlockPos());
-        entityPlayer.connection.connection.send(packet);
-        SignInputHandler.injectNetty(player, this);
-    }
-
-    @Override
-    public void finishSignEditing(Player player) {
-        SignInputHandler.ejectNetty(player);
     }
 
     @Override

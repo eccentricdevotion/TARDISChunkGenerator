@@ -21,7 +21,6 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -55,19 +54,6 @@ public interface TARDISHelperAPI {
      * @param e the entity to set the NBT tag for
      */
     void setFallFlyingTag(Entity e);
-
-    /**
-     * Open a sign editing GUI.
-     *
-     * @param player the player to open the GUI for
-     * @param sign   the sign block that is being edited
-     */
-    void openSignGUI(Player player, Sign sign);
-
-    /**
-     * Stop listening for sign updates
-     */
-    void finishSignEditing(Player player);
 
     /**
      * Sets a random seed value for a world.
