@@ -17,6 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPacketListener;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -60,8 +61,8 @@ public class TARDISDisguiseListener implements Listener {
         if (!plugin.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
             // show disguise to newly joined players
             disguiseToPlayer(event.getPlayer(), event.getPlayer().getWorld());
-            TARDISPacketListener.injectPlayer(event.getPlayer());
         }
+        TARDISPacketListener.injectPlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -96,7 +97,7 @@ public class TARDISDisguiseListener implements Listener {
             if (TARDISDisguiseTracker.ARCHED.containsKey(uuid)) {
                 TARDISDisguiseTracker.ARCHED.remove(uuid);
             }
-            TARDISPacketListener.removePlayer(event.getPlayer());
         }
+        TARDISPacketListener.removePlayer(event.getPlayer());
     }
 }

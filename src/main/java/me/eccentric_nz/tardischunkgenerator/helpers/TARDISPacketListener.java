@@ -14,18 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.disguise;
+package me.eccentric_nz.tardischunkgenerator.helpers;
 
 import io.netty.channel.*;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseTracker;
+import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.ticks.LevelChunkTicks;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class TARDISPacketListener {
 
@@ -47,7 +58,7 @@ public class TARDISPacketListener {
 
             @Override
             public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise channelPromise) throws Exception {
-                if (packet instanceof ClientboundAddEntityPacket namedEntitySpawn) {
+                if (packet instanceof ClientboundAddEntityPacket namedEntitySpawn && !TARDISHelper.tardisHelper.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
                     UUID uuid = namedEntitySpawn.getUUID();
                     if (TARDISDisguiseTracker.DISGUISED_AS_MOB.containsKey(uuid)) {
                         Entity entity = Bukkit.getEntity(uuid);
@@ -59,11 +70,46 @@ public class TARDISPacketListener {
                         }
                     }
                 }
+                if (packet instanceof ClientboundLevelChunkWithLightPacket chunkPacket) {
+                    String world = player.getWorld().getName();
+                    if (world.endsWith("_tardis_gallifrey") || world.endsWith("_tardis_skaro")) {
+                        LevelChunk levelChunk = cloneChunk(((CraftChunk) player.getWorld().getChunkAt(chunkPacket.getX(), chunkPacket.getZ())).getHandle());
+                        String key = (world.endsWith("_tardis_gallifrey")) ? "gallifrey_badlands" : "skaro_desert";
+                        Biome biome = TARDISHelper.biomeMap.get(key);
+                        if (biome != null) {
+                            for (LevelChunkSection section : levelChunk.getSections()) {
+                                for (int x = 0; x < 4; ++x) {
+                                    for (int z = 0; z < 4; ++z) {
+                                        for (int y = 0; y < 4; ++y) {
+                                            section.setBiome(x, y, z, biome);
+                                        }
+                                    }
+                                }
+                            }
+                            packet = new ClientboundLevelChunkWithLightPacket(levelChunk, levelChunk.getLevel().getLightEngine(), null, null, true);
+                        } else {
+                            Bukkit.getLogger().log(Level.INFO, "biome was null");
+                        }
+                    }
+                }
                 super.write(channelHandlerContext, packet, channelPromise);
             }
         };
-
         ChannelPipeline pipeline = ((CraftPlayer) player).getHandle().connection.connection.channel.pipeline();
         pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
+    }
+
+    private static LevelChunk cloneChunk(LevelChunk chunk) {
+        return new LevelChunk(
+                chunk.getLevel(),
+                chunk.getPos(),
+                chunk.getUpgradeData(),
+                (LevelChunkTicks<Block>) chunk.getBlockTicks(),
+                (LevelChunkTicks<Fluid>) chunk.getFluidTicks(),
+                chunk.getInhabitedTime(),
+                chunk.getSections(),
+                null,
+                chunk.getBlendingData()
+        );
     }
 }

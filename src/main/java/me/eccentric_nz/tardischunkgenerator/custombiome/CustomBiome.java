@@ -1,6 +1,7 @@
 package me.eccentric_nz.tardischunkgenerator.custombiome;
 
 import com.mojang.serialization.Lifecycle;
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
@@ -40,7 +41,9 @@ public class CustomBiome {
         newFog.foliageColorOverride(data.getFoliageColour());
         newFog.grassColorOverride(data.getGrassColour());
         newBiome.specialEffects(newFog.build());
-        registrywritable.register(customKey, newBiome.build(), Lifecycle.stable());
+        Biome biome = newBiome.build();
+        TARDISHelper.biomeMap.put(data.getCustomName(), biome);
+        registrywritable.register(customKey, biome, Lifecycle.stable());
     }
 }
 

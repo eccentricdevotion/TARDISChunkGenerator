@@ -91,11 +91,7 @@ public class BiomeHelper {
         if (w.isLoaded(pos)) {
             ChunkAccess chunk = w.getChunk(pos);
             if (chunk != null) {
-//                BiomeStorage biomeStorage = chunk.getBiomeIndex();
-//                if (biomeStorage != null) {
                 chunk.setBiome(x >> 2, y >> 2, z >> 2, bb);
-//                    chunk.markDirty();
-//                }
             }
         }
     }
