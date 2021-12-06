@@ -69,6 +69,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     public static final String messagePrefix = ChatColor.AQUA + "[TARDISChunkGenerator] " + ChatColor.RESET;
     public static final HashMap<String, net.minecraft.world.level.biome.Biome> biomeMap = new HashMap<>();
     public static TARDISHelper tardisHelper;
+    public static boolean colourSkies;
 
     public static TARDISHelper getTardisHelper() {
         return tardisHelper;
@@ -81,29 +82,34 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void onEnable() {
         tardisHelper = this;
-        // register disguise listener
-        getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
-        // update datapacks!
-        TARDISDatapackUpdater updater = new TARDISDatapackUpdater(this);
-        updater.updateDimension("gallifrey");
-        updater.updateDimension("siluria");
-        updater.updateDimension("skaro");
         // get TARDIS plugin directory
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
+        // get the TARDIS config
+        FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
+        // should we update the datapacks?
+        if (!configuration.getBoolean("conversions.datapacks_1_18")) {
+            // update datapacks!
+            TARDISDatapackUpdater updater = new TARDISDatapackUpdater(this);
+            updater.updateDimension("gallifrey");
+            updater.updateDimension("siluria");
+            updater.updateDimension("skaro");
+        }
         // get server default world name
         String levelName = BiomeUtilities.getLevelName();
         // load custom biomes if they are enabled
         FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
+        boolean aPlanetIsEnabled = false;
         if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Gallifrey...");
             CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
+            aPlanetIsEnabled = true;
         }
         if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Skaro...");
             CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
+            aPlanetIsEnabled = true;
         }
-        // get the TARDIS config
-        FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
+        colourSkies = (aPlanetIsEnabled && planets.getBoolean("colour_skies"));
         // should we filter the log?
         if (configuration.getBoolean("debug")) {
             // yes we should!
@@ -111,6 +117,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Starting filtered logging for TARDIS plugins...");
             getServer().getConsoleSender().sendMessage(messagePrefix + "Log file located at 'plugins/TARDIS/filtered.log'");
         }
+        // register disguise listener
+        getServer().getPluginManager().registerEvents(new TARDISDisguiseListener(this), this);
     }
 
     @Override

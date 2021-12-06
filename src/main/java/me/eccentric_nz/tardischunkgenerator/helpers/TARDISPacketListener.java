@@ -70,7 +70,7 @@ public class TARDISPacketListener {
                         }
                     }
                 }
-                if (packet instanceof ClientboundLevelChunkWithLightPacket chunkPacket) {
+                if (TARDISHelper.colourSkies && packet instanceof ClientboundLevelChunkWithLightPacket chunkPacket) {
                     String world = player.getWorld().getName();
                     if (world.endsWith("_tardis_gallifrey") || world.endsWith("_tardis_skaro")) {
                         LevelChunk levelChunk = cloneChunk(((CraftChunk) player.getWorld().getChunkAt(chunkPacket.getX(), chunkPacket.getZ())).getHandle());
