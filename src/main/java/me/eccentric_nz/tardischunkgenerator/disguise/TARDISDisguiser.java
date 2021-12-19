@@ -23,6 +23,7 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
@@ -110,8 +111,8 @@ public class TARDISDisguiser {
         }
         entity.setYRot(fixYaw(location.getYaw()));
         entity.setXRot(location.getPitch());
-//        EntityInsentient insentient = (EntityInsentient) entity;
-//        insentient.setNoAI(true);
+        Mob insentient = (Mob) entity;
+        insentient.setNoAi(true);
     }
 
     private static float fixYaw(float yaw) {

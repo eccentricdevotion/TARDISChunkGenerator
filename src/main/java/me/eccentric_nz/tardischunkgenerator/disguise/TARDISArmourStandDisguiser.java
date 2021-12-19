@@ -24,6 +24,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
@@ -107,8 +108,8 @@ public class TARDISArmourStandDisguiser {
         entity.setYBodyRot(fixed);
         entity.setYRot(fixed);
         entity.setXRot(location.getPitch());
-//        InsentientEntity insentient = (EntityInsentient) entity;
-//        insentient.setNoAI(true);
+        Mob insentient = (Mob) entity;
+        insentient.setNoAi(true);
     }
 
     private static float fixYaw(float yaw) {
