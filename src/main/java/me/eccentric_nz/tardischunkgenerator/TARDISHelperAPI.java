@@ -21,10 +21,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.map.MapView;
 
 import java.util.List;
@@ -239,4 +236,14 @@ public interface TARDISHelperAPI {
      * Gets a list of valid tree materials
      */
     List<Material> getTreeMatrials();
+
+    /**
+     * Get Player reputation from a Villager
+     */
+    int[] getReputation(Villager villager, UUID uuid);
+
+    /**
+     * Set Player reputation for a Villager
+     */
+    void setReputation(Villager villager, UUID uuid, int[] reputation);
 }

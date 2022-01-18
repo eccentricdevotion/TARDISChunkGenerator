@@ -33,6 +33,8 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.gossip.GossipContainer;
+import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
@@ -50,9 +52,11 @@ import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftVillager;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -399,6 +403,30 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public List<Material> getTreeMatrials() {
         return CubicMaterial.cubes;
+    }
+
+    @Override
+    public int[] getReputation(Villager villager, UUID uuid) {
+        net.minecraft.world.entity.npc.Villager v = ((CraftVillager) villager).getHandle();
+        GossipContainer entries = v.getGossips();
+        int[] reputation = new int[5];
+        reputation[GossipType.MAJOR_NEGATIVE.ordinal()] = entries.getReputation(uuid, gossipType -> gossipType == GossipType.MAJOR_NEGATIVE);
+        reputation[GossipType.MINOR_NEGATIVE.ordinal()] = entries.getReputation(uuid, gossipType -> gossipType == GossipType.MINOR_NEGATIVE);
+        reputation[GossipType.MINOR_POSITIVE.ordinal()] = entries.getReputation(uuid, gossipType -> gossipType == GossipType.MINOR_POSITIVE);
+        reputation[GossipType.MAJOR_POSITIVE.ordinal()] = entries.getReputation(uuid, gossipType -> gossipType == GossipType.MAJOR_POSITIVE);
+        reputation[GossipType.TRADING.ordinal()] = entries.getReputation(uuid, gossipType -> gossipType == GossipType.TRADING);
+        return reputation;
+    }
+
+    @Override
+    public void setReputation(Villager villager, UUID uuid, int[] reputation) {
+        net.minecraft.world.entity.npc.Villager v = ((CraftVillager) villager).getHandle();
+        GossipContainer entries = v.getGossips();
+        entries.add(uuid, GossipType.MAJOR_NEGATIVE, reputation[GossipType.MAJOR_NEGATIVE.ordinal()]);
+        entries.add(uuid, GossipType.MINOR_NEGATIVE, reputation[GossipType.MINOR_NEGATIVE.ordinal()]);
+        entries.add(uuid, GossipType.MINOR_POSITIVE, reputation[GossipType.MINOR_POSITIVE.ordinal()]);
+        entries.add(uuid, GossipType.MAJOR_POSITIVE, reputation[GossipType.MAJOR_POSITIVE.ordinal()]);
+        entries.add(uuid, GossipType.TRADING, reputation[GossipType.TRADING.ordinal()]);
     }
 
     /**
