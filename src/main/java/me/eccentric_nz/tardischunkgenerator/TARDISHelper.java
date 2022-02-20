@@ -24,6 +24,7 @@ import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.Connection;
@@ -35,7 +36,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
 import net.minecraft.world.entity.ai.gossip.GossipType;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
@@ -379,10 +380,14 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void setPowerableBlockInteract(Block block) {
+        Direction direction = Direction.NORTH;
+        if (block.getBlockData() instanceof Directional directional) {
+            direction = Direction.byName(directional.getFacing().toString().toLowerCase(Locale.ROOT));
+        }
         BlockState data = ((CraftBlock) block).getNMS();
         net.minecraft.world.level.Level world = ((CraftWorld) block.getWorld()).getHandle();
         BlockPos position = ((CraftBlock) block).getPosition();
-        data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), data.getValue(DirectionalBlock.FACING), position));
+        data.use(world, null, null, BlockHitResult.miss(data.getOffset(world, position), direction, position));
     }
 
     @Override
