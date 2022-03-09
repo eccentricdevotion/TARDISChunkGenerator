@@ -18,11 +18,11 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.custombiome.*;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISDatapackUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
+import me.eccentric_nz.tardischunkgenerator.worldgen.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -87,29 +87,22 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void onEnable() {
         tardisHelper = this;
+        saveDefaultConfig();
         // get TARDIS plugin directory
         String basePath = getServer().getWorldContainer() + File.separator + "plugins" + File.separator + "TARDIS" + File.separator;
         // get the TARDIS config
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(new File(basePath + "config.yml"));
-        // should we update the datapacks?
-        if (!configuration.getBoolean("conversions.datapacks_1_18")) {
-            // update datapacks!
-            TARDISDatapackUpdater updater = new TARDISDatapackUpdater(this);
-            updater.updateDimension("gallifrey");
-            updater.updateDimension("siluria");
-            updater.updateDimension("skaro");
-        }
         // get server default world name
         String levelName = BiomeUtilities.getLevelName();
         // load custom biomes if they are enabled
         FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
         boolean aPlanetIsEnabled = false;
-        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
+        if (planets.getBoolean("planets.gallifrey.enabled")) {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Gallifrey...");
             CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
             aPlanetIsEnabled = true;
         }
-        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
+        if (planets.getBoolean("planets.skaro.enabled")) {
             getServer().getConsoleSender().sendMessage(messagePrefix + "Adding custom biome for planet Skaro...");
             CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
             aPlanetIsEnabled = true;
@@ -128,6 +121,21 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        if (id != null) {
+            if (id.equalsIgnoreCase("flat")) {
+                return new FlatGenerator(this);
+            }
+            if (id.equalsIgnoreCase("gallifrey")) {
+                return new GallifreyGenerator();
+            }
+            if (id.equalsIgnoreCase("siluria")) {
+                return new SiluriaGenerator();
+            }
+            if (id.equalsIgnoreCase("skaro")) {
+                return new SkaroGenerator();
+            }
+            return new TARDISChunkGenerator();
+        }
         return new TARDISChunkGenerator();
     }
 
@@ -208,8 +216,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 // rename the directory
                 File directory = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + oldName);
                 File folder = new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + newName);
-                directory.renameTo(folder);
-                Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed directory to " + newName);
+                if (directory.renameTo(folder)) {
+                    Bukkit.getLogger().log(Level.INFO, messagePrefix + "Renamed directory to " + newName);
+                }
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, messagePrefix + ex.getMessage());
             }
@@ -266,7 +275,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 String wt = data.getString("generatorName");
                 worldType = switch (wt.toLowerCase(Locale.ROOT)) {
                     case "flat" -> WorldType.FLAT;
-                    case "largeBiomes" -> WorldType.LARGE_BIOMES;
+                    case "largebiomes" -> WorldType.LARGE_BIOMES;
                     case "amplified" -> WorldType.AMPLIFIED;
                     default -> WorldType.NORMAL; // default or unknown
                 };
@@ -363,6 +372,17 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public Location searchBiome(World world, Biome biome, Player player, Location policeBox) {
         return BiomeUtilities.searchBiome(world, biome, player, policeBox);
+    }
+
+    @Override
+    public void addCustomBiome(String biome) {
+        CustomBiomeData data;
+        if (biome.equalsIgnoreCase("gallifrey")) {
+            data = TARDISBiomeData.BADLANDS;
+        } else {
+            data = TARDISBiomeData.DESERT;
+        }
+        CustomBiome.addCustomBiome(data);
     }
 
     @Override

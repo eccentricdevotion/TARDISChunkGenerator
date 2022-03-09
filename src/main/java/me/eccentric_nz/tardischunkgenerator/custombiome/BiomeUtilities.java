@@ -1,7 +1,9 @@
 package me.eccentric_nz.tardischunkgenerator.custombiome;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -39,13 +41,12 @@ public class BiomeUtilities {
 
     public static void addBiomes(String basePath, String messagePrefix) {
         // get the TARDIS planets config
-        String levelName = getLevelName();
         FileConfiguration planets = YamlConfiguration.loadConfiguration(new File(basePath + "planets.yml"));
-        if (planets.getBoolean("planets." + levelName + "_tardis_gallifrey.enabled")) {
+        if (planets.getBoolean("planets.gallifrey.enabled")) {
             Bukkit.getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Gallifrey...");
             CustomBiome.addCustomBiome(TARDISBiomeData.BADLANDS);
         }
-        if (planets.getBoolean("planets." + levelName + "_tardis_skaro.enabled")) {
+        if (planets.getBoolean("planets.skaro.enabled")) {
             Bukkit.getConsoleSender().sendMessage(messagePrefix + "Adding custom biomes for planet Skaro...");
             CustomBiome.addCustomBiome(TARDISBiomeData.DESERT);
         }
@@ -57,12 +58,12 @@ public class BiomeUtilities {
         Optional<Biome> optional = commandListenerWrapper.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(new ResourceLocation
                 (biome.getKey().getKey()));
         if (optional.isPresent()) {
-            Biome biomeBase = optional.get();
+            Holder<Biome> biomeHolder = Holder.direct(optional.get());
             Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
             BlockPos startPosition = new BlockPos(vector);
-            BlockPos biomePosition = worldServer.findNearestBiome(biomeBase, startPosition, 6400, 8);
+            Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findNearestBiome((b) -> b == biomeHolder, startPosition, 6400, 8);
             if (biomePosition != null) {
-                return new Location(world, biomePosition.getX(), biomePosition.getY(), biomePosition.getZ());
+                return new Location(world, biomePosition.getFirst().getX(), biomePosition.getFirst().getY(), biomePosition.getFirst().getZ());
             }
         }
         return null;

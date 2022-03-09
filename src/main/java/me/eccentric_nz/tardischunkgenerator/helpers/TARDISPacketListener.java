@@ -20,6 +20,7 @@ import io.netty.channel.*;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiseTracker;
 import me.eccentric_nz.tardischunkgenerator.disguise.TARDISDisguiser;
+import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.world.level.biome.Biome;
@@ -72,16 +73,16 @@ public class TARDISPacketListener {
                 }
                 if (TARDISHelper.colourSkies && packet instanceof ClientboundLevelChunkWithLightPacket chunkPacket) {
                     String world = player.getWorld().getName();
-                    if (world.endsWith("_tardis_gallifrey") || world.endsWith("_tardis_skaro")) {
+                    if (world.equals("gallifrey") || world.equals("skaro")) {
                         LevelChunk levelChunk = cloneChunk(((CraftChunk) player.getWorld().getChunkAt(chunkPacket.getX(), chunkPacket.getZ())).getHandle());
-                        String key = (world.endsWith("_tardis_gallifrey")) ? "gallifrey_badlands" : "skaro_desert";
+                        String key = (world.endsWith("gallifrey")) ? "gallifrey_badlands" : "skaro_desert";
                         Biome biome = TARDISHelper.biomeMap.get(key);
                         if (biome != null) {
                             for (LevelChunkSection section : levelChunk.getSections()) {
                                 for (int x = 0; x < 4; ++x) {
                                     for (int z = 0; z < 4; ++z) {
                                         for (int y = 0; y < 4; ++y) {
-                                            section.setBiome(x, y, z, biome);
+                                            section.setBiome(x, y, z, Holder.direct(biome));
                                         }
                                     }
                                 }

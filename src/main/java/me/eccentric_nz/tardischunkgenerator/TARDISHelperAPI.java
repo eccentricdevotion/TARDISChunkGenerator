@@ -196,6 +196,13 @@ public interface TARDISHelperAPI {
     Location searchBiome(World world, Biome biome, Player player, Location policeBox);
 
     /**
+     * Add a custom biome to the server
+     *
+     * @param biome the key of the biome to set e.g. tardis:gallifrey_badlands
+     */
+    void addCustomBiome(String biome);
+
+    /**
      * Set a chunk to a custom biome
      *
      * @param biome the key of the biome to set e.g. tardis:gallifrey_badlands

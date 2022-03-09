@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator;
+package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,7 +30,7 @@ import java.util.Random;
 public class TARDISChunkGenerator extends ChunkGenerator {
 
     /**
-     * Generates an empty world!
+     * Generates an empty void world!
      */
     @Override
     public boolean shouldGenerateNoise() {
@@ -71,7 +71,7 @@ public class TARDISChunkGenerator extends ChunkGenerator {
      * Sets the entire world to the VOID biome
      *
      * @param worldInfo
-     * @return
+     * @return the Void biome provider
      */
     @Override
     public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
