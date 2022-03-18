@@ -125,6 +125,9 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             if (id.equalsIgnoreCase("flat")) {
                 return new FlatGenerator(this);
             }
+            if (id.equalsIgnoreCase("water")) {
+                return new WaterGenerator();
+            }
             if (id.equalsIgnoreCase("gallifrey")) {
                 return new GallifreyGenerator();
             }
