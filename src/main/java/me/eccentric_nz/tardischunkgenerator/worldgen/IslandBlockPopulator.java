@@ -1,6 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
-import org.bukkit.Bukkit;
+import com.mojang.datafixers.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -8,90 +8,95 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.LimitedRegion;
 import org.bukkit.generator.WorldInfo;
 
+import java.util.NavigableMap;
 import java.util.Random;
-import java.util.logging.Level;
+import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class IslandBlockPopulator extends BlockPopulator {
 
-    private final int chance = 1;
+    private final WeightedChoice<Material> stones = new WeightedChoice<Material>().add(60, Material.STONE).add(10, Material.ANDESITE).add(10, Material.DIORITE).add(10, Material.GRANITE).add(10, Material.COAL_ORE);
+    private final WeightedChoice<Material> dirts = new WeightedChoice<Material>().add(70, Material.DIRT).add(10, Material.GRAVEL).add(20, Material.COARSE_DIRT);
+    private final WeightedChoice<Material> flora = new WeightedChoice<Material>().add(70, Material.GRASS).add(10, Material.RED_TULIP).add(10, Material.OXEYE_DAISY).add(10, Material.CORNFLOWER);
 
     @Override
     public void populate(WorldInfo worldInfo, Random random, int x, int z, LimitedRegion limitedRegion) {
-        Bukkit.getLogger().log(Level.INFO, "Chunk coords: " + x + ", " + z);
-        if ((x == 0 && z == 0) || random.nextInt(100) < chance) {
-            Bukkit.getLogger().log(Level.INFO, "Making an island?");
-            // make an island ?
-            int randomX = x * 16 + random.nextInt(16);
-            int randomZ = z * 16 + random.nextInt(16);
-            int y = 91;
-
-            Material material;
-            if (random.nextInt(100) < 90) {
-                material = Material.DIRT;
-            } else {
-                material = Material.STONE;
-            }
-            limitedRegion.setType(randomX + 8, y, randomZ + 8, material);
-
-            boolean[] booleans = new boolean[2048];
-            int r = random.nextInt(4) + 4;
-            int j, j1, k1;
-
-            for (j = 0; j < r; ++j) {
-                double d0 = random.nextDouble() * 6.0D + 3.0D;
-                double d1 = random.nextDouble() * 4.0D + 2.0D;
-                double d2 = random.nextDouble() * 6.0D + 3.0D;
-                double d3 = random.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
-                double d4 = random.nextDouble() * (8.0D - d1 - 4.0D) + 2.0D + d1 / 2.0D;
-                double d5 = random.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
-
-                for (int k = 1; k < 15; ++k) {
-                    for (int l = 1; l < 15; ++l) {
-                        for (int i1 = 0; i1 < 7; ++i1) {
-                            double d6 = (k - d3) / (d0 / 2.0D);
-                            double d7 = (i1 - d4) / (d1 / 2.0D);
-                            double d8 = (l - d5) / (d2 / 2.0D);
-                            double d9 = d6 * d6 + d7 * d7 + d8 * d8;
-                            if (d9 < 1.0D) {
-                                booleans[(k * 16 + l) * 8 + i1] = true;
-                            }
-                        }
-                    }
-                }
-            }
-            for (j = 0; j < 16; ++j) {
-                for (k1 = 0; k1 < 16; ++k1) {
-                    for (j1 = 0; j1 < 8; ++j1) {
-                        if (booleans[(j * 16 + k1) * 8 + j1]) {
-                            limitedRegion.setType(randomX + j, y + j1, randomZ + k1, (j1 > 4 ? Material.AIR : material));
-                        }
-                    }
-                }
-            }
-            for (j = 0; j < 16; ++j) {
-                for (k1 = 0; k1 < 16; ++k1) {
-                    for (j1 = 4; j1 < 8; ++j1) {
-                        if (booleans[(j * 16 + k1) * 8 + j1]) {
-                            int X1 = randomX + j;
-                            int Y1 = y + j1 - 1;
-                            int Z1 = randomZ + k1;
-                            if (limitedRegion.getType(X1, Y1, Z1) == Material.DIRT) {
-                                limitedRegion.setType(X1, Y1, Z1, Material.GRASS_BLOCK);
-                            }
-                        }
-                    }
-                }
-            }
-            int treeX = x * 16 + random.nextInt(16);
-            int treeZ = z * 16 + random.nextInt(16);
+        if ((x == 0 && z == 0) || random.nextInt(1000) < 1) {
+            // make an island
+            // get a spiral
+            IslandSpiral spiral = new IslandSpiral();
+            double[][] island = spiral.createMatrix(16, 16, random, 0.01);
+            // set starting values
+            int starty = 95;
+            int startx = x * 16;
+            int startz = z * 16;
+            // get tree position
+            Pair<Integer, Integer> treePos = spiral.getTreePosition();
+            int treeX = treePos.getFirst();
+            int treeZ = treePos.getSecond();
             int treeY = 95;
-            if (!limitedRegion.isInRegion(treeX, treeY, treeZ)) {
-                Bukkit.getLogger().log(Level.INFO, "Location (" + treeX + "," + treeY + "," + treeZ + ") is not in limited region!");
-                return;
+            // loop through the chunk coords and set blocks
+            // top layer grass
+            // three layers of dirt
+            // the rest stone
+            for (int r = 1; r < 15; r++) {
+                for (int c = 1; c < 15; c++) {
+                    if (WaterCircle.MASK[r][c]) {
+                        double n = island[r][c];
+                        int top = (n > 0) ? (int) (n * 6) : 0;
+                        if (r == treeX && c == treeZ) {
+                            treeY = starty + top + 1;
+                        }
+                        int bottom = -6 - (int) (n * 40);
+                        for (int h = top; h >= bottom; h--) {
+                            int wx = startx + r;
+                            int wy = starty + h;
+                            int wz = startz + c;
+                            if (limitedRegion.isInRegion(wx, wy, wz)) {
+                                Material material;
+                                if (h == top) {
+                                    material = Material.GRASS_BLOCK;
+                                    if (random.nextInt(10) < 3) {
+                                        limitedRegion.setType(wx, wy + 1, wz, flora.next());
+                                    }
+                                } else if (h > top - 3) {
+                                    material = dirts.next();
+                                } else {
+                                    material = stones.next();
+                                }
+                                limitedRegion.setType(wx, wy, wz, material);
+                                System.out.print(".");
+                            }
+                        }
+                    }
+                }
             }
-            if (limitedRegion.isInRegion(treeX, treeY, treeZ)) {
-                limitedRegion.generateTree(new Location(null, treeX, treeY, treeZ), random, TreeType.TREE);
+            // try to add a tree
+            if (limitedRegion.isInRegion(startx + treeX, treeY, startx + treeZ)) {
+                if (!limitedRegion.generateTree(new Location(null, startx + treeX, treeY, startx + treeZ), random, TreeType.TREE)) {
+                    limitedRegion.setType(startx + treeX, treeY, startx + treeZ, Material.OAK_SAPLING);
+                }
             }
+        }
+    }
+
+    private static class WeightedChoice<E> {
+
+        private final NavigableMap<Double, E> map = new TreeMap<>();
+        private double total = 0;
+
+        public WeightedChoice<E> add(double weight, E result) {
+            if (weight <= 0) {
+                return this;
+            }
+            total += weight;
+            map.put(total, result);
+            return this;
+        }
+
+        public E next() {
+            double value = ThreadLocalRandom.current().nextDouble() * total;
+            return map.higherEntry(value).getValue();
         }
     }
 }
