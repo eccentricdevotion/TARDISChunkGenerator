@@ -20,7 +20,7 @@ An empty world.
 
 `TARDISChunkGenerator:gallifrey`
 
-Badlands biomes with custom sky colour and Time Lord structures.
+Badlands biomes with custom sky colour, trees and Time Lord structures.
 
 ![Gallifrey world](https://dl.dropboxusercontent.com/s/dkkpgbikptlewdz/gallifrey_world.jpg?dl=1)
 
@@ -36,7 +36,7 @@ Bamboo & sparse jungle biomes with custom Silurian structures.
 
 `TARDISChunkGenerator:skaro`
 
-Desert biome with custom sky colour and Dalek structures.
+Desert biome with custom sky colour, trees and Dalek structures.
 
 ![Skaro world](https://dl.dropboxusercontent.com/s/pz81stm32y1vd1w/skaro_world.jpg?dl=1)
 
