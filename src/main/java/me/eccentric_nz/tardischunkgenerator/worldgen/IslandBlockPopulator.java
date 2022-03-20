@@ -26,6 +26,8 @@ public class IslandBlockPopulator extends BlockPopulator {
             // get a spiral
             IslandSpiral spiral = new IslandSpiral();
             double[][] island = spiral.createMatrix(16, 16, random, 0.01);
+            // create a blob
+            boolean[][] blob = WaterCircle.makeBlob();
             // set starting values
             int starty = 95;
             int startx = x * 16;
@@ -41,7 +43,7 @@ public class IslandBlockPopulator extends BlockPopulator {
             // the rest stone
             for (int r = 1; r < 15; r++) {
                 for (int c = 1; c < 15; c++) {
-                    if (WaterCircle.MASK[r][c]) {
+                    if (blob[r][c]) {
                         double n = island[r][c];
                         int top = (n > 0) ? (int) (n * 6) : 0;
                         if (r == treeX && c == treeZ) {
@@ -73,7 +75,10 @@ public class IslandBlockPopulator extends BlockPopulator {
             }
             // try to add a tree
             if (limitedRegion.isInRegion(startx + treeX, treeY, startx + treeZ)) {
-                if (!limitedRegion.generateTree(new Location(null, startx + treeX, treeY, startx + treeZ), random, TreeType.TREE)) {
+                Location location = new Location(null, startx + treeX, treeY, startx + treeZ);
+                // always set a dirt block under the tree location
+                limitedRegion.setType(location.clone().add(0, -1, 0), Material.DIRT);
+                if (!limitedRegion.generateTree(location, random, TreeType.TREE)) {
                     limitedRegion.setType(startx + treeX, treeY, startx + treeZ, Material.OAK_SAPLING);
                 }
             }
