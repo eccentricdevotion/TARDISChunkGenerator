@@ -25,8 +25,8 @@ public class TARDISBiomeData {
             4187262,
             340757,
             10648061,
-            0,
-            0,
+            16750848, // foliage
+            16776960, // grass
             false
     );
 }
