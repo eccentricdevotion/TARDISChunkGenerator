@@ -71,7 +71,7 @@ public class GallifreyGenerator extends ChunkGenerator {
     /**
      * Sets the entire world to BADLANDS biomes
      *
-     * @param worldInfo
+     * @param worldInfo the information about this world
      * @return the Gallifrey biome provider
      */
     @Override

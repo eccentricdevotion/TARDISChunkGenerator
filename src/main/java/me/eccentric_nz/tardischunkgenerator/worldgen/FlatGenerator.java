@@ -56,6 +56,12 @@ public class FlatGenerator extends ChunkGenerator {
         }
     }
 
+    /**
+     * Sets the entire world to the PLAINS biome
+     *
+     * @param worldInfo the information about this world
+     * @return a biome provider with just PLAINS
+     */
     @Override
     public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
         return new FlatBiomeProvider();

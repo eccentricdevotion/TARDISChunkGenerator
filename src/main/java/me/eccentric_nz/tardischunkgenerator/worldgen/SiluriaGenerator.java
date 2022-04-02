@@ -66,7 +66,7 @@ public class SiluriaGenerator extends ChunkGenerator {
     /**
      * Sets the entire world to the BAMBOO_ & SPARSE_ JUNGLE biome
      *
-     * @param worldInfo
+     * @param worldInfo the information about this world
      * @return the Siluria biome provider
      */
     @Override

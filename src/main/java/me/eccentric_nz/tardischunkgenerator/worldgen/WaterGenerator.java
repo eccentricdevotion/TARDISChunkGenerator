@@ -101,6 +101,12 @@ public class WaterGenerator extends ChunkGenerator {
         return true;
     }
 
+    /**
+     * Sets the entire world to the OCEAN biomes
+     *
+     * @param worldInfo the information about this world
+     * @return the Water biome provider
+     */
     @Override
     public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
         return new WaterBiomeProvider();
