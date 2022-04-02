@@ -28,7 +28,7 @@ public class CustomBiome {
         Biome minecraftbiome = registrywritable.get(minecraftKey);
         Holder<Biome> biomeHolder = Holder.direct(minecraftbiome);
         Biome.BiomeBuilder newBiome = new Biome.BiomeBuilder();
-        newBiome.biomeCategory(minecraftbiome.getBiomeCategory(biomeHolder));
+        newBiome.biomeCategory(Biome.getBiomeCategory(biomeHolder));
         newBiome.precipitation(minecraftbiome.getPrecipitation());
         MobSpawnSettings biomeSettingMobs = minecraftbiome.getMobSettings();
         newBiome.mobSpawnSettings(biomeSettingMobs);
@@ -59,8 +59,7 @@ public class CustomBiome {
             Field isFrozen = materials.getClass().getDeclaredField("bL");
             isFrozen.setAccessible(true);
             isFrozen.set(materials, isLocked);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-
+        } catch (IllegalAccessException | NoSuchFieldException ignored) {
         }
     }
 }
