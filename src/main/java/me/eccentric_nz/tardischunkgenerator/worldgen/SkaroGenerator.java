@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
@@ -29,6 +30,12 @@ import java.util.List;
  * @author eccentric_nz
  */
 public class SkaroGenerator extends ChunkGenerator {
+
+    private final TARDISHelper plugin;
+
+    public SkaroGenerator(TARDISHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generates an empty world!
@@ -71,7 +78,7 @@ public class SkaroGenerator extends ChunkGenerator {
     /**
      * Sets the entire world to the DESERT biome
      *
-     * @param worldInfo
+     * @param worldInfo the information about this world
      * @return the Skaro biome provider
      */
     @Override
@@ -82,7 +89,8 @@ public class SkaroGenerator extends ChunkGenerator {
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
-        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.SKARO, 3));
+        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.SKARO, 4));
+        populators.add(new TARDISSkaroStructurePopulator(plugin));
         return populators;
     }
 }

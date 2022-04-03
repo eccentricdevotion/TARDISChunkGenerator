@@ -135,7 +135,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 return new SiluriaGenerator();
             }
             if (id.equalsIgnoreCase("skaro")) {
-                return new SkaroGenerator();
+                return new SkaroGenerator(this);
             }
             return new TARDISChunkGenerator();
         }
