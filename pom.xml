@@ -113,5 +113,18 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/MassiveCore.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>me.eccentric_nz.tardisweepingangels</groupId>
+            <artifactId>TARDISWeepingAngels</artifactId>
+            <version>3.5.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 </project>

@@ -3,6 +3,7 @@ package me.eccentric_nz.tardischunkgenerator.worldgen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.helpers.WeepingAngels;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.generator.BlockPopulator;
@@ -19,13 +21,14 @@ import org.bukkit.generator.WorldInfo;
 import org.bukkit.util.BlockVector;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.logging.Level;
 
 public class TARDISSkaroStructurePopulator extends BlockPopulator {
 
     private final TARDISHelper plugin;
+    private final List<EntityType> animals = Arrays.asList(EntityType.SHEEP, EntityType.COW, EntityType.PIG, EntityType.CHICKEN, EntityType.HORSE, EntityType.GOAT);
 
     public TARDISSkaroStructurePopulator(TARDISHelper plugin) {
         this.plugin = plugin;
@@ -46,7 +49,6 @@ public class TARDISSkaroStructurePopulator extends BlockPopulator {
                 }
             }
             if (limitedRegion.isInRegion(xx, y, zz)) {
-                plugin.getLogger().log(Level.INFO, "y-1 type = " + limitedRegion.getType(xx, y - 1, zz));
                 if (limitedRegion.getType(xx, y - 1, zz).equals(Material.WATER)) {
                     // build an island
                     // get a spiral
@@ -86,24 +88,27 @@ public class TARDISSkaroStructurePopulator extends BlockPopulator {
                     if (plugin.getServer().getPluginManager().getPlugin("TARDISWeepingAngels") != null && plugin.getServer().getPluginManager().getPlugin("TARDISWeepingAngels").isEnabled()) {
                         for (int i = 0; i < random.nextInt(3) + 1; i++) {
                             LivingEntity le = (LivingEntity) limitedRegion.spawnEntity(new Location(null, xx + 8, y + 3, zz + 8), EntityType.SKELETON);
-                            // TODO get TARDISWeepingAngels API and equip dalek
+                            if (plugin.getServer().getPluginManager().isPluginEnabled("TARDISWeepingAngels")) {
+                                WeepingAngels.getAPI().setDalekEquipment(le, false);
+                            }
                         }
                     }
                 } else {
                     build(limitedRegion, xx, y, zz, random, "large");
                     // have we got a 48 x 48 block buffer zone?
                     if (limitedRegion.getBuffer() > 15) {
-                        Set<BlockVector> grid;
+                        List<BlockVector> grid;
                         // choose a random direction
-                        switch (random.nextInt(4)) {
-                            case 0 -> grid = SkaroStructureUtility.vectorUp;
-                            case 1 -> grid = SkaroStructureUtility.vectorLeft;
-                            case 2 -> grid = SkaroStructureUtility.vectorDown;
-                            default -> grid = SkaroStructureUtility.vectorRight;
+                        int dir = random.nextInt(4);
+                        switch (dir) {
+                            case 0 -> grid = SkaroStructureUtility.vectorLeft;
+                            case 1 -> grid = SkaroStructureUtility.vectorUp;
+                            case 2 -> grid = SkaroStructureUtility.vectorRight;
+                            default -> grid = SkaroStructureUtility.vectorDown;
                         }
                         int i = 0;
                         for (BlockVector vector : grid) {
-                            build(limitedRegion, xx + vector.getBlockX(), y, zz + vector.getBlockZ(), random, SkaroStructureUtility.structures.get(i));
+                            build(limitedRegion, xx + vector.getBlockX(), (i == 0) ? y : -99, zz + vector.getBlockZ(), random, SkaroStructureUtility.structures.get(i));
                             i++;
                         }
                     }
@@ -129,6 +134,18 @@ public class TARDISSkaroStructurePopulator extends BlockPopulator {
         int d = dimensions.get("length").getAsInt() - 1;
         int level = 0;
         int row = 0;
+        if (startY == -99) {
+            startY = 129;
+            // set startY to highest block Y at x, z
+            for (int i = 128; i > 60; i--) {
+                if (!limitedRegion.getType(startX, startY, startZ).equals(Material.SAND) && !limitedRegion.getType(startX, startY, startZ).equals(Material.WATER)) {
+                    startY--;
+                } else {
+                    break;
+                }
+            }
+            startY += 1;
+        }
         // get input array
         JsonArray arr = obj.get("input").getAsJsonArray();
         while (level <= h && row < w) {
@@ -142,35 +159,49 @@ public class TARDISSkaroStructurePopulator extends BlockPopulator {
                 int z = startZ + col;
                 BlockData data = plugin.getServer().createBlockData(c.get("data").getAsString());
                 Material type = data.getMaterial();
-                switch (type) {
-                    case CHEST -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        if (limitedRegion.getType(x, y, z).equals(Material.CHEST)) {
-                            // set chest contents
-                            Chest container = (Chest) limitedRegion.getBlockState(x, y, z);
-                            container.setLootTable(TARDISLootTables.LOOT.get(random.nextInt(11)));
-                            container.update();
+                if (limitedRegion.isInRegion(x, y, z)) {
+                    switch (type) {
+                        case CHEST -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            if (limitedRegion.getType(x, y, z).equals(Material.CHEST)) {
+                                // set chest contents
+                                Chest container = (Chest) limitedRegion.getBlockState(x, y, z);
+                                container.setLootTable(TARDISLootTables.LOOT.get(random.nextInt(11)));
+                                container.update();
+                            }
                         }
-                    }
-                    case SPONGE -> {
-                        if (!limitedRegion.getType(x, y, z).isOccluding()) {
-                            limitedRegion.setType(x, y, z, Material.AIR);
+                        case SPONGE -> {
+                            if (!limitedRegion.getType(x, y, z).isOccluding()) {
+                                limitedRegion.setType(x, y, z, Material.AIR);
+                            }
                         }
-                    }
-                    case SPAWNER -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        CreatureSpawner cs = (CreatureSpawner) limitedRegion.getBlockState(x, y, z);
-                        cs.setSpawnedType(EntityType.SKELETON);
-                        cs.update();
-                    }
-                    default -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        if (level == 0) {
-                            // place sand under block if it is not AIR
-                            int yy = y - 1;
-                            while (limitedRegion.getType(x, yy, z).isAir() || limitedRegion.getType(x, yy, z).equals(Material.WATER)) {
-                                limitedRegion.setType(x, yy, z, Material.SAND);
-                                yy--;
+                        case SPAWNER -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            CreatureSpawner cs = (CreatureSpawner) limitedRegion.getBlockState(x, y, z);
+                            cs.setSpawnedType(EntityType.SKELETON);
+                            cs.update();
+                        }
+                        case SOUL_SAND -> {
+                            limitedRegion.setType(x, y, z, Material.GRASS_BLOCK);
+                            // spawn an animal or three at this location
+                            EntityType entityType = animals.get(random.nextInt(animals.size()));
+                            for (int i = 0; i < random.nextInt(3) + 1; i++) {
+                                LivingEntity le = (LivingEntity) limitedRegion.spawnEntity(new Location(null, x, y + 1, z), entityType);
+                                // if more than one, make a baby
+                                if (i > 0) {
+                                    ((Ageable) le).setBaby();
+                                }
+                            }
+                        }
+                        default -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            if (level == 0) {
+                                // place sand under block if it is not AIR
+                                int yy = y - 1;
+                                while (limitedRegion.getType(x, yy, z).isAir() || limitedRegion.getType(x, yy, z).equals(Material.WATER)) {
+                                    limitedRegion.setType(x, yy, z, Material.SAND);
+                                    yy--;
+                                }
                             }
                         }
                     }
