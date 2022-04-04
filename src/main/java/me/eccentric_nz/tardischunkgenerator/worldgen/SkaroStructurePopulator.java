@@ -25,12 +25,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class TARDISSkaroStructurePopulator extends BlockPopulator {
+public class SkaroStructurePopulator extends BlockPopulator {
 
     private final TARDISHelper plugin;
     private final List<EntityType> animals = Arrays.asList(EntityType.SHEEP, EntityType.COW, EntityType.PIG, EntityType.CHICKEN, EntityType.HORSE, EntityType.GOAT);
 
-    public TARDISSkaroStructurePopulator(TARDISHelper plugin) {
+    public SkaroStructurePopulator(TARDISHelper plugin) {
         this.plugin = plugin;
     }
 
@@ -187,6 +187,7 @@ public class TARDISSkaroStructurePopulator extends BlockPopulator {
                             EntityType entityType = animals.get(random.nextInt(animals.size()));
                             for (int i = 0; i < random.nextInt(3) + 1; i++) {
                                 LivingEntity le = (LivingEntity) limitedRegion.spawnEntity(new Location(null, x, y + 1, z), entityType);
+                                le.setRemoveWhenFarAway(false);
                                 // if more than one, make a baby
                                 if (i > 0) {
                                     ((Ageable) le).setBaby();

@@ -90,7 +90,7 @@ public class SkaroGenerator extends ChunkGenerator {
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
         populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.SKARO, 4));
-        populators.add(new TARDISSkaroStructurePopulator(plugin));
+        populators.add(new SkaroStructurePopulator(plugin));
         return populators;
     }
 }

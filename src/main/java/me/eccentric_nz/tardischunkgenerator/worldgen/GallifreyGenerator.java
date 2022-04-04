@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
@@ -29,6 +30,12 @@ import java.util.List;
  * @author eccentric_nz
  */
 public class GallifreyGenerator extends ChunkGenerator {
+
+    private final TARDISHelper plugin;
+
+    public GallifreyGenerator(TARDISHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generates an empty world!
@@ -84,6 +91,7 @@ public class GallifreyGenerator extends ChunkGenerator {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
         populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_SAND, 0));
         populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_TERRACOTTA, 4));
+        populators.add(new GallifreyStructurePopulator(plugin));
         return populators;
     }
 }
