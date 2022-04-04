@@ -107,33 +107,35 @@ public class GallifreyStructurePopulator extends BlockPopulator {
                 int z = startZ + col;
                 data = plugin.getServer().createBlockData(c.get("data").getAsString());
                 type = data.getMaterial();
-                switch (type) {
-                    case CHEST -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        if (limitedRegion.getType(x, y, z).equals(Material.CHEST)) {
-                            // set chest contents
-                            Chest container = (Chest) limitedRegion.getBlockState(x, y, z);
-                            container.setLootTable(TARDISLootTables.LOOT.get(random.nextInt(11)));
-                            container.update();
+                if (limitedRegion.isInRegion(x, y, z)) {
+                    switch (type) {
+                        case CHEST -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            if (limitedRegion.getType(x, y, z).equals(Material.CHEST)) {
+                                // set chest contents
+                                Chest container = (Chest) limitedRegion.getBlockState(x, y, z);
+                                container.setLootTable(TARDISLootTables.LOOT.get(random.nextInt(11)));
+                                container.update();
+                            }
                         }
-                    }
-                    case SPONGE -> {
-                        // don't set a block, let the default generated blocks stay as they are
-                    }
-                    case SPAWNER -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        CreatureSpawner cs = (CreatureSpawner) limitedRegion.getBlockState(x, y, z);
-                        cs.setSpawnedType(EntityType.VILLAGER);
-                        cs.update();
-                    }
-                    default -> {
-                        limitedRegion.setBlockData(x, y, z, data);
-                        if (level == 0) {
-                            // place red sand under block if it is AIR
-                            int yy = y - 1;
-                            while (limitedRegion.getType(x, yy, z).isAir() || limitedRegion.getType(x, yy, z).equals(Material.WATER)) {
-                                limitedRegion.setType(x, yy, z, Material.RED_SAND);
-                                yy--;
+                        case SPONGE -> {
+                            // don't set a block, let the default generated blocks stay as they are
+                        }
+                        case SPAWNER -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            CreatureSpawner cs = (CreatureSpawner) limitedRegion.getBlockState(x, y, z);
+                            cs.setSpawnedType(EntityType.VILLAGER);
+                            cs.update();
+                        }
+                        default -> {
+                            limitedRegion.setBlockData(x, y, z, data);
+                            if (level == 0) {
+                                // place red sand under block if it is AIR
+                                int yy = y - 1;
+                                while (limitedRegion.getType(x, yy, z).isAir() || limitedRegion.getType(x, yy, z).equals(Material.WATER)) {
+                                    limitedRegion.setType(x, yy, z, Material.RED_SAND);
+                                    yy--;
+                                }
                             }
                         }
                     }

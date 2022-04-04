@@ -36,7 +36,7 @@ public class GallifeyStructureUtility {
         // down
         vectorDown.add(new BlockVector(-14, -4, -4)); // large
         vectorDown.add(new BlockVector(-11, 0, -15)); // farm
-        vectorDown.add(new BlockVector(-20, 0, -13)); // house
+        vectorDown.add(new BlockVector(20, 0, -13)); // house
         vectorDown.add(new BlockVector(25, 0, 3)); // water feature
         vectorDown.add(new BlockVector(21, 0, 21)); // temple
     }
