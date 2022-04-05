@@ -89,7 +89,8 @@ public class GallifreyGenerator extends ChunkGenerator {
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
-        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_SAND, 0));
+        populators.add(new GallifreyGrassPopulator());
+        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_SAND, 4));
         populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_TERRACOTTA, 4));
         populators.add(new GallifreyStructurePopulator(plugin));
         return populators;
