@@ -132,7 +132,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
                 return new GallifreyGenerator(this);
             }
             if (id.equalsIgnoreCase("siluria")) {
-                return new SiluriaGenerator();
+                return new SiluriaGenerator(this);
             }
             if (id.equalsIgnoreCase("skaro")) {
                 return new SkaroGenerator(this);

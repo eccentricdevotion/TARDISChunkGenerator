@@ -16,14 +16,25 @@
  */
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
+import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
+import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
+
+import java.util.List;
 
 /**
  * @author eccentric_nz
  */
 public class SiluriaGenerator extends ChunkGenerator {
+
+    private final TARDISHelper plugin;
+
+    public SiluriaGenerator(TARDISHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generates an empty world!
@@ -72,5 +83,12 @@ public class SiluriaGenerator extends ChunkGenerator {
     @Override
     public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
         return new SiluriaBiomeProvider();
+    }
+
+    @Override
+    public List<BlockPopulator> getDefaultPopulators(World world) {
+        List<BlockPopulator> populators = super.getDefaultPopulators(world);
+        populators.add(new SiluriaStructurePopulator(plugin));
+        return populators;
     }
 }
