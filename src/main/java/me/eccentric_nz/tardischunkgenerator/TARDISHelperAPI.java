@@ -190,10 +190,9 @@ public interface TARDISHelperAPI {
      *
      * @param world     the world to search in
      * @param biome     the biome to search for
-     * @param player    the player who is searching
      * @param policeBox the location of the TARDIS exterior
      */
-    Location searchBiome(World world, Biome biome, Player player, Location policeBox);
+    Location searchBiome(World world, Biome biome, Location policeBox);
 
     /**
      * Add a custom biome to the server

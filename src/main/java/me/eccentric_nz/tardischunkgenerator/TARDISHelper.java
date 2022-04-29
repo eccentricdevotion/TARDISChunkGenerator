@@ -373,8 +373,8 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     }
 
     @Override
-    public Location searchBiome(World world, Biome biome, Player player, Location policeBox) {
-        return BiomeUtilities.searchBiome(world, biome, player, policeBox);
+    public Location searchBiome(World world, Biome biome, Location policeBox) {
+        return BiomeUtilities.searchBiome(world, biome, policeBox);
     }
 
     @Override

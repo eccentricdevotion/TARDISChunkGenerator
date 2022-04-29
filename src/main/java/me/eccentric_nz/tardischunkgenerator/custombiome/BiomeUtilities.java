@@ -1,11 +1,10 @@
 package me.eccentric_nz.tardischunkgenerator.custombiome;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
@@ -14,15 +13,14 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Properties;
 
 public class BiomeUtilities {
@@ -52,19 +50,15 @@ public class BiomeUtilities {
         }
     }
 
-    public static Location searchBiome(World world, org.bukkit.block.Biome biome, Player player, Location policeBox) {
+    public static Location searchBiome(World world, org.bukkit.block.Biome biome, Location policeBox) {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        CommandSourceStack commandListenerWrapper = ((CraftPlayer) player).getHandle().createCommandSourceStack();
-        Optional<Biome> optional = commandListenerWrapper.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(new ResourceLocation
-                (biome.getKey().getKey()));
-        if (optional.isPresent()) {
-            Holder<Biome> biomeHolder = Holder.direct(optional.get());
-            Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
-            BlockPos startPosition = new BlockPos(vector);
-            Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findNearestBiome((b) -> b == biomeHolder, startPosition, 6400, 8);
-            if (biomePosition != null) {
-                return new Location(world, biomePosition.getFirst().getX(), biomePosition.getFirst().getY(), biomePosition.getFirst().getZ());
-            }
+        Registry<Biome> biomeRegistry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
+        Holder<Biome> biomeHolder = biomeRegistry.getHolderOrThrow(ResourceKey.create(Registry.BIOME_REGISTRY, CraftNamespacedKey.toMinecraft(biome.getKey())));
+        Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
+        BlockPos startPosition = new BlockPos(vector);
+        Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findNearestBiome((b) -> b == biomeHolder, startPosition, 6400, 8);
+        if (biomePosition != null) {
+            return new Location(world, biomePosition.getFirst().getX(), biomePosition.getFirst().getY(), biomePosition.getFirst().getZ());
         }
         return null;
     }
