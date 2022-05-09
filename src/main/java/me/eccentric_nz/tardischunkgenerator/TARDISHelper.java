@@ -19,6 +19,7 @@ package me.eccentric_nz.tardischunkgenerator;
 import me.eccentric_nz.tardischunkgenerator.custombiome.*;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
+import me.eccentric_nz.tardischunkgenerator.helpers.TARDISItemFrameFaker;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
@@ -54,13 +55,11 @@ import org.bukkit.craftbukkit.v1_18_R2.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftVillager;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -455,6 +454,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         entries.add(uuid, GossipType.MINOR_POSITIVE, reputation[GossipType.MINOR_POSITIVE.ordinal()]);
         entries.add(uuid, GossipType.MAJOR_POSITIVE, reputation[GossipType.MAJOR_POSITIVE.ordinal()]);
         entries.add(uuid, GossipType.TRADING, reputation[GossipType.TRADING.ordinal()]);
+    }
+
+    @Override
+    public int castFakeItemFrame(ItemFrame frame, Player player, Vector location) {
+        return TARDISItemFrameFaker.cast(frame, player, location);
+    }
+
+    @Override
+    public void removeFakeItemFrame(int id, Player player) {
+        TARDISItemFrameFaker.remove(id, player);
     }
 
     /**

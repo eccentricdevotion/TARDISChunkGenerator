@@ -23,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.map.MapView;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.UUID;
@@ -252,4 +253,20 @@ public interface TARDISHelperAPI {
      * Set Player reputation for a Villager
      */
     void setReputation(Villager villager, UUID uuid, int[] reputation);
+
+    /**
+     * Spawn a fake item frame to display the interior TARDIS time rotor.
+     *
+     * @param frame  the ItemFrame to cast
+     * @param player the player to send the spawn packet to
+     */
+    int castFakeItemFrame(ItemFrame frame, Player player, Vector location);
+
+    /**
+     * Remove a fake item frame.
+     *
+     * @param id     the id of the entity to remove
+     * @param player the player to send the destroy packet to
+     */
+    void removeFakeItemFrame(int id, Player player);
 }
