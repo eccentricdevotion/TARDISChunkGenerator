@@ -381,5 +381,18 @@ public class CubicMaterial {
             Material.YELLOW_STAINED_GLASS_PANE,
             Material.YELLOW_TERRACOTTA,
             Material.YELLOW_WOOL
+            // 1.19 blocks
+//             Material.MANGROVE_LOG,
+//             Material.MANGROVE_PLANKS,
+//             Material.MANGROVE_ROOTS,
+//             Material.MANGROVE_WOOD,
+//             Material.MUDDY_MANGROVE_ROOTS,
+//             Material.MUD,
+//             Material.MUD_BRICKS,
+//             Material.PACKED_MUD,
+//             Material.OCHRE_FROGLIGHT,
+//             Material.PEARLESCENT_FROGLIGHT,
+//             Material.VERDANT_FROGLIGHT,
+//             Material.REINFORCED_DEEPSLATE
     );
 }
