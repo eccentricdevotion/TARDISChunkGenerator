@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftItemFrame;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
@@ -41,7 +40,6 @@ public class TARDISItemFrameFaker {
     }
 
     public static void remove(int id, Player player) {
-        Bukkit.getLogger().log(java.util.logging.Level.INFO, "frame id for removal = " + id);
         if (player != null && player.isOnline()) {
             ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(id);
             Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
