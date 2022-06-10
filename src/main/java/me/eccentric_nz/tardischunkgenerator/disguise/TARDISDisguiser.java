@@ -17,7 +17,8 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -26,7 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -67,7 +68,7 @@ public class TARDISDisguiser {
                     Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
                     if (mob != null) {
                         // set location
-                        setEntityLocationIdAndName(mob, p.getLocation(), p, nameVisible);
+                        setEntityLocationIdAndName(mob, p.getLocation(), p);
                         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(p.getEntityId());
                         ClientboundAddEntityPacket packetPlayOutSpawnLivingEntity = new ClientboundAddEntityPacket((LivingEntity) mob);
                         ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData(), false);
@@ -86,7 +87,7 @@ public class TARDISDisguiser {
         Entity mob = TARDISDisguise.createMobDisguise(disguise, world);
         if (mob != null) {
             // set location
-            setEntityLocationIdAndName(mob, player.getLocation(), player, nameVisible);
+            setEntityLocationIdAndName(mob, player.getLocation(), player);
             TARDISDisguiseTracker.DISGUISED_AS_MOB.put(player.getUniqueId(), new TARDISDisguise(disguise.getEntityType(), disguise.getOptions()));
             ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(player.getEntityId());
             ClientboundAddEntityPacket packetPlayOutSpawnLivingEntity = new ClientboundAddEntityPacket((LivingEntity) mob);
@@ -102,11 +103,11 @@ public class TARDISDisguiser {
         }
     }
 
-    private static void setEntityLocationIdAndName(Entity entity, Location location, Player player, boolean nameVisible) {
+    private static void setEntityLocationIdAndName(Entity entity, Location location, Player player) {
         entity.setPos(location.getX(), location.getY(), location.getZ());
         entity.setId(player.getEntityId());
-        if (nameVisible) {
-            entity.setCustomName(new TextComponent(player.getDisplayName()));
+        if (TARDISDisguiser.nameVisible) {
+            entity.setCustomName(MutableComponent.create(new LiteralContents(player.getDisplayName())));
             entity.setCustomNameVisible(true);
         }
         entity.setYRot(fixYaw(location.getYaw()));
@@ -125,7 +126,7 @@ public class TARDISDisguiser {
             TARDISDisguise disguise = new TARDISDisguise(entityType, options);
             entity = TARDISDisguise.createMobDisguise(disguise, location.getWorld());
             if (entity != null) {
-                setEntityLocationIdAndName(entity, location, player, nameVisible);
+                setEntityLocationIdAndName(entity, location, player);
             }
         }
     }

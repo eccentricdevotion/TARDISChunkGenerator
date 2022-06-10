@@ -28,10 +28,10 @@ import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -56,7 +56,7 @@ public class TARDISEPSDisguiser {
             Entity stand = nmsWorld.getEntity(map.getKey());
             if (stand != null && stand.getLevel().getWorld() == world) {
                 ServerPlayer entityPlayer = ((CraftPlayer) Bukkit.getOfflinePlayer(map.getValue())).getHandle();
-                ServerPlayer npc = new ServerPlayer(server, nmsWorld, entityPlayer.getGameProfile());
+                ServerPlayer npc = new ServerPlayer(server, nmsWorld, entityPlayer.getGameProfile(), null);
                 // set location
                 setEntityLocation(npc, new Location(world, stand.getX(), stand.getY(), stand.getZ()));
                 // send packets
@@ -103,7 +103,7 @@ public class TARDISEPSDisguiser {
         // set skin
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
-        npc = new ServerPlayer(server, world, entityPlayer.getGameProfile());
+        npc = new ServerPlayer(server, world, entityPlayer.getGameProfile(), null);
         // set location
         setEntityLocation(npc, location);
         // get Player equipment

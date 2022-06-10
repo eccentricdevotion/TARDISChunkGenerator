@@ -18,7 +18,8 @@ package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
@@ -33,9 +34,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.EntityType;
 
@@ -208,7 +209,7 @@ public class TARDISDisguise {
                     }
                     if (disguise.getEntityType().equals(EntityType.CAT) && o instanceof org.bukkit.entity.Cat.Type c) {
                         Cat cat = (Cat) entity;
-                        cat.setCatType(c.ordinal());
+                        cat.setCatVariant(Registry.CAT_VARIANT.byId(c.ordinal()));
                     }
                     if (disguise.getEntityType().equals(EntityType.FOX) && o instanceof FOX f) {
                         Fox fox = (Fox) entity;
@@ -237,14 +238,14 @@ public class TARDISDisguise {
                             }
                             case SHEEP -> {
                                 if (bool) {
-                                    entity.setCustomName(new TextComponent("jeb_"));
+                                    entity.setCustomName(MutableComponent.create(new LiteralContents(("jeb_"))));
                                     entity.setCustomNameVisible(true);
                                 }
                             }
                             case ENDERMAN -> {
                                 if (bool) {
                                     EnderMan enderman = (EnderMan) entity;
-                                    BlockState block = Blocks.PURPUR_BLOCK.defaultBlockState(); // iN = PURPUR_BLOCK
+                                    BlockState block = Blocks.PURPUR_BLOCK.defaultBlockState();
                                     enderman.setCarriedBlock(block);
                                 }
                             }
@@ -264,7 +265,7 @@ public class TARDISDisguise {
                                 if (bool) {
                                     Pillager pillager = (Pillager) entity;
                                     ItemStack crossbow = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(org.bukkit.Material.CROSSBOW));
-                                    pillager.setItemSlot(EquipmentSlot.MAINHAND, crossbow); // a = MAINHAND
+                                    pillager.setItemSlot(EquipmentSlot.MAINHAND, crossbow);
                                     pillager.performRangedAttack(pillager, 1.0f);
                                 }
                             }
@@ -272,7 +273,7 @@ public class TARDISDisguise {
                                 Llama llama = (Llama) entity;
                                 org.bukkit.inventory.ItemStack bukkitItemStack = new org.bukkit.inventory.ItemStack(CARPET.values()[ThreadLocalRandom.current().nextInt(16)].getCarpet());
                                 ItemStack nmsItemStack = CraftItemStack.asNMSCopy(bukkitItemStack);
-                                llama.inventory.setItem(1, nmsItemStack); // ce = inventoryChest
+                                llama.inventory.setItem(1, nmsItemStack);
                             }
                             default -> {
                             }
@@ -313,7 +314,8 @@ public class TARDISDisguise {
                 }
             }
             return entity;
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException |
+                 InvocationTargetException e) {
             Bukkit.getLogger().log(Level.SEVERE, TARDISHelper.messagePrefix + "~TARDISDisguise~ " + e.getMessage());
             e.printStackTrace();
         }

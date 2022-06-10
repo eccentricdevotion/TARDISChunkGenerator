@@ -120,7 +120,7 @@ public class SkaroStructurePopulator extends BlockPopulator {
 
     public boolean isFeatureChunk(long seed, int x, int z) {
         RandomSpreadStructurePlacement spread = new RandomSpreadStructurePlacement(24, 8, RandomSpreadType.TRIANGULAR, 165745295);
-        ChunkPos chunkPos = spread.getPotentialFeatureChunk(seed, x, z);
+        ChunkPos chunkPos = spread.getPotentialStructureChunk(seed, x, z);
         return chunkPos.x == x && chunkPos.z == z;
     }
 

@@ -77,7 +77,7 @@ public class SiluriaStructurePopulator extends BlockPopulator {
 
     public boolean isFeatureChunk(long seed, int x, int z) {
         RandomSpreadStructurePlacement spread = new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 14357620);
-        ChunkPos chunkPos = spread.getPotentialFeatureChunk(seed, x, z);
+        ChunkPos chunkPos = spread.getPotentialStructureChunk(seed, x, z);
         return chunkPos.x == x && chunkPos.z == z;
     }
 

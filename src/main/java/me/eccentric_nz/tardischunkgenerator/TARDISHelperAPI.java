@@ -179,14 +179,6 @@ public interface TARDISHelperAPI {
     void updateMap(World world, MapView mapView);
 
     /**
-     * Send an action bar message to a player
-     *
-     * @param player  the player to send the action bar to
-     * @param message the message to send
-     */
-    void sendActionBarMessage(Player player, String message);
-
-    /**
      * Search for a biome
      *
      * @param world     the world to search in

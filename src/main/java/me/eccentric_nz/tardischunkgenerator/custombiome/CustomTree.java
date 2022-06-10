@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -13,13 +14,13 @@ import net.minecraft.world.level.levelgen.feature.HugeFungusConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_18_R2.CraftRegionAccessor;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_19_R1.CraftRegionAccessor;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.block.data.CraftBlockData;
 import org.bukkit.generator.LimitedRegion;
 
 import java.util.Locale;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomTree {
 
@@ -50,7 +51,8 @@ public class CustomTree {
                     true
             )
     );
-    private static final Random random = new Random();
+
+    private static final RandomSource random = RandomSource.create();
 
     public static void grow(TARDISTree tree, Location location) {
         Holder<ConfiguredFeature<HugeFungusConfiguration, ?>> gen;
@@ -126,7 +128,7 @@ public class CustomTree {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 6;
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        String generatedString = ThreadLocalRandom.current().ints(leftLimit, rightLimit + 1)
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
@@ -134,7 +136,7 @@ public class CustomTree {
     }
 
     private static Material getRandomMaterial() {
-        return CubicMaterial.cubes.get(random.nextInt(CubicMaterial.cubes.size()));
+        return CubicMaterial.cubes.get(ThreadLocalRandom.current().nextInt(CubicMaterial.cubes.size()));
     }
 
     public enum TARDISTree {

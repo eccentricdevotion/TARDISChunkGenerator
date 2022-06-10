@@ -28,11 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
@@ -49,12 +46,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_18_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_19_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftVillager;
 import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
@@ -148,7 +144,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
             BlockPos bp = new BlockPos(block.getX(), block.getY(), block.getZ());
             BlockEntity tile = ws.getBlockEntity(bp);
             if (tile instanceof FurnaceBlockEntity furnace) {
-                furnace.setCustomName(new TextComponent(name));
+                furnace.setCustomName(MutableComponent.create(new LiteralContents((name))));
             }
         }
     }
@@ -358,17 +354,6 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void updateMap(World world, MapView mapView) {
         new TARDISMapUpdater(world, mapView.getCenterX(), mapView.getCenterZ()).update(mapView);
-    }
-
-    @Override
-    public void sendActionBarMessage(Player player, String message) {
-        Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
-        if (connection == null) {
-            return;
-        }
-        BaseComponent component = new TextComponent(message);
-        ClientboundChatPacket packet = new ClientboundChatPacket(component, ChatType.GAME_INFO, player.getUniqueId());
-        connection.send(packet);
     }
 
     @Override

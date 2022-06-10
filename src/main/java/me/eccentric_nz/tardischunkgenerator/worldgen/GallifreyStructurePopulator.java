@@ -66,7 +66,7 @@ public class GallifreyStructurePopulator extends BlockPopulator {
 
     public boolean isFeatureChunk(long seed, int x, int z) {
         RandomSpreadStructurePlacement spread = new RandomSpreadStructurePlacement(20, 10, RandomSpreadType.TRIANGULAR, 10387321);
-        ChunkPos chunkPos = spread.getPotentialFeatureChunk(seed, x, z);
+        ChunkPos chunkPos = spread.getPotentialStructureChunk(seed, x, z);
         return chunkPos.x == x && chunkPos.z == z;
     }
 

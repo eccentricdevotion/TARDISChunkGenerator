@@ -13,9 +13,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftNamespacedKey;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,7 +56,7 @@ public class BiomeUtilities {
         Holder<Biome> biomeHolder = biomeRegistry.getHolderOrThrow(ResourceKey.create(Registry.BIOME_REGISTRY, CraftNamespacedKey.toMinecraft(biome.getKey())));
         Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
         BlockPos startPosition = new BlockPos(vector);
-        Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findNearestBiome((b) -> b == biomeHolder, startPosition, 6400, 8);
+        Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findClosestBiome3d((b) -> b == biomeHolder, startPosition, 6400, 32, 64);
         if (biomePosition != null) {
             return new Location(world, biomePosition.getFirst().getX(), biomePosition.getFirst().getY(), biomePosition.getFirst().getZ());
         }
