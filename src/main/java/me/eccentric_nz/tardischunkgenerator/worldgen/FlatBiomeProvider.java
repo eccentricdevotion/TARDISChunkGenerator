@@ -1,6 +1,5 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
-import com.google.common.collect.Lists;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;
@@ -16,6 +15,6 @@ public class FlatBiomeProvider extends BiomeProvider {
 
     @Override
     public List<Biome> getBiomes(WorldInfo worldInfo) {
-        return Lists.newArrayList(Biome.PLAINS);
+        return List.of(Biome.PLAINS);
     }
 }
