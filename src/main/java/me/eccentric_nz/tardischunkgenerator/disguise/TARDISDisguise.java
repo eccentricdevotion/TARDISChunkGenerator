@@ -39,6 +39,7 @@ import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Frog;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -66,6 +67,21 @@ public class TARDISDisguise {
             case AXOLOTL -> {
                 str = "Axolotl";
                 packagePath += "animal.axolotl.";
+                hasEntityStr = false;
+            }
+            case ALLAY -> {
+                str = "Allay";
+                packagePath += "animal.allay.";
+                hasEntityStr = false;
+            }
+            case FROG, TADPOLE -> {
+                str = uppercaseFirst(disguise.getEntityType().toString());
+                packagePath += "animal.frog.";
+                hasEntityStr = false;
+            }
+            case WARDEN -> {
+                str = "Warden";
+                packagePath += "monster.warden.";
                 hasEntityStr = false;
             }
             case BAT -> {
@@ -179,6 +195,11 @@ public class TARDISDisguise {
                         net.minecraft.world.entity.animal.axolotl.Axolotl axolotl = (net.minecraft.world.entity.animal.axolotl.Axolotl) entity;
                         net.minecraft.world.entity.animal.axolotl.Axolotl.Variant variant = net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.values()[av.ordinal()];
                         axolotl.setVariant(variant);
+                    }
+                    if (disguise.getEntityType().equals(EntityType.FROG) && o instanceof Frog.Variant fv) {
+                        net.minecraft.world.entity.animal.frog.Frog frog = (net.minecraft.world.entity.animal.frog.Frog) entity;
+                        net.minecraft.world.entity.animal.FrogVariant variant = Registry.FROG_VARIANT.byId(fv.ordinal());
+                        frog.setVariant(variant);
                     }
                     if (disguise.getEntityType().equals(EntityType.RABBIT) && o instanceof org.bukkit.entity.Rabbit.Type rt) {
                         Rabbit rabbit = (Rabbit) entity;
