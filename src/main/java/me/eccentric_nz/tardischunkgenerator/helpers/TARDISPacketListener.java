@@ -97,7 +97,7 @@ public class TARDISPacketListener {
             }
         };
         ChannelPipeline pipeline = ((CraftPlayer) player).getHandle().connection.connection.channel.pipeline();
-        pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
+        pipeline.addBefore("packet_handler", player.getName() + "_tcg", channelDuplexHandler);
     }
 
     private static LevelChunk cloneChunk(LevelChunk chunk) {
