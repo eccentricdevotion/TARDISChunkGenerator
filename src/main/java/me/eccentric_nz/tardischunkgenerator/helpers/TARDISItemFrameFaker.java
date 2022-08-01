@@ -6,7 +6,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
@@ -20,8 +19,7 @@ public class TARDISItemFrameFaker {
     public static int cast(org.bukkit.entity.ItemFrame frame, Player player, Vector location) {
         int id = -1;
         if (player != null && player.isOnline()) {
-            Entity entity = ((CraftItemFrame) frame).getHandle();
-            ItemFrame real = (ItemFrame) entity;
+            ItemFrame real = ((CraftItemFrame) frame).getHandle();
             Level world = ((CraftWorld) player.getWorld()).getHandle();
             ItemFrame fake = new ItemFrame(world, new BlockPos(location.getX(), location.getY(), location.getZ()), Direction.UP);
             fake.setDirection(Direction.UP);
