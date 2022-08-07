@@ -87,13 +87,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19.1-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.19.1-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <classifier>remapped-mojang</classifier>
             <scope>provided</scope>
         </dependency>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>me.eccentric_nz.tardisweepingangels</groupId>
             <artifactId>TARDISWeepingAngels</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.2</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
