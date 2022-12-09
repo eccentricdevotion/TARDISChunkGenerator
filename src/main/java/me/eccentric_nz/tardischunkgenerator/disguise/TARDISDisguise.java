@@ -17,7 +17,7 @@
 package me.eccentric_nz.tardischunkgenerator.disguise;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.entity.AgeableMob;
@@ -34,9 +34,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_19_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Frog;
@@ -170,7 +170,7 @@ public class TARDISDisguise {
             String entityPackage = packagePath + ((hasEntityStr) ? "Entity" : "") + str;
             Class entityClass = Class.forName(entityPackage);
             Constructor constructor = entityClass.getConstructor(net.minecraft.world.entity.EntityType.class, net.minecraft.world.level.Level.class);
-            net.minecraft.world.entity.EntityType type = Registry.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
+            net.minecraft.world.entity.EntityType type = BuiltInRegistries.ENTITY_TYPE.get(CraftNamespacedKey.toMinecraft(disguise.getEntityType().getKey()));
             net.minecraft.world.level.Level world = ((CraftWorld) w).getHandle();
             net.minecraft.world.entity.Entity entity = (net.minecraft.world.entity.Entity) constructor.newInstance(type, world);
             if (disguise.getOptions() != null) {
@@ -198,12 +198,12 @@ public class TARDISDisguise {
                     }
                     if (disguise.getEntityType().equals(EntityType.FROG) && o instanceof Frog.Variant fv) {
                         net.minecraft.world.entity.animal.frog.Frog frog = (net.minecraft.world.entity.animal.frog.Frog) entity;
-                        net.minecraft.world.entity.animal.FrogVariant variant = Registry.FROG_VARIANT.byId(fv.ordinal());
+                        net.minecraft.world.entity.animal.FrogVariant variant = BuiltInRegistries.FROG_VARIANT.byId(fv.ordinal());
                         frog.setVariant(variant);
                     }
                     if (disguise.getEntityType().equals(EntityType.RABBIT) && o instanceof org.bukkit.entity.Rabbit.Type rt) {
                         Rabbit rabbit = (Rabbit) entity;
-                        rabbit.setRabbitType(rt.ordinal());
+                        rabbit.setVariant(Rabbit.Variant.byId(rt.ordinal()));
                     }
                     if (disguise.getEntityType().equals(EntityType.PANDA) && o instanceof GENE g) {
                         Panda panda = (Panda) entity;
@@ -222,28 +222,27 @@ public class TARDISDisguise {
                     }
                     if (disguise.getEntityType().equals(EntityType.PARROT) && o instanceof org.bukkit.entity.Parrot.Variant pv) {
                         Parrot parrot = (Parrot) entity;
-                        parrot.setVariant(pv.ordinal());
+                        parrot.setVariant(Parrot.Variant.byId(pv.ordinal()));
                     }
                     if (disguise.getEntityType().equals(EntityType.MUSHROOM_COW) && o instanceof MUSHROOM_COW mc) {
                         MushroomCow cow = (MushroomCow) entity;
-                        cow.setMushroomType(mc.getNmsType());
+                        cow.setVariant(mc.getNmsType());
                     }
                     if (disguise.getEntityType().equals(EntityType.CAT) && o instanceof org.bukkit.entity.Cat.Type c) {
                         Cat cat = (Cat) entity;
-                        cat.setCatVariant(Registry.CAT_VARIANT.byId(c.ordinal()));
+                        cat.setVariant(BuiltInRegistries.CAT_VARIANT.byId(c.ordinal()));
                     }
                     if (disguise.getEntityType().equals(EntityType.FOX) && o instanceof FOX f) {
                         Fox fox = (Fox) entity;
-                        fox.setFoxType(f.getNmsType());
+                        fox.setVariant(f.getNmsType());
                     }
-                    if (disguise.getEntityType().equals(EntityType.HORSE) && o instanceof org.bukkit.entity.Horse.Color) {
-                        org.bukkit.entity.Horse.Color hc = (org.bukkit.entity.Horse.Color) o;
+                    if (disguise.getEntityType().equals(EntityType.HORSE) && o instanceof org.bukkit.entity.Horse.Color hc) {
                         Horse horse = (Horse) entity;
                         horse.setVariantAndMarkings(Variant.values()[hc.ordinal()], Markings.values()[new Random().nextInt(Markings.values().length)]);
                     }
-                    if (disguise.getEntityType().equals(EntityType.LLAMA) && o instanceof org.bukkit.entity.Llama.Color) {
+                    if (disguise.getEntityType().equals(EntityType.LLAMA) && o instanceof org.bukkit.entity.Llama.Color lc) {
                         Llama llama = (Llama) entity;
-                        llama.setVariant(((org.bukkit.entity.Llama.Color) o).ordinal());
+                        llama.setVariant(Llama.Variant.byId(lc.ordinal()));
                     }
                     if (o instanceof Boolean bool) {
                         // tamed fox, wolf, cat / decorated llama, chest carrying mule or donkey / trusting ocelot
@@ -321,11 +320,13 @@ public class TARDISDisguise {
                     }
                     if (disguise.getEntityType().equals(EntityType.TROPICAL_FISH) && o instanceof org.bukkit.entity.TropicalFish.Pattern pattern) {
                         TropicalFish fish = (TropicalFish) entity;
-                        int var5 = ThreadLocalRandom.current().nextInt(2); // shape
+//                        int var5 = ThreadLocalRandom.current().nextInt(2); // shape
                         int var6 = pattern.ordinal(); // pattern
                         int var7 = ThreadLocalRandom.current().nextInt(15); // base colour
                         int var8 = ThreadLocalRandom.current().nextInt(15); // pattern colour
-                        fish.setVariant(var5 | var6 << 8 | var7 << 16 | var8 << 24);
+                        TropicalFish.Pattern tp = TropicalFish.Pattern.byId(var6);
+                        fish.setVariant(tp);
+                        fish.setPackedVariant(packVariant(tp, DyeColor.byId(var7), DyeColor.byId(var8)));
                     }
                     if (o instanceof AGE age && AgeableMob.class.isAssignableFrom(entityClass)) {
                         // adult or baby
@@ -341,6 +342,10 @@ public class TARDISDisguise {
             e.printStackTrace();
         }
         return null;
+    }
+
+    static int packVariant(TropicalFish.Pattern var0, DyeColor var1, DyeColor var2) {
+        return var0.getPackedId() & '\uffff' | (var1.getId() & 255) << 16 | (var2.getId() & 255) << 24;
     }
 
     private static String switchAndCapitalise(String s) {

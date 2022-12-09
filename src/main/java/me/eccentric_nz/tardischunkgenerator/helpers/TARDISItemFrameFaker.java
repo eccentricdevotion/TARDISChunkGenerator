@@ -8,9 +8,9 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftItemFrame;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftItemFrame;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -29,7 +29,7 @@ public class TARDISItemFrameFaker {
             fake.fixed = true;
             id = fake.getId();
             ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(fake, fake.getDirection().ordinal());
-            ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(id, real.getEntityData(), false);
+            ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(id, real.getEntityData().getNonDefaultValues());
             Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
             connection.send(addEntityPacket);
             connection.send(entityDataPacket);

@@ -27,7 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class TARDISArmourStandDisguiser {
                     setEntityLocationIdAndName(mob, stand.getLocation(), stand);
                     ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(stand.getEntityId());
                     ClientboundAddEntityPacket packetPlayOutSpawnEntityLiving = new ClientboundAddEntityPacket((LivingEntity) mob);
-                    ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData(), false);
+                    ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData().getNonDefaultValues());
                     ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, mob.blockPosition().getX(), mob.blockPosition().getY(), mob.blockPosition().getZ());
                     ServerPlayerConnection connection = ((CraftPlayer) to).getHandle().connection;
                     connection.send(packetPlayOutEntityDestroy);
@@ -86,7 +86,7 @@ public class TARDISArmourStandDisguiser {
             TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(disguise.getEntityType(), disguise.getOptions()));
             ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(stand.getEntityId());
             ClientboundAddEntityPacket packetPlayOutSpawnEntityLiving = new ClientboundAddEntityPacket((LivingEntity) mob);
-            ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData(), false);
+            ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(mob.getId(), mob.getEntityData().getNonDefaultValues());
             ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, mob.blockPosition().getX(), mob.blockPosition().getY(), mob.blockPosition().getZ());
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (stand.getWorld() == p.getWorld()) {
@@ -141,7 +141,7 @@ public class TARDISArmourStandDisguiser {
         TARDISDisguiseTracker.DISGUISED_AS_MOB.put(stand.getUniqueId(), new TARDISDisguise(entityType, options));
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(stand.getEntityId());
         ClientboundAddEntityPacket packetPlayOutSpawnEntityLiving = new ClientboundAddEntityPacket((LivingEntity) entity);
-        ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData(), false);
+        ClientboundSetEntityDataPacket packetPlayOutEntityMetadata = new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().getNonDefaultValues());
         ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (stand.getWorld() == p.getWorld()) {

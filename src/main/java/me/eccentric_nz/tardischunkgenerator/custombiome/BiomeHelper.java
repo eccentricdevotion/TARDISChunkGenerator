@@ -2,8 +2,8 @@ package me.eccentric_nz.tardischunkgenerator.custombiome;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -13,8 +13,8 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
 
 public class BiomeHelper {
 
@@ -27,12 +27,12 @@ public class BiomeHelper {
      * @param chunk        the chunk to set the biome for
      */
     public void setCustomBiome(String newBiomeName, Chunk chunk) {
-        WritableRegistry<Biome> registryWritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
-        ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.toLowerCase()));
+        WritableRegistry<Biome> registryWritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get();
+        ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, new ResourceLocation(newBiomeName.toLowerCase()));
         Biome base = registryWritable.get(key);
         if (base == null) {
             if (newBiomeName.contains(":")) {
-                ResourceKey<Biome> newKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
+                ResourceKey<Biome> newKey = ResourceKey.create(Registries.BIOME, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
                 base = registryWritable.get(newKey);
                 if (base == null) {
                     return;
@@ -62,12 +62,12 @@ public class BiomeHelper {
      */
     public boolean setCustomBiome(String newBiomeName, Location location) {
         Biome base;
-        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
-        ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.toLowerCase()));
+        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get();
+        ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, new ResourceLocation(newBiomeName.toLowerCase()));
         base = registrywritable.get(key);
         if (base == null) {
             if (newBiomeName.contains(":")) {
-                ResourceKey<Biome> newKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
+                ResourceKey<Biome> newKey = ResourceKey.create(Registries.BIOME, new ResourceLocation(newBiomeName.split(":")[0].toLowerCase(), newBiomeName.split(":")[1].toLowerCase()));
                 base = registrywritable.get(newKey);
                 if (base == null) {
                     return false;

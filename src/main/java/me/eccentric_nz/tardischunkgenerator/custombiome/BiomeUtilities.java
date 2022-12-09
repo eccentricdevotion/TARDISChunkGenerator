@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -13,9 +14,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,8 +53,8 @@ public class BiomeUtilities {
 
     public static Location searchBiome(World world, org.bukkit.block.Biome biome, Location policeBox) {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        Registry<Biome> biomeRegistry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
-        Holder<Biome> biomeHolder = biomeRegistry.getHolderOrThrow(ResourceKey.create(Registry.BIOME_REGISTRY, CraftNamespacedKey.toMinecraft(biome.getKey())));
+        Registry<Biome> biomeRegistry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().registry(Registries.BIOME).get();
+        Holder<Biome> biomeHolder = biomeRegistry.getHolderOrThrow(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(biome.getKey())));
         Vec3 vector = new Vec3(policeBox.getX(), policeBox.getY(), policeBox.getZ());
         BlockPos startPosition = new BlockPos(vector);
         Pair<BlockPos, Holder<Biome>> biomePosition = worldServer.findClosestBiome3d((b) -> b == biomeHolder, startPosition, 6400, 32, 64);

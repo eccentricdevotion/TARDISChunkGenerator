@@ -7,8 +7,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
@@ -20,7 +20,7 @@ public final class TARDISMapUpdater extends Player {
     public static final String NAME = "_____MapUpdater_____";
 
     public TARDISMapUpdater(World world, int x, int z) {
-        super(((CraftWorld) world).getHandle(), new BlockPos(x, 64, z), 1.0f, new GameProfile(ID, NAME), null);
+        super(((CraftWorld) world).getHandle(), new BlockPos(x, 64, z), 1.0f, new GameProfile(ID, NAME));
     }
 
     @Override

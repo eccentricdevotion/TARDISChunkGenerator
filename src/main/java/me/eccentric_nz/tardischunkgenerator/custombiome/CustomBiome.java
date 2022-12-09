@@ -3,8 +3,8 @@ package me.eccentric_nz.tardischunkgenerator.custombiome;
 import com.mojang.serialization.Lifecycle;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
@@ -22,13 +22,11 @@ public class CustomBiome {
 
     public static void addCustomBiome(CustomBiomeData data) {
         DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
-        ResourceKey<Biome> minecraftKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("minecraft", data.getMinecraftName()));
-        ResourceKey<Biome> customKey = ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("tardis", data.getCustomName()));
-        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get();
+        ResourceKey<Biome> minecraftKey = ResourceKey.create(Registries.BIOME, new ResourceLocation("minecraft", data.getMinecraftName()));
+        ResourceKey<Biome> customKey = ResourceKey.create(Registries.BIOME, new ResourceLocation("tardis", data.getCustomName()));
+        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get();
         Biome minecraftbiome = registrywritable.get(minecraftKey);
-//        Holder<Biome> biomeHolder = Holder.direct(minecraftbiome);
         Biome.BiomeBuilder newBiome = new Biome.BiomeBuilder();
-//        newBiome.biomeCategory(Biome.getBiomeCategory(biomeHolder));
         newBiome.precipitation(minecraftbiome.getPrecipitation());
         MobSpawnSettings biomeSettingMobs = minecraftbiome.getMobSettings();
         newBiome.mobSpawnSettings(biomeSettingMobs);
@@ -54,9 +52,9 @@ public class CustomBiome {
     }
 
     public static void changeRegistryLock(DedicatedServer dedicatedServer, boolean isLocked) {
-        MappedRegistry<Biome> materials = ((MappedRegistry<Biome>) dedicatedServer.registryAccess().ownedRegistry(Registry.BIOME_REGISTRY).get());
+        MappedRegistry<Biome> materials = ((MappedRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get());
         try {
-            Field isFrozen = materials.getClass().getDeclaredField("ca");
+            Field isFrozen = materials.getClass().getDeclaredField("l");
             isFrozen.setAccessible(true);
             isFrozen.set(materials, isLocked);
         } catch (IllegalAccessException | NoSuchFieldException ignored) {
