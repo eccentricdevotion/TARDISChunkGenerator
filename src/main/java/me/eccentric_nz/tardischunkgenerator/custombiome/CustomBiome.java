@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
 
 import java.lang.reflect.Field;
+import java.util.IdentityHashMap;
 import java.util.logging.Level;
 
 public class CustomBiome {
@@ -24,7 +25,7 @@ public class CustomBiome {
         DedicatedServer dedicatedServer = ((CraftServer) Bukkit.getServer()).getServer();
         ResourceKey<Biome> minecraftKey = ResourceKey.create(Registries.BIOME, new ResourceLocation("minecraft", data.getMinecraftName()));
         ResourceKey<Biome> customKey = ResourceKey.create(Registries.BIOME, new ResourceLocation("tardis", data.getCustomName()));
-        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get();
+        WritableRegistry<Biome> registrywritable = (WritableRegistry<Biome>) dedicatedServer.registryAccess().registryOrThrow(Registries.BIOME);
         Biome minecraftbiome = registrywritable.get(minecraftKey);
         Biome.BiomeBuilder newBiome = new Biome.BiomeBuilder();
         newBiome.precipitation(minecraftbiome.getPrecipitation());
@@ -46,17 +47,24 @@ public class CustomBiome {
         newBiome.specialEffects(newFog.build());
         Biome biome = newBiome.build();
         TARDISHelper.biomeMap.put(data.getCustomName(), biome);
-        changeRegistryLock(dedicatedServer, false);
-        registrywritable.register(customKey, biome, Lifecycle.stable());
-        changeRegistryLock(dedicatedServer, true);
-    }
-
-    public static void changeRegistryLock(DedicatedServer dedicatedServer, boolean isLocked) {
-        MappedRegistry<Biome> materials = ((MappedRegistry<Biome>) dedicatedServer.registryAccess().registry(Registries.BIOME).get());
+        // inject into the biome registry
         try {
-            Field isFrozen = materials.getClass().getDeclaredField("l");
-            isFrozen.setAccessible(true);
-            isFrozen.set(materials, isLocked);
+            // unfreeze Biome Registry
+            Field frozen = MappedRegistry.class.getDeclaredField("l");
+            frozen.setAccessible(true);
+            frozen.set(registrywritable, false);
+            // inject unregisteredIntrusiveHolders with a new map to allow intrusive holders
+            Field unregisteredIntrusiveHolders = MappedRegistry.class.getDeclaredField("m");
+            unregisteredIntrusiveHolders.setAccessible(true);
+            unregisteredIntrusiveHolders.set(registrywritable, new IdentityHashMap<>());
+            registrywritable.createIntrusiveHolder(biome);
+            registrywritable.register(customKey, biome, Lifecycle.stable());
+            // make unregisteredIntrusiveHolders null again to remove potential for undefined behaviour
+            unregisteredIntrusiveHolders.set(registrywritable, null);
+            // refreeze biome registry
+            frozen.setAccessible(true);
+            frozen.set(registrywritable, true);
+
         } catch (IllegalAccessException | NoSuchFieldException ignored) {
             Bukkit.getLogger().log(Level.WARNING, "Could not unlock biome registry!");
         }
