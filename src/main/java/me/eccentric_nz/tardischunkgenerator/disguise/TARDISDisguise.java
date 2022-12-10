@@ -88,6 +88,11 @@ public class TARDISDisguise {
                 str = "Bat";
                 packagePath += "ambient.";
             }
+            case CAMEL -> {
+                str = "Camel";
+                packagePath += "animal.camel.";
+                hasEntityStr = false;
+            }
             case GOAT -> {
                 str = "Goat";
                 packagePath += "animal.goat.";
@@ -321,12 +326,12 @@ public class TARDISDisguise {
                     if (disguise.getEntityType().equals(EntityType.TROPICAL_FISH) && o instanceof org.bukkit.entity.TropicalFish.Pattern pattern) {
                         TropicalFish fish = (TropicalFish) entity;
 //                        int var5 = ThreadLocalRandom.current().nextInt(2); // shape
-                        int var6 = pattern.ordinal(); // pattern
-                        int var7 = ThreadLocalRandom.current().nextInt(15); // base colour
-                        int var8 = ThreadLocalRandom.current().nextInt(15); // pattern colour
-                        TropicalFish.Pattern tp = TropicalFish.Pattern.byId(var6);
-                        fish.setVariant(tp);
-                        fish.setPackedVariant(packVariant(tp, DyeColor.byId(var7), DyeColor.byId(var8)));
+                        int patternType = pattern.ordinal(); // pattern
+                        int baseColour = ThreadLocalRandom.current().nextInt(15); // base colour
+                        int patternColour = ThreadLocalRandom.current().nextInt(15); // pattern colour
+                        TropicalFish.Pattern fishPattern = TropicalFish.Pattern.byId(patternType);
+                        fish.setVariant(fishPattern);
+                        fish.setPackedVariant(packVariant(fishPattern, DyeColor.byId(baseColour), DyeColor.byId(patternColour)));
                     }
                     if (o instanceof AGE age && AgeableMob.class.isAssignableFrom(entityClass)) {
                         // adult or baby
