@@ -17,7 +17,10 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.SkaroBiomeProvider;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.SkaroStructurePopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.TARDISTreeBlockPopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
@@ -89,7 +92,7 @@ public class SkaroGenerator extends ChunkGenerator {
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
-        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.SKARO, 4));
+        populators.add(new TARDISTreeBlockPopulator(TARDISTree.SKARO, 4));
         populators.add(new SkaroStructurePopulator(plugin));
         return populators;
     }

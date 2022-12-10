@@ -1,6 +1,7 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.FlatBiomeProvider;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

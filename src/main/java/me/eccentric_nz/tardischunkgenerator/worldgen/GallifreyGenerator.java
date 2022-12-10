@@ -17,7 +17,11 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.GallifreyBiomeProvider;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.GallifreyStructurePopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.TARDISTreeBlockPopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.populators.GallifreyGrassPopulator;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
@@ -90,8 +94,8 @@ public class GallifreyGenerator extends ChunkGenerator {
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = super.getDefaultPopulators(world);
         populators.add(new GallifreyGrassPopulator());
-        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_SAND, 4));
-        populators.add(new TARDISTreeBlockPopulator(CustomTree.TARDISTree.GALLIFREY_TERRACOTTA, 4));
+        populators.add(new TARDISTreeBlockPopulator(TARDISTree.GALLIFREY_SAND, 4));
+        populators.add(new TARDISTreeBlockPopulator(TARDISTree.GALLIFREY_TERRACOTTA, 4));
         populators.add(new GallifreyStructurePopulator(plugin));
         return populators;
     }

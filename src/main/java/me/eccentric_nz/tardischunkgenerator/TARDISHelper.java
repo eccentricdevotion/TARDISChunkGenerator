@@ -24,6 +24,8 @@ import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import me.eccentric_nz.tardischunkgenerator.worldgen.*;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -400,7 +402,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void growTree(String tree, Location location) {
         try {
-            CustomTree.TARDISTree type = CustomTree.TARDISTree.valueOf(tree.toUpperCase(Locale.ROOT));
+            TARDISTree type = TARDISTree.valueOf(tree.toUpperCase(Locale.ROOT));
             CustomTree.grow(type, location);
         } catch (IllegalArgumentException e) {
             Bukkit.getLogger().log(Level.WARNING, messagePrefix + "Invalid TARDISTree type specified!");

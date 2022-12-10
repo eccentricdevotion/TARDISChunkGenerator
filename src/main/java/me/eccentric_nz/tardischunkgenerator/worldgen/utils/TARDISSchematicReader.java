@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

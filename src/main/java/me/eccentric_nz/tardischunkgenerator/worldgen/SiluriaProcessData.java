@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 public class SiluriaProcessData {
 
-    int x;
-    int y;
-    int z;
-    HashMap<BlockVector, String> grid;
+    public int x;
+    public int y;
+    public int z;
+    public HashMap<BlockVector, String> grid;
 
     public SiluriaProcessData(int x, int y, int z, HashMap<BlockVector, String> grid) {
         this.x = x;

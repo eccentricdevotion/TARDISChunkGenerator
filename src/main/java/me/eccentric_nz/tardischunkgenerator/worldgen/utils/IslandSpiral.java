@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.utils;
 
 import com.mojang.datafixers.util.Pair;
 

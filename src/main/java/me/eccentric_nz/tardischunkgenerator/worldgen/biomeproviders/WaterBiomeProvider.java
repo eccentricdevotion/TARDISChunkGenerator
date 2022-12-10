@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
 
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class WaterBiomeProvider extends BiomeProvider {
-    
+
     @Override
     public Biome getBiome(WorldInfo worldInfo, int x, int y, int z) {
         SimplexOctaveGenerator generator = new SimplexOctaveGenerator(new Random(worldInfo.getSeed()), 6);

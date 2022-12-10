@@ -1,6 +1,7 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
 
-import me.eccentric_nz.tardischunkgenerator.custombiome.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.CustomTree;
+import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.generator.BlockPopulator;
@@ -12,10 +13,10 @@ import java.util.logging.Level;
 
 public class TARDISTreeBlockPopulator extends BlockPopulator {
 
-    private final CustomTree.TARDISTree TREE;
+    private final TARDISTree TREE;
     private final int chance;
 
-    public TARDISTreeBlockPopulator(CustomTree.TARDISTree TREE, int chance) {
+    public TARDISTreeBlockPopulator(TARDISTree TREE, int chance) {
         this.TREE = TREE;
         this.chance = chance;
     }

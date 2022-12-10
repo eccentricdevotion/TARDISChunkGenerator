@@ -16,6 +16,7 @@
  */
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
+import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.TARDISVoidBiomeProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;

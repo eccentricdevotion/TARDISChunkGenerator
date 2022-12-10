@@ -1,6 +1,8 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
 
 import com.mojang.datafixers.util.Pair;
+import me.eccentric_nz.tardischunkgenerator.worldgen.utils.IslandSpiral;
+import me.eccentric_nz.tardischunkgenerator.worldgen.utils.WaterCircle;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;

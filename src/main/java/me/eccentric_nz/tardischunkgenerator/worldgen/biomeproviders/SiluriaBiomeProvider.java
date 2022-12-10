@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
 
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;

@@ -1,8 +1,11 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen;
+package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
+import me.eccentric_nz.tardischunkgenerator.worldgen.utils.GallifeyStructureUtility;
+import me.eccentric_nz.tardischunkgenerator.worldgen.utils.TARDISLootTables;
+import me.eccentric_nz.tardischunkgenerator.worldgen.utils.TARDISSchematicReader;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
