@@ -63,7 +63,7 @@ public class TreePlacer {
                     if (isReplaceable(level, blockPos, true)) {
                         if (data.isPlanted()) {
                             if (!level.getBlockState(blockPos.below()).isAir()) {
-                                level.destroyBlock(blockPos, true);
+                                level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                             }
                             level.setBlock(blockPos, stem, 3);
                         } else if (edge) {
@@ -103,7 +103,7 @@ public class TreePlacer {
                     blockPos.setWithOffset(pos, x, h, z);
                     if (isReplaceable(level, blockPos, false)) {
                         if (data.isPlanted() && !level.getBlockState(blockPos.below()).isAir()) {
-                            level.destroyBlock(blockPos, true);
+                            level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                         }
                         if (notTop) {
                             if (!notEdge) {
