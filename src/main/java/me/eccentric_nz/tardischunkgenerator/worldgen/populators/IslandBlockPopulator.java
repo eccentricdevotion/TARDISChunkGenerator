@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
+package me.eccentric_nz.tardischunkgenerator.worldgen.populators;
 
 import com.mojang.datafixers.util.Pair;
 import me.eccentric_nz.tardischunkgenerator.worldgen.utils.IslandSpiral;

@@ -1,4 +1,4 @@
-package me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders;
+package me.eccentric_nz.tardischunkgenerator.worldgen.populators;
 
 import me.eccentric_nz.tardischunkgenerator.worldgen.feature.CustomTree;
 import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;

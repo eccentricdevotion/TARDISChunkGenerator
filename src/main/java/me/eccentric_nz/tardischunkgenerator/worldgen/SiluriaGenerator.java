@@ -18,7 +18,7 @@ package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.SiluriaBiomeProvider;
-import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.SiluriaStructurePopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.populators.SiluriaStructurePopulator;
 import org.bukkit.World;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;

@@ -18,8 +18,8 @@ package me.eccentric_nz.tardischunkgenerator.worldgen;
 
 import me.eccentric_nz.tardischunkgenerator.TARDISHelper;
 import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.GallifreyBiomeProvider;
-import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.GallifreyStructurePopulator;
-import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.TARDISTreeBlockPopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.populators.GallifreyStructurePopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.populators.TARDISTreeBlockPopulator;
 import me.eccentric_nz.tardischunkgenerator.worldgen.feature.TARDISTree;
 import me.eccentric_nz.tardischunkgenerator.worldgen.populators.GallifreyGrassPopulator;
 import org.bukkit.World;

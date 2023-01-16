@@ -1,6 +1,6 @@
 package me.eccentric_nz.tardischunkgenerator.worldgen;
 
-import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.IslandBlockPopulator;
+import me.eccentric_nz.tardischunkgenerator.worldgen.populators.IslandBlockPopulator;
 import me.eccentric_nz.tardischunkgenerator.worldgen.biomeproviders.WaterBiomeProvider;
 import org.bukkit.Material;
 import org.bukkit.World;
