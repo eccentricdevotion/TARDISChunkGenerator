@@ -154,6 +154,10 @@ public class TARDISDisguise {
                 str = "Hoglin";
                 packagePath += "monster.hoglin.";
             }
+            case ENDER_DRAGON -> {
+                str = "EnderDragon";
+                packagePath += "boss.enderdragon.";
+            }
             case WITHER -> {
                 str = "Wither";
                 packagePath += "boss.wither.";
