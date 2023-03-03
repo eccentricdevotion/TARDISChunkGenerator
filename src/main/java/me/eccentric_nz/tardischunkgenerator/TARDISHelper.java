@@ -18,10 +18,7 @@ package me.eccentric_nz.tardischunkgenerator;
 
 import me.eccentric_nz.tardischunkgenerator.custombiome.*;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISFactions;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISItemFrameFaker;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISMapUpdater;
-import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
+import me.eccentric_nz.tardischunkgenerator.helpers.*;
 import me.eccentric_nz.tardischunkgenerator.logging.TARDISLogFilter;
 import me.eccentric_nz.tardischunkgenerator.worldgen.*;
 import me.eccentric_nz.tardischunkgenerator.worldgen.feature.CustomTree;
@@ -460,5 +457,10 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
      */
     public void filterLog(String path) {
         ((Logger) LogManager.getRootLogger()).addFilter(new TARDISLogFilter(path));
+    }
+
+    @Override
+    public void listBlockColours() {
+        GetBlockColours.list();
     }
 }

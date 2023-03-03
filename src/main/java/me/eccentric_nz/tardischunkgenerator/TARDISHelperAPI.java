@@ -261,4 +261,9 @@ public interface TARDISHelperAPI {
      * @param player the player to send the destroy packet to
      */
     void removeFakeItemFrame(int id, Player player);
+
+    /**
+     * List Block map colours
+     */
+    void listBlockColours();
 }
