@@ -16,6 +16,8 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import java.util.List;
+import java.util.UUID;
 import me.eccentric_nz.tardischunkgenerator.helpers.TARDISPlanetData;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -24,9 +26,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.map.MapView;
 import org.bukkit.util.Vector;
-
-import java.util.List;
-import java.util.UUID;
 
 public interface TARDISHelperAPI {
 
@@ -45,13 +44,6 @@ public interface TARDISHelperAPI {
      * @return true if the block is a furnace named 'TARDIS Artron Furnace'
      */
     boolean isArtronFurnace(Block block);
-
-    /**
-     * Set the FallFlying NBT tag on an entity.
-     *
-     * @param e the entity to set the NBT tag for
-     */
-    void setFallFlyingTag(Entity e);
 
     /**
      * Sets a random seed value for a world.

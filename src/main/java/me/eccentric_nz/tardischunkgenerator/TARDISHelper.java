@@ -16,6 +16,12 @@
  */
 package me.eccentric_nz.tardischunkgenerator;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
 import me.eccentric_nz.tardischunkgenerator.custombiome.*;
 import me.eccentric_nz.tardischunkgenerator.disguise.*;
 import me.eccentric_nz.tardischunkgenerator.helpers.*;
@@ -30,7 +36,6 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
 import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,20 +53,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_19_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftVillager;
 import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
 
 public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
@@ -161,16 +158,16 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
         return false;
     }
 
-    @Override
-    public void setFallFlyingTag(org.bukkit.entity.Entity e) {
-        Entity nmsEntity = ((CraftEntity) e).getHandle();
-        CompoundTag tag = new CompoundTag();
-        // writes the entity's NBT data to the `tag` object
-        nmsEntity.save(tag);
-        tag.putBoolean("FallFlying", true);
-        // sets the entity's tag to the altered `tag`
-        nmsEntity.load(tag);
-    }
+//    @Override
+//    public void setFallFlyingTag(org.bukkit.entity.Entity e) {
+//        Entity nmsEntity = ((CraftEntity) e).getHandle();
+//        CompoundTag tag = new CompoundTag();
+//        // writes the entity's NBT data to the `tag` object
+//        nmsEntity.save(tag);
+//        tag.putBoolean("FallFlying", true);
+//        // sets the entity's tag to the altered `tag`
+//        nmsEntity.load(tag);
+//    }
 
     @Override
     public void setRandomSeed(String world) {
