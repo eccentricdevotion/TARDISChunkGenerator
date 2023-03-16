@@ -22,16 +22,17 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -65,7 +66,7 @@ public class TARDISEPSDisguiser {
                 ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
 //                ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
                 ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
-                Connection connection = ((CraftPlayer) player).getHandle().connection.connection;
+                ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);
@@ -92,7 +93,7 @@ public class TARDISEPSDisguiser {
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(id);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (world == p.getWorld()) {
-                Connection connection = ((CraftPlayer) p).getHandle().connection.connection;
+                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
                 connection.send(packetPlayOutEntityDestroy);
             }
         }
@@ -127,11 +128,10 @@ public class TARDISEPSDisguiser {
         ClientboundPlayerInfoUpdatePacket packetPlayOutPlayerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc); // a = ADD_PLAYER
         ClientboundAddEntityPacket packetPlayOutNamedEntitySpawn = new ClientboundAddEntityPacket(npc);
         ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
-//        PacketPlayOutEntity.PacketPlayOutEntityLook packetPlayOutEntityLook = new PacketPlayOutEntity.PacketPlayOutEntityLook(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
         ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld() == location.getWorld()) {
-                Connection connection = ((CraftPlayer) p).getHandle().connection.connection;
+                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);

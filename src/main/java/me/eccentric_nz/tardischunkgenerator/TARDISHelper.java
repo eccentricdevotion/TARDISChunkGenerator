@@ -50,10 +50,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_19_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_19_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftVillager;
 import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.map.MapView;
@@ -376,7 +376,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
     @Override
     public void removeTileEntity(org.bukkit.block.BlockState tile) {
         net.minecraft.world.level.chunk.ChunkAccess chunk = ((CraftChunk) tile.getChunk()).getHandle();
-        BlockPos position = new BlockPos(tile.getLocation().getX(), tile.getLocation().getY(), tile.getLocation().getZ());
+        BlockPos position = new BlockPos(tile.getLocation().getBlockX(), tile.getLocation().getBlockY(), tile.getLocation().getBlockZ());
         chunk.removeBlockEntity(position);
         tile.getBlock().setType(Material.AIR);
     }
