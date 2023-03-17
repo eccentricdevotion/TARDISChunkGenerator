@@ -6,7 +6,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
@@ -31,7 +31,7 @@ public class TARDISItemFrameFaker {
             id = fake.getId();
             ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(fake, fake.getDirection().ordinal());
             ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(id, real.getEntityData().getNonDefaultValues());
-            ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
+            ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
             connection.send(addEntityPacket);
             connection.send(entityDataPacket);
         }
@@ -41,7 +41,7 @@ public class TARDISItemFrameFaker {
     public static void remove(int id, Player player) {
         if (player != null && player.isOnline()) {
             ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(id);
-            ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
+            ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
             connection.send(removeEntitiesPacket);
         }
     }

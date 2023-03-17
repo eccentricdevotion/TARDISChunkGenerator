@@ -22,7 +22,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +66,7 @@ public class TARDISEPSDisguiser {
                 ClientboundRotateHeadPacket packetPlayOutEntityHeadRotation = new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot());
 //                ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(npc.getId(), (byte) npc.getYRot(), (byte) npc.getXRot(), true);
                 ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
-                ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
+                ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);
@@ -93,7 +93,7 @@ public class TARDISEPSDisguiser {
         ClientboundRemoveEntitiesPacket packetPlayOutEntityDestroy = new ClientboundRemoveEntitiesPacket(id);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (world == p.getWorld()) {
-                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
+                ServerGamePacketListenerImpl connection = ((CraftPlayer) p).getHandle().connection;
                 connection.send(packetPlayOutEntityDestroy);
             }
         }
@@ -131,7 +131,7 @@ public class TARDISEPSDisguiser {
         ClientboundPlayerLookAtPacket packetPlayOutEntityLook = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.FEET, npc.blockPosition().getX(), npc.blockPosition().getY(), npc.blockPosition().getZ());
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld() == location.getWorld()) {
-                ServerPlayerConnection connection = ((CraftPlayer) p).getHandle().connection;
+                ServerGamePacketListenerImpl connection = ((CraftPlayer) p).getHandle().connection;
                 connection.send(packetPlayOutPlayerInfo);
                 connection.send(packetPlayOutNamedEntitySpawn);
                 connection.send(packetPlayOutEntityHeadRotation);
