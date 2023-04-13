@@ -41,6 +41,8 @@ import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -375,7 +377,7 @@ public class TARDISHelper extends JavaPlugin implements TARDISHelperAPI {
 
     @Override
     public void removeTileEntity(org.bukkit.block.BlockState tile) {
-        net.minecraft.world.level.chunk.ChunkAccess chunk = ((CraftChunk) tile.getChunk()).getHandle();
+        ChunkAccess chunk = ((CraftChunk) tile.getChunk()).getHandle(ChunkStatus.FULL);
         BlockPos position = new BlockPos(tile.getLocation().getBlockX(), tile.getLocation().getBlockY(), tile.getLocation().getBlockZ());
         chunk.removeBlockEntity(position);
         tile.getBlock().setType(Material.AIR);
